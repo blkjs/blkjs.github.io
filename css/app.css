@@ -1,0 +1,256 @@
+/* 存放首页样式及公共样式 */
+* {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 0.18rem;
+}
+
+.app-top-1 {
+	width: 100%;
+	height: 1rem;
+
+}
+
+.app-top-2 {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0px;
+	width: 100%;
+	height: 0.6rem;
+	display: flex;
+	flex-direction: row;
+	z-index: 998;
+	background-color: #423c3a;
+}
+
+.app-top-3 {
+	width: 70%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.app-top-4 {
+	width: 30%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.app-top-5 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.7rem;
+	height: 100%;
+	color: white;
+	cursor: pointer;
+}
+
+.app-top-5:hover {
+	background-color: yellow;
+	color: black;
+}
+
+.app-top-5:hover:after {
+	position: absolute;
+	top: 0.58rem;
+	display: block;
+	content: '';
+	border-width: 8px 8px 8px 8px;
+	border-style: solid;
+	border-color: yellow transparent transparent transparent;
+
+}
+
+.app-content {
+	width: 100%;
+	height: 20rem;
+}
+
+.app-content-1 {
+	position: fixed;
+	top: 3rem;
+	right: 0.25rem;
+	width: 0.6rem;
+	height: 3.8rem;
+	background-color: #5F5F5F;
+	border-radius: 40px;
+	color: white;
+
+}
+
+.app-content-2 {
+	width: 100%;
+	height: 24%;
+	border-bottom: 1px solid white;
+	font-size: 0.11rem;
+	cursor: pointer;
+
+}
+
+.app-content-2:hover {
+	background-color: yellow;
+	color: black;
+
+}
+
+.app-content-3 {
+	width: 100%;
+	height: 24%;
+	border-bottom: 1px solid white;
+	font-size: 0.11rem;
+	cursor: pointer;
+
+}
+
+.app-content-3:hover {
+	background-color: yellow;
+	color: black;
+	width: 100%;
+	height: 24%;
+	border-radius: 100px 100px 0 0;
+
+}
+
+.app-content-4 {
+	width: 100%;
+	height: 28%;
+	border-bottom: 1px solid white;
+	font-size: 0.11rem;
+	cursor: pointer;
+}
+
+.app-content-4:hover {
+	background-color: yellow;
+	color: black;
+	width: 100%;
+	height: 28%;
+	border-radius: 0 0 100px 100px;
+
+}
+
+.icon-img {
+	width: 82%;
+	margin-top: 0.05rem;
+}
+
+.app-bottom {
+	width: 100%;
+	height: 2rem;
+}
+
+
+/* 5年经验程序员 */
+.parent {
+	padding-top: 1.2rem;
+	width: 100%;
+	height: 7rem;
+	background-color: #E2E2E2;
+}
+
+.yuan1 {
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 2px solid beige;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 0.5rem;
+	background-color: #A5D6E5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 2rem;
+	margin-top: 1.2rem;
+
+}
+
+.yuan2 {
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 2px solid beige;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 0.5rem;
+	background-color: #FECAA1;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	margin-left: 1rem;
+	top: -0.9rem;
+	opacity: 0.7;
+}
+
+.yuan3 {
+	width: 1.5rem;
+	height: 1.5rem;
+	border: 2px solid beige;
+	text-align: center;
+	border-radius: 50%;
+	font-size: 0.5rem;
+	background-color: #AEF2A2;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+	margin-left: 2.1rem;
+	top: -1.9rem;
+	opacity: 0.7;
+}
+
+.h {
+	position: relative;
+	top: -4rem;
+	left: 4rem;
+	width: 5rem;
+}
+
+.h1 {
+	font-size: 0.8rem;
+}
+
+.h2 {
+	font-size: 0.3rem;
+}
+
+/* 5年经验程序员 */
+
+
+/* 浏览器图标 */
+.browser {
+	width: 100%;
+	height: 800px;
+	background-color: #BCE5CE;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+.browser1 {
+	width: 100%;
+	display: flex;
+	justify-content: space-around;
+}
+.browser1 img{
+	width: 1.2rem;
+	margin-top: 0.5rem;
+}
+.browser h1{
+	font-size: 0.5rem;
+	font-weight: 500;
+	position: relative;
+	top: -3.2rem;
+}
+
+.browser span{
+	font-size: 0.5rem;
+	font-weight: 500;
+}
+
+
+/* 浏览器图标 */

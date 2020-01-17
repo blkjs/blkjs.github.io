@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title>板栗壳技术有限公司</title>
+        <link rel="stylesheet" type="text/css" href="../../css/app.css">
+		<link rel="stylesheet" href="../../css/animite.css">
+		<script src="../../js/app.js"></script>
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script>
+			!function(n){
+			　　　　var e=n.document,
+			　　　　t=e.documentElement,
+			　　　　i=900,
+			　　　　d=i/100,
+			　　　　o="orientationchange"in n?"orientationchange":"resize",
+			　　　　a=function(){
+			　　　　　　var n=t.clientWidth||320;n>720&&(n=720);
+			　　　　　　t.style.fontSize=n/d+"px"
+			　　　　};
+			　　　　e.addEventListener&&(n.addEventListener(o,a,!1),e.addEventListener("DOMContentLoaded",a,!1))
+			　　}(window);
+		</script>
+    </head>
+    <body>
+		<div>
+			
+			<div class="app-top-1">1</div>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5">主页</div>
+					<div class="app-top-5">服务介绍</div>
+					<div class="app-top-5">项目案例</div>
+					<div class="app-top-5">关于我们</div>
+					<div class="app-top-5">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5">登录</div>
+					<div class="app-top-5">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-1">
+					<div class="app-content-3"><img class="icon-img" src="../../img/用户中心.png"> 登录</div>
+					<div class="app-content-2">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/联系我们.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2"><img class="icon-img" src="../../img/二维码.png">关注</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div id="parent" class="parent">
+					<div id="js" class="yuan1 animated slideInDown slow">JS</div>
+					<div class="yuan2 animated slideInLeft slow">CSS</div>
+					<div class="yuan3 animated slideInRight slow">HTML</div>
+					<div class="h animated slideInDown slow">
+						<span class="h1">WEB前端</span><br />
+						<span class="h2">5年以上程序员经验</span>
+					</div>
+				</div>
+				<div id="browser" class="browser">
+					<div class="browser1">
+						<img id="img_1"  src="../../img/360浏览器.png" />
+						<img id="img_2" src="../../img/QQ浏览器.png" />
+					</div>
+					<div class="browser1">
+						<img id="img_3" src="../../img/UC.png" />
+						<img id="img_4" src="../../img/Via浏览器.png" />
+					</div>
+					<div class="browser1">
+						<img id="img_5"src="../../img/遨游浏览器.png" />
+						<img id="img_6" src="../../img/IE.png" />
+					</div>
+					<div class="browser1">
+						<img id="img_7" src="../../img/谷歌浏览器.png" />
+						<img id="img_8"  src="../../img/火狐浏览器.png" />
+					</div>
+					<h1>超强的</h1>
+					<h1>浏览器兼容</h1>
+					<!-- 炫酷的特效 -->
+				</div>
+			</div>
+			
+			
+
+
+       <script>
+         var to_top=()=>{
+			$('html ,body').animate({ scrollTop: -10 }, 400);
+		 }
+		 
+		 $(document).ready(function () {
+		 	$(window).scroll(function () {
+		 			var a = document.getElementById("img_4").offsetTop;
+		 			if (a >= $(window).scrollTop() && a < ($(window).scrollTop()+$(window).height())) {
+		 					$("#img_1")[0].className="animated slideInDown slow"
+		 					$("#img_3")[0].className="animated slideInLeft"
+		 					$("#img_2")[0].className="animated slideInDown slow"
+		 					$("#img_4")[0].className="animated slideInRight slow"
+		 					$("#img_5")[0].className="animated slideInLeft slow"
+		 					$("#img_6")[0].className="animated slideInRight "
+		 					$("#img_7")[0].className="animated slideInUp slow"
+		 					$("#img_8")[0].className="animated slideInUp slow"
+							$("#browser h1")[0].className="animated slideInDown slow"
+							$("#browser h1")[1].className="animated slideInUp slow"
+		 			}else{
+		 				var id= $("#img_1,#img_2,#img_3,#img_4,#img_5,#img_6,#img_7,#img_8,#browser h1")
+		 				for(var i=0;i<id.length;i++){
+		 					id[i].className="animated fadeOutUp"
+		 				}
+						
+		 			}
+					
+		 		});
+		 	});
+       </script>
+    </body>
+</html>
