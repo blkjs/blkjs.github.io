@@ -83,6 +83,39 @@
 					<h1>浏览器兼容</h1>
 					<!-- 炫酷的特效 -->
 				</div>
+				
+				<div class="parent_technology">
+					<div class="technology_background">
+						<div id="technology_1" class="technology_1 animated slideInLeft">
+							<div class="technology_1_1"></div>
+							<div class="technology_1_2"></div>
+						</div>
+						<div id="technology_2" class="technology_2 animated slideInUp slow">
+							<div class="technology_2_1"></div>
+							<div class="technology_2_2"></div>
+						</div>
+						<div id="technology_3" class="technology_3 animated slideInDown slow">
+							<div class="technology_3_1">
+								<span  class="technology_span_1"></span>
+								<span class="technology_span_2"></span>
+								<span class="technology_span_3"></span>
+								<span class="technology_span_4">前端攻城狮</span>
+							</div>
+							<div class="technology_3_2">
+								<h1>web前端开发</h1>
+								<h5>掌握html,css和js等脚本技术</h5>
+							</div>
+						</div>
+						<div id="technology_4" class="technology_4 animated slideInUp slow">
+							<div class="technology_4_1"></div>
+							<div class="technology_4_2"></div>
+						</div>
+						<div id="technology_5" class="technology_5 animated slideInRight">
+							<div class="technology_5_1"></div>
+							<div class="technology_5_2"></div>
+						</div>
+					</div>
+				</div>
 			</div>
 			
 			
@@ -96,6 +129,7 @@
 		 $(document).ready(function () {
 		 	$(window).scroll(function () {
 		 			var a = document.getElementById("img_4").offsetTop;
+					var b = document.getElementById("technology_3").offsetTop;
 		 			if (a >= $(window).scrollTop() && a < ($(window).scrollTop()+$(window).height())) {
 		 					$("#img_1")[0].className="animated slideInDown slow"
 		 					$("#img_3")[0].className="animated slideInLeft"
@@ -113,6 +147,18 @@
 		 					id[i].className="animated fadeOutUp"
 		 				}
 						
+						if (b >= $(window).scrollTop() && b < ($(window).scrollTop()+$(window).height())) {
+								$("#technology_3")[0].className="technology_3 animated slideInDown slow"
+								$("#technology_1")[0].className="technology_1 animated slideInDown"
+								$("#technology_2")[0].className="technology_2 animated slideInUp slow"
+								$("#technology_4")[0].className="technology_4 animated slideInUp slow"
+								$("#technology_5")[0].className="technology_5 animated slideInDown"
+						}else{
+							var id= $("#technology_1,#technology_2,#technology_3,#technology_4,#technology_5")
+							for(var i=0;i<id.length;i++){
+								id[i].className="animated fadeOutUp"
+							}
+							}
 		 			}
 					
 		 		});

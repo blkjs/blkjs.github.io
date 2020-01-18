@@ -80,7 +80,7 @@
 	background-color: #5F5F5F;
 	border-radius: 40px;
 	color: white;
-
+	z-index: 99;
 }
 
 .app-content-2 {
@@ -237,7 +237,8 @@
 	justify-content: space-around;
 }
 .browser1 img{
-	width: 1.2rem;
+
+	height: 1.2rem;
 	margin-top: 0.5rem;
 }
 .browser h1{
@@ -254,3 +255,153 @@
 
 
 /* 浏览器图标 */
+
+
+/* web前端开发 */
+.parent_technology{
+				width: 100%;
+				height: 6rem;
+			}
+			.technology_background{
+				width: 100%;
+				height: 5rem;
+				background-color: #DBEDF1;
+				border-bottom: 7rem solid #A6CBD1;
+				display: flex;
+				align-items: flex-end;
+				justify-content: center;
+			}
+			.technology_1{
+				width: 0.6rem;
+				height: 1.6rem;
+			}
+			.technology_1_1{
+				height: 0.4rem;
+				width: 100%;
+				background-color: #3E494D;
+			}
+			.technology_1_2{
+				width: 0.35rem;
+				height: 1.7rem;
+				border-bottom:0.25rem solid #EE865F;
+				border-left:0.25rem solid #EE865F;
+				border-top:0.25rem solid #EE865F;
+				background-color: #FEC0B5;
+			}
+			
+			.technology_2{
+				width: 0.8rem;
+				height: 3.2rem;
+				position: relative;
+				top: 1rem;
+			}
+			.technology_2_1{
+				height: 0.4rem;
+				width: 100%;
+				background-color: #3E494D;
+			}
+			.technology_2_2{
+				width: 0.55;
+				height: 2.8rem;
+				border-bottom:0.25rem solid #BEA56C;
+				border-left:0.25rem solid #BEA56C;
+				border-top:0.25rem solid #BEA56C;
+				background-color: #E0D4AE;
+			}
+			
+			.technology_3{
+				width: 6.2rem;
+				height: 3.3rem;
+			}
+			.technology_3_1{
+				height: 0.6rem;
+				width: 100%;
+				background-color: #3E494D;
+				display: flex;
+				align-items: center;
+			}
+			.technology_3_2{
+				width: 5.7rem;
+				height: 4.1rem;
+				border-top: 0.3rem solid #4198C5;
+				border-bottom: 0.3rem solid #4198C5;
+				border-left: 0.25rem solid #4198C5;
+				border-right: 0.25rem solid #4198C5;
+				background-color: #C4E1EF;
+				display: flex;
+				
+				justify-content: center;
+				
+			}
+			.technology_span_1{
+				display: inline-block;
+				width: 0.35rem;
+				height: 0.35rem;
+				margin-left: 0.15rem;
+				border-radius: 50%;
+				background-color: #F07855;
+			}
+			.technology_span_2{
+				display: inline-block;
+				width: 0.35rem;
+				height: 0.35rem;
+				margin-left: 0.15rem;
+				border-radius: 50%;
+				background-color: #FFC162;
+			}
+			.technology_span_3{
+				display: inline-block;
+				width: 0.35rem;
+				height: 0.35rem;
+				margin-left: 0.15rem;
+				border-radius: 50%;
+				background-color: #66BB92;
+			}
+			.technology_span_4{
+				display: inline-block;
+				width: 3.4rem;
+				height: 0.35rem;
+				margin-left: 0.5rem;
+				padding-left: 0.35rem;
+				border-radius: 50px;
+				background-color: white;
+			}
+			
+			.technology_4{
+				width: 0.8rem;
+				height: 3.3rem;
+				position: relative;
+				top: 1rem;
+			}
+			.technology_4_1{
+				height: 0.4rem;
+				width: 100%;
+				background-color: #3E494D;
+			}
+			.technology_4_2{
+				width: 0.55rem;
+				height: 2.8rem;
+				border-bottom:0.25rem solid #F8AF48;
+				border-right:0.25rem solid #F8AF48;
+				border-top:0.25rem solid #F8AF48;
+				background-color: #FFD8A1;
+			}
+			
+			.technology_5{
+				width: 0.6rem;
+				height: 1.6rem;
+			}
+			.technology_5_1{
+				height: 0.4rem;
+				width: 100%;
+				background-color: #3E494D;
+			}
+			.technology_5_2{
+				width: 0.35rem;
+				height: 1.7rem;
+				border-bottom:0.25rem solid #6BC393;
+				border-right:0.25rem solid #6BC393;
+				border-top:0.25rem solid #6BC393;
+				background-color: #B1E3C8;
+			}
+		/* 	web前端开发 */
