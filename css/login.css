@@ -1,0 +1,48 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+html{
+	
+}
+
+/* 变幻背景 */
+ .parent{          
+	 display: flex;
+	 align-items: center;
+	 justify-content: center;
+		text-align: center;  
+		animation:mymove 15s infinite; /*animation 时间 播放次数*/  
+		animation-direction:alternate; /*是否循环交替反向播放动画*/ 
+		/*Safari 和 Chrome:*/
+		-webkit-animation:mymove 15s infinite;
+	}
+
+	@keyframes mymove  
+	{
+	  
+	    0% {background:#B1E3C8;}  
+		25% {background:#BCE5CE;}  
+		50% {background:#E2E2E2;}  
+		75% {background:#DBEDF1;}  
+		100% {background:#A6CBD1;}  
+	}  
+
+	/*Safari 和 Chrome:*/
+	@-webkit-keyframes mymove
+	{
+
+		0% {background:#B1E3C8;}
+		25% {background:#BCE5CE;}
+		50% {background:#E2E2E2;}
+		75% {background:#DBEDF1;}
+		100% {background:#A6CBD1;}
+	}
+	/* 变幻背景 */
+
+.login{
+	width: 5rem;
+	height: 5rem;
+
+	 background: rgba(7, 5,6,0.2);/* 半透明背景 */
+}

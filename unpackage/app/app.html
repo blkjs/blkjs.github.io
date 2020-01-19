@@ -37,20 +37,20 @@
 					<div class="app-top-5">帮助中心</div>
 				</div>
 				<div class="app-top-4">
-					<div class="app-top-5">登录</div>
+					<div class="app-top-5" onclick="login()">登录</div>
 					<div class="app-top-5">注册</div>
 				</div>
 			</div>
 			<div class="app-content">
 				<div class="app-content-1">
 					<div class="app-content-3"><img class="icon-img" src="../../img/用户中心.png"> 登录</div>
-					<div class="app-content-2">
+					<div class="app-content-2" onclick="open_qq()">
 						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
 							<img class="icon-img" src="../../img/联系我们.png">
 						</a>
 						联系
 					</div>
-					<div class="app-content-2"><img class="icon-img" src="../../img/二维码.png">关注</div>
+					<div class="app-content-2"><img class="icon-img" src="../../img/二维码.png">客服</div>
 					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
 				</div>
 				<div id="parent" class="parent">
@@ -103,7 +103,8 @@
 							</div>
 							<div class="technology_3_2">
 								<h1>web前端开发</h1>
-								<h5>掌握html,css和js等脚本技术</h5>
+								<h5>掌握html,css和js等脚本技术及各大框架</h5>
+								<h5>如果您的设计稿采用前端常用UI框架设计，这将极大的提高我们的开发效率</h5>
 							</div>
 						</div>
 						<div id="technology_4" class="technology_4 animated slideInUp slow">
@@ -122,6 +123,22 @@
 
 
        <script>
+		   var login=()=>{
+			   window.open("../login/login.html",'_self')
+		   }
+		   
+		   var open_qq=()=>{
+			   if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE|Nubia/.test(navigator.userAgent))){
+			       window.location.href="mqqwpa://im/chat?chat_type=wpa&uin=201747831&version=1&src_type=web&web_src=oicqzone.com";//判断是否是移动端
+				  
+			   }else{
+				   document.location.href="tencent://Message/?websiteName=qzone.qq.com&Menu=yes&Uin=201747831"
+			   }
+			   
+
+			          
+
+		   }
          var to_top=()=>{
 			$('html ,body').animate({ scrollTop: -10 }, 400);
 		 }
