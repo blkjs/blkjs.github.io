@@ -6,16 +6,130 @@
 		<link rel="stylesheet" type="text/css" href="../../css/login.css">
 		<link rel="stylesheet" href="../../css/animite.css">
 		<script src="../../js/app.js"></script>
+		<script src="../../js/public.js"></script>
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/vue2.6.11.js"></script>
 	</head>
 	<body>
-		<div id="parent" class="parent">
-			<div class="login">
-				
+		<div id="app">
+			<div id="parent" ref="homePage" class="parent">
+				<div class="login">
+					<div class="login_1">
+						<span>账号：</span>
+						<input id="account" v-model="username" type="text">
+					</div>
+					<div class="login_msg"></div>
+					<div class="login_2">
+						<span>密码：</span>
+						<input id="password" v-model="password" type="password">
+					</div>
+					<div class="login_msg">{{password_msg}}</div>
+
+					<div class="login_VCode">
+						<span>验证码：</span>
+						<input v-model="VCode_num" type="text">
+					</div>
+					<div class="login_msg">{{VCode_msg}}</div>
+					<div class="login_3" @click="VCode">
+						<div v-html="VCode_img"></div>
+					</div>
+					<div @click="submit()" class="login_4">
+						登陆
+					</div>
+				</div>
 			</div>
 		</div>
 		<script>
-			console.log(document.documentElement.clientHeight)
-			document.getElementById("parent").style.height=document.documentElement.clientHeight+"px"
+			new Vue({
+				el: '#app',
+				data: {
+					username: "",
+					username_msg: "",
+					password: "",
+					password_msg: "",
+					VCode_img: "",
+					VCode_num: "",
+					VCode_msg: "",
+					clientHeight: "",
+
+				},
+				methods: {
+					VCode() {
+						$.ajax({
+							url: topurl + "VCode/VCode",
+							type: 'POST',
+							async: true,
+							xhrFields: {
+								withCredentials: true
+							},
+							data: {},
+							success: (data)=> {
+								this.VCode_img = data.img
+							},
+							error: ()=> {
+								alert('服务器发生错误！');
+							}
+						});
+					},
+					submit() {
+						if(this.username ==="" || this.password===""){
+							this.password_msg="账号或密码不能为空！";
+							return false;
+						}else if(this.VCode_num===""){
+							this.password_msg="";
+							this.VCode_msg="验证码不能为空！";
+							return false;
+						}
+						this.password_msg="";
+						this.VCode_msg="";
+						$.ajax({
+							url: topurl + "login",
+							type: 'POST',
+							async: true,
+							xhrFields: {
+								withCredentials: true
+							},
+							data: {
+								username: this.username,
+								password: this.password,
+								VerificationCode: this.VCode_num
+							},
+							success: (data)=> {
+								console.log(data);
+								
+								if(data.status==0){
+									console.log(data.message);
+									if(data.message==="请填写验证码！" || data.message==="验证码错误！"){
+										this.VCode_msg=data.message;
+										this.VCode();
+										return
+									}
+									this.VCode_msg="";
+									this.password_msg=data.message;
+								}else if(data.status==1){
+									localStorage.setItem("login_msg", JSON.stringify(data.data));
+									window.open("../app/app.html",'_self')
+								}
+								
+									
+								
+							},
+							error: function() {
+								alert('服务器发生错误！');
+							}
+						});
+
+					}
+
+				},
+				mounted() {
+					this.VCode();
+					this.clientHeight = window.innerHeight;
+					//console.log(window.innerHeight);
+					this.$refs.homePage.style.height = this.clientHeight + "px";
+
+				}
+			})
 		</script>
 	</body>
 </html>

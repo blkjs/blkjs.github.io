@@ -48,6 +48,7 @@
 	height: 100%;
 	color: white;
 	cursor: pointer;
+
 }
 
 .app-top-5:hover {
@@ -64,6 +65,20 @@
 	border-style: solid;
 	border-color: yellow transparent transparent transparent;
 
+}
+.header_img{
+	width: 0.35rem;
+	height: 0.35rem;
+	border-radius: 50%;
+	border: 2px solid white;
+	margin-right: 0.1rem;
+}
+.username{
+	display: inline-block;
+	width: 1rem;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
 }
 
 .app-content {
@@ -261,13 +276,14 @@
 /* web前端开发 */
 .parent_technology{
 				width: 100%;
-				height: 6rem;
+				height: 9rem;
+				background-color: #DBEDF1;
 			}
 			.technology_background{
 				width: 100%;
 				height: 5rem;
-				background-color: #DBEDF1;
-				border-bottom: 7rem solid #A6CBD1;
+				
+				border-bottom: 0rem solid #A6CBD1;
 				display: flex;
 				align-items: flex-end;
 				justify-content: center;
@@ -372,6 +388,8 @@
 				padding-left: 0.35rem;
 				border-radius: 50px;
 				background-color: white;
+				display: flex;
+				align-items: center
 			}
 			
 			.technology_4{

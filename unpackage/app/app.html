@@ -37,8 +37,8 @@
 					<div class="app-top-5">帮助中心</div>
 				</div>
 				<div class="app-top-4">
-					<div class="app-top-5" onclick="login()">登录</div>
-					<div class="app-top-5">注册</div>
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
 				</div>
 			</div>
 			<div class="app-content">
@@ -124,7 +124,20 @@
 
        <script>
 		   var login=()=>{
-			   window.open("../login/login.html",'_self')
+			   if(!localStorage.getItem("login_msg")){//跳转登录页面
+				   window.open("../login/login.html",'_self')
+			   }else{//已登录
+				   
+			   }
+			   
+		   }
+		   var register=()=>{
+			   if(localStorage.getItem("login_msg")){//退出登录
+			   			localStorage.removeItem("login_msg");
+			   			location.reload()
+			   }else{//跳转注册页面
+				   
+			   }
 		   }
 		   
 		   var open_qq=()=>{
@@ -180,6 +193,17 @@
 					
 		 		});
 		 	});
+			
+			 $(document).ready(function () {
+				 console.log(JSON.parse(localStorage.getItem("login_msg")))
+				if(localStorage.getItem("login_msg")){
+						document.getElementById("login").innerHTML ='<img src="'+JSON.parse(localStorage.getItem("login_msg")).headerImg+'" class="header_img" />' +'<span class="username">'+  JSON.parse(localStorage.getItem("login_msg")).username+'</span>';//取出用户名
+						document.getElementById("register").innerHTML ="退出登录";
+				}else{
+					document.getElementById("login").innerHTML = "登录";
+					document.getElementById("register").innerHTML ="注册";
+				}
+			 })
        </script>
     </body>
 </html>
