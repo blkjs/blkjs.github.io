@@ -38,6 +38,8 @@ app.all('*', function(req, res, next) {
     next();
 });
 
+app.use('/leavemsg',require('./api/leavemsg/leavemsg.js'));//留言无需登陆
+
 //登陆拦截
 app.use(function (req, res, next) {
   console.log(req.sessionID);
@@ -96,7 +98,15 @@ app.use(function (req, res, next) {
 });
 
 app.use('/about',require('./api/changePasswd.js'));
+app.use('/upload',require('./api/uploadimg/headerimg.js'));
+app.use('/getip',require('./api/ip/getip.js'));
+app.use('/postip',require('./api/ip/postip.js'));
+app.use('/place_order',require('./api/place_order/place_order.js'));
+app.use('/queryAllOdrder',require('./api/order/queryAllOder.js'));
+app.use('/cancelOrder',require('./api/order/cancelOrder.js'));
 app.use('/VCode',require('./api/VCode/VCode.js'));
+app.use('/revise',require('./api/userInfo/reviseUserInfo.js'));
+
 
 app.post('/register',(req,res,next) => {
     const username = JSON.stringify(req.body.username);

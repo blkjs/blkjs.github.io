@@ -25,12 +25,12 @@
 		</script>
     </head>
     <body>
-		<div>
+		
 			
 			<div class="app-top-1">1</div>
 			<div class="app-top-2">
 				<div class="app-top-3">
-					<div class="app-top-5">主页</div>
+					<div class="app-top-5" onclick="app()">主页</div>
 					<div class="app-top-5">服务介绍</div>
 					<div class="app-top-5">项目案例</div>
 					<div class="app-top-5">关于我们</div>
@@ -43,15 +43,18 @@
 			</div>
 			<div class="app-content">
 				<div class="app-content-1">
-					<div class="app-content-3"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
 					<div class="app-content-2" onclick="open_qq()">
 						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
 							<img class="icon-img" src="../../img/QQ.png">
 						</a>
 						联系
 					</div>
-					<div class="app-content-2"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
 					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
 				</div>
 				<div id="parent" class="parent">
 					<div id="js" class="yuan1 animated slideInDown slow">JS</div>
@@ -118,11 +121,52 @@
 					</div>
 				</div>
 			</div>
-			
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p>关于我们</p>
+							<p>查看案例</p>
+							<p>服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p>其他</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
 			
 
 
        <script>
+		   $('#service').mouseover(function () {
+			   console.log($('#WeChat')[0].style)
+		   $('#WeChat')[0].style.display="block"
+		   }).mouseout(function () {
+		      $('#WeChat')[0].style.display="none"
+		   })
 		   var login=()=>{
 			   if(!localStorage.getItem("login_msg")){//跳转登录页面
 				   window.open("../login/login.html",'_self')
@@ -147,10 +191,12 @@
 			   }else{
 				   document.location.href="tencent://Message/?websiteName=qzone.qq.com&Menu=yes&Uin=201747831"
 			   }
-			   
-
-			          
-
+		   }
+		   var leavemsg=()=>{
+		   	window.open("../leavemsg/leavemsg.html",'_self')
+		   }
+		   var app=()=>{
+		   	window.open("../app/app.html",'_self')
 		   }
          var to_top=()=>{
 			$('html ,body').animate({ scrollTop: -10 }, 400);
@@ -198,7 +244,7 @@
 				 console.log(JSON.parse(localStorage.getItem("login_msg")))
 				if(localStorage.getItem("login_msg")){
 						document.getElementById("login").innerHTML ='<img src="'+JSON.parse(localStorage.getItem("login_msg")).headerImg+'" class="header_img" />' +'<span class="username">'+  JSON.parse(localStorage.getItem("login_msg")).username+'</span>';//取出用户名
-						document.getElementById("register").innerHTML ="退出登录";
+						document.getElementById("register").innerHTML ='<span class="username">'+"退出登录" +'<span>';
 				}else{
 					document.getElementById("login").innerHTML = "登录";
 					document.getElementById("register").innerHTML ="注册";

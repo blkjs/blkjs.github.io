@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title>板栗壳技术有限公司</title>
+        <link rel="stylesheet" type="text/css" href="../../css/leavemsg.css">
+		<link rel="stylesheet" type="text/css" href="../../css/public.css">
+		<link rel="stylesheet" href="../../css/animite.css">
+		<script src="../../js/app.js"></script>
+		<script src="../../js/public.js"></script>
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		
+		<script>
+			!function(n){
+			　　　　var e=n.document,
+			　　　　t=e.documentElement,
+			　　　　i=900,
+			　　　　d=i/100,
+			　　　　o="orientationchange"in n?"orientationchange":"resize",
+			　　　　a=function(){
+			　　　　　　var n=t.clientWidth||320;n>720&&(n=720);
+			　　　　　　t.style.fontSize=n/d+"px"
+			　　　　};
+			　　　　e.addEventListener&&(n.addEventListener(o,a,!1),e.addEventListener("DOMContentLoaded",a,!1))
+			　　}(window);
+		</script>
+    </head>
+    <body>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5" onclick="app()">主页</div>
+					<div class="app-top-5">服务介绍</div>
+					<div class="app-top-5">项目案例</div>
+					<div class="app-top-5">关于我们</div>
+					<div class="app-top-5">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-top">
+					<div class="app-content-top-1"></div>
+					<div class="app-content-top-2">
+						<div class="content-right">
+							<div class="content-right-top">在线留言<span></span></div>
+						</div>
+						<div class="content-left">
+							<div class="content-left-1">
+								<span>姓名：</span>
+								<span>电话：</span>
+								<span>QQ：</span>
+								<span>微信：</span>
+								<p>留言内容：</p>
+							</div>
+							<div class="content-left-2">
+								<input id="username" placeholder="您的姓名或公司名称" type="text" />
+								<input id="phone" placeholder="您的电话" type="text" />
+								<input id="qq" placeholder="您的QQ号码" type="text" />
+								<input id="wechat" placeholder="您的微信号" type="text" />
+								<textarea id="content" placeholder="请适当的进行需求描述"></textarea>
+								<div onclick="submit()">提交</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="app-content-1">
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-2" onclick="open_qq()">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/QQ.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
+				</div>
+			</div>
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p>关于我们</p>
+							<p>查看案例</p>
+							<p>服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p>其他</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
+			
+
+
+       <script>
+		   $('#service').mouseover(function () {
+		   			   console.log($('#WeChat')[0].style)
+		   $('#WeChat')[0].style.display="block"
+		   }).mouseout(function () {
+		      $('#WeChat')[0].style.display="none"
+		   })
+		   var app=()=>{
+		   	window.open("../app/app.html",'_self')
+		   }
+		   var login=()=>{
+			   if(!localStorage.getItem("login_msg")){//跳转登录页面
+				   window.open("../login/login.html",'_self')
+			   }else{//已登录
+				   
+			   }
+			   
+		   }
+		   var register=()=>{
+			   if(localStorage.getItem("login_msg")){//退出登录
+			   			localStorage.removeItem("login_msg");
+			   			location.reload()
+			   }else{//跳转注册页面
+				   
+			   }
+		   }
+		   
+		  var open_qq=()=>{
+		  			   if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE|Nubia/.test(navigator.userAgent))){
+		  			       window.location.href="mqqwpa://im/chat?chat_type=wpa&uin=201747831&version=1&src_type=web&web_src=oicqzone.com";//判断是否是移动端
+		  				  
+		  			   }else{
+		  				   document.location.href="tencent://Message/?websiteName=qzone.qq.com&Menu=yes&Uin=201747831"
+		  			   }
+		  }
+		   var leavemsg=()=>{
+		   	window.open("../leavemsg/leavemsg.html")
+		   }
+		   
+         var to_top=()=>{
+			$('html ,body').animate({ scrollTop: -10 }, 400);
+		 }
+		 
+			
+			 $(document).ready(function () {
+				 var clientHeight = window.innerHeight;
+				 console.log(clientHeight)
+				 $(".app-content")[0].style.height=clientHeight-100+"px"
+				if(localStorage.getItem("login_msg")){
+						document.getElementById("login").innerHTML ='<img src="'+JSON.parse(localStorage.getItem("login_msg")).headerImg+'" class="header_img" />' +'<span class="username">'+  JSON.parse(localStorage.getItem("login_msg")).username+'</span>';//取出用户名
+						document.getElementById("register").innerHTML ='<span class="username">'+"退出登录" +'<span>';
+				}else{
+					document.getElementById("login").innerHTML = "登录";
+					document.getElementById("register").innerHTML ="注册";
+				}
+			 })
+			 
+			 var submit=()=>{
+				 $.ajax({
+				 	url: topurl + "leavemsg/leavemsg",
+				 	type: 'POST',
+				 	async: true,
+				 	xhrFields: {
+				 		withCredentials: true
+				 	},
+				 	data: {
+				 		username: $("#username")[0].value,
+				 		phone: $("#phone")[0].value,
+				 		qq: $("#qq")[0].value,
+						wechat:$("#wechat")[0].value,
+						content:$("#content")[0].value,
+						
+				 	},
+				 	success: (data)=> {
+				 		console.log(data);
+				 		
+				 		if(data._status==0){
+				 			
+				 		}else if(data._status==1){
+				 			alert("留言成功！我们将尽快联系您！")
+				 			window.open("../app/app.html",'_self')
+				 		}
+				 		
+				 			
+				 		
+				 	},
+				 	error: function() {
+				 		alert('服务器发生错误！');
+				 	}
+				 });
+			 }
+       </script>
+    </body>
+</html>

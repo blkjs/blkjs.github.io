@@ -1,0 +1,224 @@
+/* 存放首页样式 */
+* {
+	margin: 0;
+	padding: 0;
+	text-align: center;
+	font-size: 0.18rem;
+}
+
+
+.app-top-2 {
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0px;
+	width: 100%;
+	height: 0.6rem;
+	display: flex;
+	flex-direction: row;
+	z-index: 998;
+	background-color: #423c3a;
+}
+
+.app-top-3 {
+	width: 70%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+.app-top-4 {
+	width: 30%;
+	height: 100%;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+
+.app-top-5 {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 1.7rem;
+	height: 100%;
+	color: white;
+	cursor: pointer;
+
+}
+
+.app-top-5:hover {
+	background-color: yellow;
+	color: black;
+}
+
+.app-top-5:hover:after {
+	position: absolute;
+	top: 0.58rem;
+	display: block;
+	content: '';
+	border-width: 8px 8px 8px 8px;
+	border-style: solid;
+	border-color: yellow transparent transparent transparent;
+
+}
+.header_img{
+	width: 0.35rem;
+	height: 0.35rem;
+	border-radius: 50%;
+	border: 2px solid white;
+	margin-right: 0.1rem;
+}
+.username{
+	display: inline-block;
+	width: 1.5rem;
+	overflow: hidden;
+	text-overflow:ellipsis;
+	white-space: nowrap;
+}
+
+.app-content {
+	width: 100%;
+	height:6rem;
+	background-color: #F5F5F5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.app-content-1 {
+	position: fixed;
+	top: 3rem;
+	right: 0.25rem;
+	width: 0.6rem;
+	height: 3.1rem;
+	background-color: #5F5F5F;
+	border-radius: 40px;
+	color: white;
+	z-index: 99;
+}
+
+.app-content-2 {
+	width: 100%;
+
+	border-bottom: 1px solid white;
+	font-size: 0.11rem;
+	cursor: pointer;
+
+}
+
+.app-content-2:hover {
+	background-color: yellow;
+	color: black;
+
+}
+
+
+.app-content-3 {
+	width: 100%;
+	height: 24%;
+	border-bottom: 1px solid white;
+	font-size: 0.11rem;
+	cursor: pointer;
+
+}
+
+.app-content-3:hover {
+	background-color: yellow;
+	color: black;
+	width: 100%;
+	height: 24%;
+	border-radius: 100px 100px 0 0;
+
+}
+
+.app-content-4 {
+	width: 100%;
+	height: 28%;
+
+	font-size: 0.11rem;
+	cursor: pointer;
+}
+
+.app-content-4:hover {
+	background-color: yellow;
+	color: black;
+	width: 100%;
+	height: 28%;
+	border-radius: 0 0 100px 100px;
+
+}
+
+.icon-img {
+	width: 82%;
+	margin-top: 0.05rem;
+}
+.WeChat{
+	width: 2rem;
+	height: 2rem;
+	position: fixed;
+	right: 1rem;
+	z-index: 999;
+	top: 4.5rem;
+	display: none;
+}
+.WeChat_img{
+	width: 100%;
+	height: 100%;
+}
+
+
+		
+		.footer{
+			width: 100%;
+			height: 2rem;
+		}
+		.footer_parent{
+			width: 100%;
+			height: 1.6rem;
+			background-color: #484848;
+			display: flex;
+			justify-content: space-around;
+		}
+		.footer_parent_1{
+			width: 100%;
+			height: 0.4rem;
+			background-color: #484848;
+			color: white;
+		}
+		.footer_1{
+			width: 25%;
+			height: 1.6rem;
+			
+			display: flex;
+			color: white;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+		}
+		.footer_1 img{
+			width: 1.1rem;
+			height: 1.1rem;
+		}
+		.footer_1_1{
+			width: 2rem;
+			height: auto;
+			margin-left: 0.2rem;
+			
+			display: flex;
+			flex-direction: column;
+			align-items: flex-start;
+		}
+		.footer_1_1 h5{
+			font-size: 0.21rem;
+		}
+		.footer_1_1 p{
+			font-size: 0.16rem;
+			margin-top: 0.1rem;
+			color: #9395A0;
+		}
+		.footer_1_1 p:hover{
+			font-size: 0.16rem;
+			margin-top: 0.1rem;
+			color: yellow;
+			cursor: pointer;
+		}

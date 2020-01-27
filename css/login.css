@@ -5,6 +5,12 @@
 html{
 	
 }
+input{
+	height: 0.3rem;
+	outline:none; border:none;
+	border: 0;
+	border-radius: 4px;
+}
 
 /* 变幻背景 */
  .parent{          
