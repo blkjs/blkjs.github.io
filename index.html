@@ -8,6 +8,8 @@
     	
 		if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE|Nubia/.test(navigator.userAgent))){
 		    window.location.href = 'unpackage/app/app.html';//判断是否是移动端
+		}else{
+			window.location.href = 'unpackage/app/app.html';//判断是否是移动端
 		}
 		
    		document.addEventListener('plusready', function(){

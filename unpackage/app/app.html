@@ -7,6 +7,7 @@
         <title>板栗壳技术有限公司</title>
         <link rel="stylesheet" type="text/css" href="../../css/app.css">
 		<link rel="stylesheet" href="../../css/animite.css">
+		<script src="../../js/public.js"></script>
 		<script src="../../js/app.js"></script>
 		<script src="../../js/jquery1.10.2.min.js"></script>
 		<script>
@@ -162,7 +163,6 @@
 
        <script>
 		   $('#service').mouseover(function () {
-			   console.log($('#WeChat')[0].style)
 		   $('#WeChat')[0].style.display="block"
 		   }).mouseout(function () {
 		      $('#WeChat')[0].style.display="none"
@@ -240,14 +240,35 @@
 		 		});
 		 	});
 			
-			 $(document).ready(function () {
-				 console.log(JSON.parse(localStorage.getItem("login_msg")))
+			 $(document).ready(()=> {
 				if(localStorage.getItem("login_msg")){
-						document.getElementById("login").innerHTML ='<img src="'+JSON.parse(localStorage.getItem("login_msg")).headerImg+'" class="header_img" />' +'<span class="username">'+  JSON.parse(localStorage.getItem("login_msg")).username+'</span>';//取出用户名
-						document.getElementById("register").innerHTML ='<span class="username">'+"退出登录" +'<span>';
+						$.ajax({
+							url: topurl + "iflogin",
+							type: 'POST',
+							async: true,
+							xhrFields: {
+								withCredentials: true
+							},
+							data: {				
+							},
+							success: (data)=> {
+								if(data.status==1){
+									document.getElementById("login").innerHTML ='<img src="'+JSON.parse(localStorage.getItem("login_msg")).headerImg+'" class="header_img" />' +'<span class="username">'+  JSON.parse(localStorage.getItem("login_msg")).username+'</span>';//取出用户名
+									document.getElementById("register").innerHTML ='<span class="username">'+"退出登录" +'<span>';
+								}else{
+									localStorage.clear();
+									document.getElementById("login").innerHTML = "登录";
+									document.getElementById("register").innerHTML ="注册";
+								}
+
+							},
+							error: function() {
+								alert('服务器发生错误！');
+							}
+						});
+
 				}else{
-					document.getElementById("login").innerHTML = "登录";
-					document.getElementById("register").innerHTML ="注册";
+					
 				}
 			 })
        </script>

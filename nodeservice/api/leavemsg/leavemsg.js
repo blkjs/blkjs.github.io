@@ -4,6 +4,7 @@ var md5=require('md5-node');
 var router=express.Router();
 module.exports = router;
 const fs = require('fs');
+const nodemailer = require('nodemailer');//邮件功能
 
 	var bodyParser = require('body-parser')
 		router.use(bodyParser.urlencoded({limit:'10000kb',extended:true}))//限制数据大小
@@ -19,6 +20,18 @@ router.all('*', function(req, res, next) {
 	res.header("Access-Control-Allow-Credentials", true)
     next();
 });
+
+
+  //创建一个SMTP客户端配置
+ let mailTransport = nodemailer.createTransport({
+     // host: 'smtp.qq.email',
+     service:'qq',
+     secure: true,	//安全方式发送,建议都加上
+     auth: {
+         user: 'blkjs@qq.com',
+         pass: 'qhvnbwlxpuqybggi'
+     }
+ })
 
 router.post('/leavemsg', function(req, res){
     let username =req.body.username;
@@ -81,11 +94,29 @@ router.post('/leavemsg', function(req, res){
 					})
 			  console.log(err)
 		    }else{
+				let options = {
+				        from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
+				        to: '<1051011877@qq.com>',
+				        bcc: '密送',
+				        subject: '板栗壳官网收到一条留言',
+				        text:'',
+				        html: '<h1>板栗壳官网收到一条留言,请前往服务器查看!</h1>'
+				    };
+				    mailTransport.sendMail(options,function(err,msg) {
+				        if(err) {
+				            console.log(err);
+				           // res.send(err);
+				        } else {
+				           // res.send('success');
+				        }
+				    })
+				
 		      return res.json({
 		      	 _status:'1',
 		      	message:'成功',
 		      })
-			  console.log("保存成功")
+					console.log("保存成功")
+					
 		    }
 		});
 	}
