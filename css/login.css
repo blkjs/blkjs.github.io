@@ -57,17 +57,35 @@ input{
 	 background: rgba(7, 5,6,0.2);/* 半透明背景 */
 }
 .login_1 input{
-	width: 1.7rem;
+	width: 1.4rem;
+	padding-left: 0.3rem;
+}
+.login_1 svg{
+	position: relative;
+	top: 0.08rem;
+	left: 0.3rem;
+	width: 0.25rem;
+	height: 0.25rem;
 }
 .login_msg{
 	color: red;
+	position: relative;
+	left: 0.3rem;
 }
 
 .login_2{
 	margin-top: 0.2rem;
 }
 .login_2 input{
-	width: 1.7rem;
+	width: 1.4rem;
+	padding-left: 0.3rem;
+}
+.login_2 svg{
+	position: relative;
+	top: 0.08rem;
+	left: 0.3rem;
+	width: 0.25rem;
+	height: 0.25rem;
 }
 .login_3{
 	width: 1rem;
@@ -95,9 +113,23 @@ input{
 .login_VCode{
 	margin-top: 0.2rem;
 }
+.login_VCode svg{
+	position: relative;
+	top: 0.08rem;
+	left: 0.3rem;
+	width: 0.25rem;
+	height: 0.25rem;
+}
 .login_VCode input{
-	width: 1.5rem;
+	width: 1.3rem;
+	padding-left: 0.3rem;
 }
 .login_msg{
 	height: 0.2rem;
+}
+.go_register{
+	margin-top: 0.1rem;
+}
+span{
+	font-weight: 600;
 }

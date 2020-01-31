@@ -7,6 +7,7 @@ const path = require('path');
 const mineType = require('mime-types');//转base64要用到
 const FileStore = require('session-file-store')(session);
 var CronJob = require('cron').CronJob;//定时任务
+const nodemailer = require('nodemailer');//邮件功能
 var app = express();
 
 
@@ -113,6 +114,7 @@ app.post('/register',(req,res,next) => {
 	 const password = JSON.stringify(md5(req.body.password));
 	  const email = JSON.stringify(req.body.email);
 	   const email1 = req.body.email;
+	   console.log(req.body)
 	  //生成随机10位数uid
 		   const max =1000000000;
 		  const min = 9999999999;
@@ -158,7 +160,7 @@ app.post('/register',(req,res,next) => {
 					  return  res.json({
 					  				status:'0',
 					  				message:'该邮箱已被注册',
-					  				email:email,
+					  				email:email1,
 					  					})
 				  }
 
@@ -166,14 +168,42 @@ app.post('/register',(req,res,next) => {
 
   //写入注册数据
   var reg = () => {
-	   const sqlStr = 'INSERT INTO users (username, password,email,uid,InvitationCode,status) VALUES ('+username+','+password+','+email+','+uid+','+InvitationCode+','+ '0' + ')'
+	   const sqlStr = 'INSERT INTO users (username, password,email,uid,InvitationCode,status,phone,birthday) VALUES ('+username+','+password+','+email+','+uid+','+InvitationCode+','+ '0' + ',' +'0'+ ',' +'0'+ ')'
 	  link.query(sqlStr,username,(err,results) => {
 	      if(err) return res.json({message:'获取数据失败'})
+		  
+		  //创建一个SMTP客户端配置
+		  let mailTransport = nodemailer.createTransport({
+		      // host: 'smtp.qq.email',
+		      service:'qq',
+		      secure: true,	//安全方式发送,建议都加上
+		      auth: {
+		          user: 'blkjs@qq.com',
+		          pass: 'qhvnbwlxpuqybggi'
+		      }
+		  })
+		  let options = {
+		          from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
+		          to: '<1051011877@qq.com>',
+		          bcc: '密送',
+		          subject: '板栗壳官网有新用户注册',
+		          text:'',
+		          html: '<h1>板栗壳官网有新用户注册啦,请前往服务器查看!</h1>'
+		      };
+		      mailTransport.sendMail(options,function(err,msg) {
+		          if(err) {
+		              console.log(err);
+		             // res.send(err);
+		          } else {
+		             // res.send('success');
+		          }
+		      })
+			  
 	     return res.json({
 	  		status:'1',
 	          message:'注册成功',
 	  		email:email1,
-	  		username:username,
+	  		username:req.body.username,
 	  		InvitationCode:InvitationCode,
 	  		uid:uid,
 	      })

@@ -40,8 +40,11 @@ var to_top = () => { //回到顶部
 	}, 400);
 }
 window.onload = function() {
+	var height=document.documentElement.clientHeight;
+	$(".app-content")[0].style.height=height-100+"px"
+	
 	$('#service').mouseover(function() {
-		console.log($('#WeChat')[0].style)
+		//console.log($('#WeChat')[0].style)
 		$('#WeChat')[0].style.display = "block"
 	}).mouseout(function() {
 		$('#WeChat')[0].style.display = "none"
