@@ -9,9 +9,16 @@
 .app-top-1 {
 	width: 100%;
 	height: 1rem;
-
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	color: #90E3B4;
 }
-
+.app-top-1 div img {
+	height: 0.8rem;
+	display: flex;
+	flex-direction: column;
+}
 .app-top-2 {
 	position: -webkit-sticky;
 	position: sticky;

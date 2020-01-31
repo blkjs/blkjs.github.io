@@ -5,7 +5,7 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
         <title>板栗壳技术有限公司</title>
-        <link rel="stylesheet" type="text/css" href="../../css/leavemsg.css">
+		<link rel="stylesheet" type="text/css" href="../../css/register.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<link rel="stylesheet" href="../../css/animite.css">
 		<script src="../../js/app.js"></script>
@@ -45,24 +45,10 @@
 					<div class="app-content-top-1"></div>
 					<div class="app-content-top-2">
 						<div class="content-right">
-							<div class="content-right-top">在线留言<span></span></div>
+							<div class="content-right-top">注册账号<span></span></div>
 						</div>
 						<div class="content-left">
-							<div class="content-left-1">
-								<span>姓名：</span>
-								<span>电话：</span>
-								<span>QQ：</span>
-								<span>微信：</span>
-								<p>留言内容：</p>
-							</div>
-							<div class="content-left-2">
-								<input id="username" placeholder="您的姓名或公司名称" type="text" />
-								<input id="phone" placeholder="您的电话" type="text" />
-								<input id="qq" placeholder="您的QQ号码" type="text" />
-								<input id="wechat" placeholder="您的微信号" type="text" />
-								<textarea id="content" placeholder="请适当的进行需求描述"></textarea>
-								<div onclick="submit()">提交</div>
-							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -119,54 +105,9 @@
 			</div>
 			
 
-
-       <script>
-		 
-			 
-			 var submit=()=>{
-				 if($("#username")[0].value===""){
-					 alert("姓名不能为空！")
-					 return false;
-				 }else if($("#phone")[0].value===""&& $("#qq")[0].value==="" && $("#wechat")[0].value===""){
-					 alert("请至少留一个联系方式！")
-					 return false;
-				 }else if($("#content")[0].value===""){
-					 alert("请输入留言内容！")
-					 return false;
-				 }
-				 $.ajax({
-				 	url: topurl + "leavemsg/leavemsg",
-				 	type: 'POST',
-				 	async: true,
-				 	xhrFields: {
-				 		withCredentials: true
-				 	},
-				 	data: {
-				 		username: $("#username")[0].value,
-				 		phone: $("#phone")[0].value,
-				 		qq: $("#qq")[0].value,
-						wechat:$("#wechat")[0].value,
-						content:$("#content")[0].value,
-						
-				 	},
-				 	success: (data)=> {
-				 		console.log(data);
-				 		
-				 		if(data._status==0){
-				 			
-				 		}else if(data._status==1){
-				 			alert("留言成功！我们将尽快联系您！")
-				 			window.open("../app/app.html",'_self')
-				 		}
-				 		
-				 			
-				 		
-				 	},
-				 	error: function() {
-				 		alert('服务器发生错误！');
-				 	}
-				 });
-			 }
-       </script>
+		
+        <script>
+		   
+        </script>
     </body>
 </html>
