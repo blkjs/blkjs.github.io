@@ -31,50 +31,24 @@
 				<div class="app-top-3">
 					<div class="app-top-5" onclick="app(1)">主页</div>
 					<div class="app-top-5" onclick="app(2)">服务介绍</div>
-					<div class="app-top-5" onclick="app(3)">项目案例</div>
+					<div class="app-top-5 app-title" onclick="app(3)">项目案例</div>
 					<div class="app-top-5" onclick="app(4)">关于我们</div>
 					<div class="app-top-5" onclick="app(5)">帮助中心</div>
 				</div>
 				<div class="app-top-4">
 					<div class="app-top-5" id="login" onclick="login()">登录</div>
-					<div class="app-top-5 app-title" id="register" onclick="register()">注册</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
 				</div>
 			</div>
 			<div class="app-content">
 				<div class="app-content-top">
-					<div class="app-content-top-1">
-						<img src="../../img/logo.png" />
-					</div>
+					<div class="app-content-top-1"></div>
 					<div class="app-content-top-2">
 						<div class="content-right">
-							<div class="content-right-top">注册账号<span></span></div>
+							<div class="content-right-top">案例介绍<span></span></div>
 						</div>
 						<div class="content-left">
-							<div class="content-left-1">
-								<div class="text-left">
-									<span>昵称：</span>
-									<span>邮箱：</span>
-									<span>密码：</span>
-									<span>确认密码：</span>
-									<!-- <span>验证码	：</span> -->
-									<span>&nbsp;</span>
-								</div>
-								<div class="text-content">
-									<input class="username" placeholder="请输入昵称" type="text" />
-									<input class="email"  placeholder="请输入邮箱" type="text" />
-									<input class="pass" type="password" placeholder="请输入密码" type="text" />
-									<input class="pass1" type="password" placeholder="请再次输入密码" type="text" />
-									<!-- <input type="text" /> -->
-									<div onclick="submit()">注册</div>
-								</div>
-								<div class="text-right">
-									<span class="username-msg">&nbsp;</span>
-									<span class="email-msg">&nbsp;</span>
-									<span class="pass-msg">&nbsp;</span>
-									<span class="pass1-msg">&nbsp;</span>
-									<span>&nbsp;</span>
-								</div>
-							</div>
+							
 						</div>
 					</div>
 				</div>
@@ -133,69 +107,7 @@
 
 		
         <script>
-		   var submit=()=>{
-				if($(".username")[0].value===""){
-					$(".username-msg")[0].innerHTML="请填写昵称"
-					return false;
-				}else if ($(".email")[0].value===""){
-					$(".username-msg")[0].innerHTML="&nbsp;"
-					$(".email-msg")[0].innerHTML="请填写邮箱"
-					return false;
-				}else if ($(".pass")[0].value===""){
-					$(".email-msg")[0].innerHTML="&nbsp;"
-					$(".pass-msg")[0].innerHTML="请填写密码"
-					return false;
-				}else if($(".pass1")[0].value===""){
-					$(".pass-msg")[0].innerHTML="&nbsp;"
-					$(".pass1-msg")[0].innerHTML="请再次填写密码"
-					return false;
-				}else if($(".pass1")[0].value!==$(".pass")[0].value){
-					$(".pass-msg")[0].innerHTML="&nbsp;"
-					$(".pass1-msg")[0].innerHTML="两次输入的密码不一致"
-					return false;
-				}else{
-					$(".username-msg")[0].innerHTML="&nbsp;"
-					$(".email-msg")[0].innerHTML="&nbsp;"
-					$(".pass-msg")[0].innerHTML="&nbsp;"
-					$(".pass1-msg")[0].innerHTML="&nbsp;"
-				}
-			   console.log($(".username")[0].value)
-			   $.ajax({
-			   	url: topurl + "register",
-			   	type: 'POST',
-			   	async: true,
-			   	xhrFields: {
-			   		withCredentials: true
-			   	},
-			   	data: {
-			   		username: $(".username")[0].value,
-			   		password: $(".pass")[0].value,
-			   		email: $(".email")[0].value
-			   	},
-			   	success: (data)=> {
-			   		console.log(data);
-			   		
-			   		if(data.status==0){
-			   			if(data.message==="该邮箱已被注册"){
-							$(".email-msg")[0].innerHTML="该邮箱已被注册"
-						}else{
-							$(".email-msg")[0].innerHTML="&nbsp;"
-							alert(data.message);
-						}
-			   		}else if(data.status==1){
-			   			localStorage.setItem("login_msg", JSON.stringify(data));
-						alert(data.message);
-			   			window.open("../app/app.html",'_self')
-			   		}
-			   		
-			   			
-			   		
-			   	},
-			   	error: function() {
-			   		alert('服务器发生错误！');
-			   	}
-			   });
-		   }
+	
         </script>
     </body>
 </html>

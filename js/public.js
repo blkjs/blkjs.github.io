@@ -1,7 +1,18 @@
 var topurl = "http://49.235.80.50:3000/"
 
-var app = () => {
-	window.open("../app/app.html", '_self')
+var app = (data) => {
+	if(data==1){
+		window.open("../app/app.html", '_self')
+	}else if(data==2){
+		window.open("../service/service.html", '_self')
+	}else if(data==3){
+		window.open("../case/case.html", '_self')
+	}else if(data==4){
+		window.open("../about/about.html", '_self')
+	}else if(data==5){
+		window.open("../help/help.html", '_self')
+	}
+	
 }
 var login = () => {
 	if (!localStorage.getItem("login_msg")) { //跳转登录页面
@@ -40,8 +51,17 @@ var to_top = () => { //回到顶部
 	}, 400);
 }
 window.onload = function() {
-	var height=document.documentElement.clientHeight;
-	$(".app-content")[0].style.height=height-100+"px"
+	
+	if($(".app-content")[0]){
+		var height=document.documentElement.clientHeight;
+		$(".app-content")[0].style.height=height-100+"px"
+	}
+	if($(".app-title")[0]){
+		$(".app-title")[0].style.backgroundColor="yellow"
+		$(".app-title")[0].style.color="black"
+		$(".app-title")[0].style.fontSize="0.231rem"
+		$(".app-title")[0].style.fontWeight="600"
+	}
 	
 	$('#service').mouseover(function() {
 		//console.log($('#WeChat')[0].style)
@@ -60,9 +80,13 @@ window.onload = function() {
 			},
 			data: {},
 			success: (data) => {
+				var login_msg=JSON.parse(localStorage.getItem("login_msg"));
+				var logo ="../../img/logo.png";
+				var header_img=login_msg.headerImg ? login_msg.headerImg:logo;
+				
 				if (data.status == 1) {
-					document.getElementById("login").innerHTML = '<img src="' + JSON.parse(localStorage.getItem("login_msg")).headerImg +
-						'" class="header_img" />' + '<span class="username">' + JSON.parse(localStorage.getItem("login_msg")).username +
+					document.getElementById("login").innerHTML = '<img src="' + header_img +
+						'" class="header_img" />' + '<span class="username">' + login_msg.username +
 						'</span>'; //取出用户名
 					document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
 				} else {
