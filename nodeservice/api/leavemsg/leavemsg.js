@@ -77,11 +77,20 @@ router.post('/leavemsg', function(req, res){
 	
 				 }
 	})
+	var currTime=new Date()
+	var year = currTime.getFullYear();     //获取当前时间的年份
+	var month = currTime.getMonth() + 1;   //获取当前时间的月份，月份从0开始，所以需要加一
+	var day = currTime.getDate();          //获取当前时间的日期
+	var hour = currTime.getHours();        //获取当前时间的小时数
+	var minute = currTime.getMinutes();    //获取当前时间的分钟数
+	var second = currTime.getSeconds();    //获取当前时间的秒数
+	
 	var messages=	"姓名/公司："+username+"\r\n"+
 					"电话："+phone+"\r\n"+
 					"qq号码："+qq+"\r\n"+
 					"微信号："+wechat+"\r\n"+
-					"留言内容："+content+"\r\n"
+					"留言内容："+content+"\r\n"+
+					"留言时间:"+year+"年"+month+"月"+day+"日"+hour+":"+minute+":"+second
    
 	var leavemsg=()=>{
 		fs.writeFile("./leavemsg/"+username+"/"+sessionID+'.txt', messages, (err)=> {

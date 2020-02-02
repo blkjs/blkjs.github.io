@@ -7,33 +7,18 @@
         <title>板栗壳技术有限公司</title>
 		<link rel="stylesheet" type="text/css" href="../../css/register.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
-		<link rel="stylesheet" href="../../css/animite.css">
-		<script src="../../js/app.js"></script>
 		<script src="../../js/jquery1.10.2.min.js"></script>
 		<script src="../../js/public.js"></script>
-		<script>
-			!function(n){
-			　　　　var e=n.document,
-			　　　　t=e.documentElement,
-			　　　　i=900,
-			　　　　d=i/100,
-			　　　　o="orientationchange"in n?"orientationchange":"resize",
-			　　　　a=function(){
-			　　　　　　var n=t.clientWidth||320;n>720&&(n=720);
-			　　　　　　t.style.fontSize=n/d+"px"
-			　　　　};
-			　　　　e.addEventListener&&(n.addEventListener(o,a,!1),e.addEventListener("DOMContentLoaded",a,!1))
-			　　}(window);
-		</script>
+
     </head>
     <body>
 			<div class="app-top-2">
 				<div class="app-top-3">
-					<div class="app-top-5" onclick="app()">主页</div>
-					<div class="app-top-5">服务介绍</div>
-					<div class="app-top-5">项目案例</div>
-					<div class="app-top-5">关于我们</div>
-					<div class="app-top-5">帮助中心</div>
+					<div class="app-top-5" onclick="app(1)">主页</div>
+					<div class="app-top-5" onclick="app(2)">服务介绍</div>
+					<div class="app-top-5" onclick="app(3)">项目案例</div>
+					<div class="app-top-5" onclick="app(4)">关于我们</div>
+					<div class="app-top-5" onclick="app(5)">帮助中心</div>
 				</div>
 				<div class="app-top-4">
 					<div class="app-top-5" id="login" onclick="login()">登录</div>
@@ -42,7 +27,9 @@
 			</div>
 			<div class="app-content">
 				<div class="app-content-top">
-					<div class="app-content-top-1"></div>
+					<div class="app-content-top-1">
+						<img src="../../img/logo.png" />
+					</div>
 					<div class="app-content-top-2">
 						<div class="content-right">
 							<div class="content-right-top">公共页面<span></span></div>
@@ -76,9 +63,9 @@
 					<div class="footer_1">
 						<div class="footer_1_1">
 							<h5>团队信息</h5>
-							<p>关于我们</p>
-							<p>查看案例</p>
-							<p>服务介绍</p>
+							<p onclick="app(4)">关于我们</p>
+							<p onclick="app(3)">查看案例</p>
+							<p onclick="app(2)">服务介绍</p>
 						</div>
 					</div>
 					<div class="footer_1">
@@ -91,7 +78,7 @@
 					</div>
 					<div class="footer_1">
 						<div class="footer_1_1">
-							<h5>帮助中心</h5>
+							<h5 onclick="app(5)">帮助中心</h5>
 							<p>忘记密码</p>
 							<p onclick="register()">免费注册</p>
 							<p onclick="leavemsg()">在线留言</p>
