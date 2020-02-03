@@ -95,6 +95,7 @@
 	border-radius: 40px;
 	color: white;
 	z-index: 99;
+	opacity :0.8
 }
 
 .app-content-2 {
