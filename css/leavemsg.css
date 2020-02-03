@@ -27,6 +27,7 @@
 .content-left{
 	display: flex;
 	flex-direction: row;
+	margin-bottom: 1rem;
 }
 .content-left-1{
 	width: 1.5rem;

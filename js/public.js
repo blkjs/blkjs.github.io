@@ -64,6 +64,7 @@ var to_top = () => { //回到顶部
 	}, 400);
 }
 window.onload = function() {
+	$(".app-content")[0].style.minHeight=window.innerHeight-80+"px"
 	if($(".app-title")[0]){
 		$(".app-title")[0].style.backgroundColor="yellow"
 		$(".app-title")[0].style.color="black"

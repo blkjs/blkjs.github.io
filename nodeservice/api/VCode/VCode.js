@@ -5,6 +5,7 @@ var router=express.Router();
 module.exports = router;
 const fs = require('fs');
 var svgCaptcha = require('svg-captcha');
+const nodemailer = require('nodemailer');//邮件功能
 
 	var bodyParser = require('body-parser')
 		router.use(bodyParser.urlencoded({limit:'10000kb',extended:true}))//限制数据大小
@@ -48,7 +49,42 @@ router.post('/VCode', function(req, res){
       			 codeData:codeData,
       			code:req.session.captcha,
       		})
-    }else{
+    }else if(req.body.email){//有邮箱则向邮箱发送验证码
+		//创建一个SMTP客户端配置
+		let mailTransport = nodemailer.createTransport({
+		    // host: 'smtp.qq.email',
+		    service:'qq',
+		    secure: true,	//安全方式发送,建议都加上
+		    auth: {
+		        user: 'blkjs@qq.com',
+		        pass: 'qhvnbwlxpuqybggi'
+		    }
+		})
+		let options = {
+		        from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
+		        to: '<'+req.body.email+'>',
+		        bcc: '密送',
+		        subject: '板栗壳用户注册验证码',
+		        text:'',
+				html:'您本次注册的验证码为:<span style="font-size:25px;color:blue">'+req.session.captcha+'</span>请在30分钟内提交注册！',
+		    };
+		    mailTransport.sendMail(options,function(err,msg) {
+		        if(err) {
+		            console.log(err);
+		           return res.json({
+		           	 status:'0',
+		           	message:'邮件发送失败!'+err,
+		           })
+		        } else {
+		           // res.send('success');
+				   return res.json({
+				   	 status:'1',
+				   	message:'邮件发送成功!',
+				   })
+		        }
+		    })
+			
+	} else{
       return res.send(codeData);
     }
 

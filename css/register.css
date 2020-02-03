@@ -18,7 +18,7 @@
 	
 }
 .text-content{
-	width: 2rem;
+	width: 3.5rem;
 	height: 5rem;
 	display: flex;
 	flex-direction: column;
@@ -34,10 +34,29 @@
 }
 .text-content div{
 	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+.text-content div span{
+	display: inline-block;
+	width: 0.6rem;
+	height: 0.3rem;
+	background-color: #4198C5;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-left: 0.1rem;
+	color: white;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.text-content button{
+	display: flex;
 	align-items: center;
 	justify-content: center;
 	width: 1.3rem;
 	height: 0.4rem;
+	border: 0;
 	background-color: #4198C5;
 	border-radius: 5px;
 	color: white;

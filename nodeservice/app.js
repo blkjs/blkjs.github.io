@@ -110,11 +110,26 @@ app.use('/revise',require('./api/userInfo/reviseUserInfo.js'));
 
 
 app.post('/register',(req,res,next) => {
-    const username = JSON.stringify(req.body.username);
-	 const password = JSON.stringify(md5(req.body.password));
-	  const email = JSON.stringify(req.body.email);
-	   const email1 = req.body.email;
+		const username = JSON.stringify(req.body.username);
+		const password = JSON.stringify(md5(req.body.password));
+		const email = JSON.stringify(req.body.email);
+		const VerificationCode = req.body.VerificationCode;//验证码
+		const sessionCaptcha = req.session.captcha;//服务器生成待验证码
+	    const email1 = req.body.email;
 	   console.log(req.body)
+	   if(!VerificationCode){
+	     return res.json({
+	     	 status:'0',
+	     	message:'请填写验证码！',
+	     })
+	   }else if(sessionCaptcha!==VerificationCode){
+	     console.log(sessionCaptcha)
+	     console.log(VerificationCode)
+	      return res.json({
+	      	 status:'0',
+	      	message:'验证码错误！',
+	      })
+	   }
 	  //生成随机10位数uid
 		   const max =1000000000;
 		  const min = 9999999999;
@@ -182,13 +197,13 @@ app.post('/register',(req,res,next) => {
 		          pass: 'qhvnbwlxpuqybggi'
 		      }
 		  })
-		  let options = {
+		  let options = {//向管理员发送新用户注册信息
 		          from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
 		          to: '<1051011877@qq.com>',
 		          bcc: '密送',
 		          subject: '板栗壳官网有新用户注册',
 		          text:'',
-		          html: '<h1>板栗壳官网有新用户注册啦,请前往服务器查看!</h1>'
+		          html: '<h1>板栗壳官网有新用户注册啦,请前往服务器查看!</h1><br>email:'+email1+'<br>username:'+req.body.username
 		      };
 		      mailTransport.sendMail(options,function(err,msg) {
 		          if(err) {
