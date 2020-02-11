@@ -40,43 +40,63 @@ router.post('/leavemsg', function(req, res){
 	let wechat = req.body.wechat;
 	let content = req.body.content;
 	let sessionID = req.sessionID;
- console.log(req.body)
- console.log(req.sessionID)
-	fs.exists("./leavemsg",(exists)=>{//判断第一级目录leavemsg是否存在
-				  if(exists){//如果存在
-					 fs.exists("./leavemsg/"+username,(exists)=>{//判断二级目录是否存在
-						 if(!exists){//如果不存在
-						 				fs.mkdir('./leavemsg/' + username,(error)=>{//创建二级目录
-						 					if(error){
-						 						console.log(error);
-						 						return false;
-						 					}
-											leavemsg()
-						 				})
+ function isleavemsg1(){
+ 		return new Promise((resolve,reject)=>{
+ 			fs.exists("./leavemsg",(exists)=>{//判断第一级目录leavemsg是否存在
+ 				if(exists){//如果存在
+ 					resolve("1")
+ 				}else{
+ 					reject("1")
+ 				}
+ 			})
+ 		})
+ 	}
+ 	function isleavemsg2(){
+ 		return new Promise((resolve,reject)=>{
+ 			fs.exists("./leavemsg/"+username,(exists)=>{//判断第二级目录"./leavemsg/"+username是否存在
+ 				if(exists){//如果存在
+ 					resolve("2")
+ 				}else{
+ 					reject("2")
+ 				}
+ 			})
+ 		})
+ 	}
+ 	function mkdir1(){//创建一级目录和二级目录并写入文件
+			fs.mkdir('./leavemsg',(error)=>{//创建一级目录leavemsg
+				if(error){
+					console.log(error);
+					return false;
+				}
+				mkdir2();
+			})
+	}
+	function mkdir2(){//创建二级目录并写入文件
+			fs.mkdir('./leavemsg/'+username,(error)=>{//创建二级目录
+				if(error){
+					console.log(error);
+					return false;
+				}
+				leavemsg();
+			})
+	}
 	
-						 }else{
-							 leavemsg()
-						 }
-					 })
-				  }
-	
-				 if(!exists){//如果一级目录不存在
-					fs.mkdir('./leavemsg',(error)=>{//创建一级目录leavemsg
-						if(error){
-							console.log(error);
-							return false;
-						}
-						fs.mkdir('./leavemsg/'+username,(error)=>{//创建二级目录
-							if(error){
-								console.log(error);
-								return false;
-							}
-							leavemsg();
-						})
-					})
-	
-				 }
-	})
+ 	isleavemsg1()
+ 	.then(()=>{//存在一级目录
+ 		return isleavemsg2()
+ 	})
+ 	.then(()=>{//存在二级目录
+ 		return leavemsg()//写入文件
+ 	})
+ 	.catch((err)=>{
+ 		console.log(err)
+ 		if(err==1){//不存在一级目录
+			mkdir1()
+ 		}else if(err==2){//不存在二级目录
+ 			mkdir2()
+ 		}
+ 	})
+
 	var currTime=new Date()
 	var year = currTime.getFullYear();     //获取当前时间的年份
 	var month = currTime.getMonth() + 1;   //获取当前时间的月份，月份从0开始，所以需要加一
@@ -107,25 +127,27 @@ router.post('/leavemsg', function(req, res){
 				        from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
 				        to: '<1051011877@qq.com>',
 				        bcc: '密送',
-				        subject: '板栗壳官网收到一条留言',
+				        subject: '板栗壳官网收到一条来自'+username+'的留言',
 				        text:'',
-				        html: '<h1>板栗壳官网收到一条留言,请前往服务器查看!</h1>'
+				        html: '<h1>板栗壳官网收到一条留言,请前往服务器查看!</h1><br>'+messages
 				    };
 				    mailTransport.sendMail(options,function(err,msg) {
 				        if(err) {
 				            console.log(err);
-				           // res.send(err);
+				          return res.json({
+				          	 _status:'0',
+				          	message:'失败',
+							error:err
+				          })
 				        } else {
-				           // res.send('success');
+				           return res.json({
+				           	 _status:'1',
+				           	message:'成功',
+				           })
 				        }
 				    })
 				
-		      return res.json({
-		      	 _status:'1',
-		      	message:'成功',
-		      })
-					console.log("保存成功")
-					
+		      
 		    }
 		});
 	}

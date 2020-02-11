@@ -8,7 +8,7 @@ const mineType = require('mime-types');//转base64要用到
 const FileStore = require('session-file-store')(session);
 var CronJob = require('cron').CronJob;//定时任务
 const nodemailer = require('nodemailer');//邮件功能
-var app = express();
+var app = express();//实例化
 
 
 app.use(session({

@@ -1,0 +1,118 @@
+.content-left {
+	width: 6.5rem;
+	height: 6.3rem;
+}
+.title{
+	font-size: 18px;
+	color: #2196F3;
+}
+.chat_content {
+	width: 100%;
+	height: 5rem;
+	padding-right: 0.2rem;
+	overflow-y: scroll;
+	white-space: normal;
+	padding-bottom: 0.5rem;
+	text-align: left;
+	background-color: #F5F5F5;
+}
+  /* 设置滚动条的样式 不支持火狐*/
+        .chat_content::-webkit-scrollbar {
+        width:5px;
+        background-color: white;
+        }
+
+        /* 滚动槽 */
+        .chat_content::-webkit-scrollbar-track {
+        border-radius:5px;
+        }
+
+        /* 滚动条滑块 */
+        .chat_content::-webkit-scrollbar-thumb {
+        border-radius:5px;
+        background-color:#D2D2D2 ;
+        }
+		
+.chat_textarea{
+	width: 70%;
+	height: 0.75rem;
+	resize:none;
+	text-align: left;
+	border: 1px solid #D1D1D1;
+}
+
+.send_button {
+	width: 15%;
+	height: 0.4rem;
+	position: relative;
+	top: -0.2rem;
+	color: #796F6F;
+	border: 1px solid #FFFFFF;
+	cursor: pointer;
+	
+}
+.send_button:hover {
+	width: 15%;
+	height: 0.35rem;
+	position: relative;
+	top: -0.2rem;
+	background-color: #62BC1F;
+	border: 0;
+	color: white;
+}
+
+.chat_content_show {
+	position: relative;
+	right: -0.3rem;
+	width: 2.4rem;
+
+	background: #088cb7;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+	text-align: center;
+	padding: 0.1rem;
+	margin-top: 0.1rem;
+}
+
+.chat_content_show:before {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 0;
+	right: 2.49rem;
+	top: 3px;
+	border-top: 0.13rem solid transparent;
+	border-right: 0.26rem solid #088cb7;
+	border-bottom: 0.13rem solid transparent;
+
+}
+
+.chat_content_show_1 {
+	position: relative;
+	right: -3.5rem;
+	width: 2.4rem;
+
+	background: #9EEA6A;
+	-moz-border-radius: 12px;
+	-webkit-border-radius: 12px;
+	border-radius: 12px;
+	text-align: center;
+	padding: 0.1rem;
+	margin-top: 0.1rem;
+}
+
+.chat_content_show_1:before {
+	position: absolute;
+	content: "";
+	width: 0;
+	height: 0;
+	right: -0.15rem;
+	top: 3px;
+	border-top: 0.13rem solid transparent;
+	border-left: 0.26rem solid #9EEA6A;
+	border-bottom: 0.13rem solid transparent;
+
+}
+
+

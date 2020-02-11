@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title>板栗壳技术有限公司</title>
+		<link rel="stylesheet" type="text/css" href="../../css/chat.css">
+		<link rel="stylesheet" type="text/css" href="../../css/public.css">
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/public.js"></script>
+		<style>
+			.message{
+				background-color: #5CB85C ;
+			}
+		</style>
+    </head>
+    <body>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5" onclick="app(1)">主页</div>
+					<div class="app-top-5" onclick="app(2)">服务介绍</div>
+					<div class="app-top-5" onclick="app(3)">项目案例</div>
+					<div class="app-top-5" onclick="app(4)">关于我们</div>
+					<div class="app-top-5" onclick="app(5)">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-top">
+					<div class="app-content-top-1">
+						<img src="../../img/logo.png" />
+					</div>
+					<div class="app-content-top-2">
+						<div class="content-right">
+							<div class="content-right-top">聊天页面<span></span></div>
+						</div>
+						<span class="title">板栗壳家庭群</span>
+						<div class="content-left">
+							<div class="chat_content" id="chat_content" >
+							</div>
+							<textarea  class="chat_textarea" id="chat_textarea"/></textarea>
+							<input class="send_button" type="button" onclick="sub()" value="发送S" />
+						</div>
+					</div>
+				</div>
+				<div class="app-content-1">
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-2" onclick="open_qq()">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/QQ.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
+				</div>
+			</div>
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p onclick="app(4)">关于我们</p>
+							<p onclick="app(3)">查看案例</p>
+							<p onclick="app(2)">服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p>其他</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5 onclick="app(5)">帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
+			
+
+		
+		<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+        <script>
+			
+			function randomWord(randomFlag, min, max){
+						var str = "",
+							range = min,
+							arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+							// 随机产生
+							if(randomFlag){
+								range = Math.round(Math.random() * (max-min)) + min;
+							}
+							for(var i=0; i<range; i++){
+								pos = Math.round(Math.random() * (arr.length-1));
+								str += arr[pos];
+							}
+							return str;
+				}
+			
+						　　　
+				
+			
+	
+	var ws1 =()=>{
+		let ws = new WebSocket("ws://49.235.80.50:3001");
+		ws.onopen = function() {};
+		return ws
+	}
+	var ws =ws1()
+	var sub=(event)=>{
+		
+	 	var send_content=document.getElementById("chat_textarea").value;//需要发送的聊天内容
+		let times=new Date().getTime()//时间戳
+		document.getElementById("chat_textarea").value="";//清空已经发送的内容
+		if(send_content==""){
+			alert("请输入内容")
+			return false
+		}
+		
+		var show_content= document.getElementById("chat_content")
+		var div = document.createElement("div");
+		var textnode=document.createTextNode(send_content);
+		 div.appendChild(textnode)
+		div.setAttribute("class", "chat_content_show_1");
+		show_content.appendChild(div); 
+		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+				//localStorage.removeItem('random')
+				if(!localStorage.getItem('random')){
+					random =randomWord(1,12,12);//随机一个id
+					localStorage.setItem("random",random)
+				}
+				console.log(localStorage.getItem('random'))
+				ws.send(JSON.stringify({//发送消息
+									  "message":send_content,
+									  id:localStorage.getItem('random'),
+									  times:times
+				}));
+				
+				ws.onmessage = function(data) {//接收消息
+					//let msg = "<div class='chat_content_show'>"+JSON.parse(data.data).message  +"</div>" 
+					if(JSON.parse(data.data).num){
+						console.log("板栗壳家庭群（"+JSON.parse(data.data)+")")
+						
+						$(".title")[0].innerHTML="板栗壳家庭群（"+JSON.parse(data.data).num+")"
+					}else{
+						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
+						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
+						var show_content= document.getElementById("chat_content")
+						var div = document.createElement("div");
+						var textnode=document.createTextNode(JSON.parse(data.data).message);
+						 div.appendChild(textnode)
+						div.setAttribute("class", "chat_content_show");
+						show_content.appendChild(div);
+						show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+					}
+				};
+				ws.onclose = (params)=> {
+					this.ws1()
+				  console.log("client：关闭连接");
+				  
+				};
+
+		
+	}
+        </script>
+    </body>
+</html>
+
+
+

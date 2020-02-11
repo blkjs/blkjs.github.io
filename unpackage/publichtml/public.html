@@ -9,7 +9,11 @@
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
 		<script src="../../js/public.js"></script>
-
+		<style>
+			.message{
+				background-color: #5CB85C ;
+			}
+		</style>
     </head>
     <body>
 			<div class="app-top-2">
@@ -35,7 +39,10 @@
 							<div class="content-right-top">公共页面<span></span></div>
 						</div>
 						<div class="content-left">
-							
+							<div class="show" >
+							</div>
+							<input type="text" class="text" />
+							<input type="button" onclick="sub()" value="发送" />
 						</div>
 					</div>
 				</div>
@@ -93,8 +100,99 @@
 			
 
 		
+		<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
         <script>
-	
+			
+			function randomWord(randomFlag, min, max){
+						var str = "",
+							range = min,
+							arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+							// 随机产生
+							if(randomFlag){
+								range = Math.round(Math.random() * (max-min)) + min;
+							}
+							for(var i=0; i<range; i++){
+								pos = Math.round(Math.random() * (arr.length-1));
+								str += arr[pos];
+							}
+							return str;
+				}
+						
+	var sub=(event)=>{
+				//localStorage.removeItem('random')
+				if(!localStorage.getItem('random')){
+					random =randomWord(1,12,12);//随机一个id
+					localStorage.setItem("random",random)
+				}
+				console.log(localStorage.getItem('random'))
+		
+				let message = $(".text")[0].value//输入消息
+				let ws = new WebSocket("ws://localhost:3001");
+				ws.onopen = function() {
+					//console.log(returnCitySN["cip"]+','+returnCitySN["cname"])  
+				  ws.send(JSON.stringify({//发送消息
+					  "message":message,
+					  ip:returnCitySN["cip"],
+					  id:localStorage.getItem('random')
+				  }));
+				};
+				ws.onmessage = function(data) {//接收消息
+				let msg = "<div class='message'>"+JSON.parse(data.data).message  +"</div>" 
+				  $(".show").append(msg );
+				  console.log(data.data)
+				  /* setTimeout(() => {
+				    ws.close();
+				  }, 5000); */
+				};
+				ws.onclose = function(params) {
+				  console.log("client：关闭连接");
+				};
+		return
+		
+		
+		$.ajax({
+			//url: "http://49.235.80.50:3001/user/VCode",
+			url: "http://localhost:3000/notice/WebSocket",
+			type: 'POST',
+			async: true,
+			xhrFields: {
+				withCredentials: true
+			},
+			data: {
+				userEmail: "1051011877@qq.com",
+				
+			},
+			success: (data)=> {
+				console.log(data);
+				
+				
+				
+			},
+			error: function() {
+				console.log('服务器发生错误！');
+			}
+		});
+		
+		
+		/* if(data.status==1){//验证码
+			$('.img > svg').remove();
+			$(".img").append(data.codeData.img);
+		} */
+		
+		//console.log(d.target.files[0]);//图片上传
+		/* file = event.target.files[0];
+		  var a = new FileReader();
+		   a.onload = (e) =>{
+		      var base64Str = e.target.result;//获取base64
+		       //console.log(base64Str);
+			  
+		    }
+		   a.readAsDataURL(file); */
+		
+	}
         </script>
     </body>
 </html>
+
+
+
