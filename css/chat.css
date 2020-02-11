@@ -42,20 +42,20 @@
 }
 
 .send_button {
-	width: 15%;
-	height: 0.4rem;
+	width: 17%;
+	height: 0.45rem;
 	position: relative;
-	top: -0.2rem;
+	top: -0.3rem;
 	color: #796F6F;
 	border: 1px solid #FFFFFF;
 	cursor: pointer;
 	
 }
 .send_button:hover {
-	width: 15%;
-	height: 0.35rem;
+	width: 17%;
+	height: 0.45rem;
 	position: relative;
-	top: -0.2rem;
+	top: -0.3rem;
 	background-color: #62BC1F;
 	border: 0;
 	color: white;
