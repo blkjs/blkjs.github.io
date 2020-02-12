@@ -33,6 +33,12 @@
 				<div class="app-content-top">
 					<div class="app-content-top-1">
 						<img src="../../img/logo.png" />
+						<div>
+							<h1>在线列表</h1>
+							<ul class="online_list" id="online_list">
+								
+							</ul>
+						</div>
 					</div>
 					<div class="app-content-top-2">
 						<div class="content-right">
@@ -118,42 +124,48 @@
 							}
 							return str;
 				}
-			
-						　　　
-				
-			
 	
 	var ws1 =()=>{
-		let ws = new WebSocket("ws://49.235.80.50:3001");
+		let ws = new WebSocket("ws://localhost:3001");
 		ws.onopen = function() {};
 		return ws
 	}
 	var ws =ws1()
-	var sub=(event)=>{
+	window.onload=()=>{
 		
-	 	var send_content=document.getElementById("chat_textarea").value;//需要发送的聊天内容
+		sub('hello')
+	};
+	var sub=(data)=>{
 		let times=new Date().getTime()//时间戳
-		document.getElementById("chat_textarea").value="";//清空已经发送的内容
-		if(send_content==""){
-			alert("请输入内容")
-			return false
+		if(!localStorage.getItem('random')){
+			random =randomWord(1,12,12);//随机一个id
+			localStorage.setItem("random",random)
 		}
-		
-		var show_content= document.getElementById("chat_content")
-		var div = document.createElement("div");
-		var textnode=document.createTextNode(send_content);
-		 div.appendChild(textnode)
-		div.setAttribute("class", "chat_content_show_1");
-		show_content.appendChild(div); 
-		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
-				//localStorage.removeItem('random')
-				if(!localStorage.getItem('random')){
-					random =randomWord(1,12,12);//随机一个id
-					localStorage.setItem("random",random)
-				}
-				console.log(localStorage.getItem('random'))
+		if(data==='hello'){
+			ws.send(JSON.stringify({//发送消息
+						join:localStorage.getItem('random'),
+						times,times,
+			}));
+			
+		}else{
+			var send_content=document.getElementById("chat_textarea").value;//需要发送的聊天内容
+			document.getElementById("chat_textarea").value="";//清空已经发送的内容
+			if(send_content==""){
+				alert("请输入内容")
+				return false
+			}
+			
+			var show_content= document.getElementById("chat_content")
+			var div = document.createElement("div");
+			var textnode=document.createTextNode(send_content);
+			 div.appendChild(textnode)
+			div.setAttribute("class", "chat_content_show_1");
+			show_content.appendChild(div); 
+			show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+		}
+	 	
 				ws.send(JSON.stringify({//发送消息
-									  "message":send_content,
+									  message:send_content,
 									  id:localStorage.getItem('random'),
 									  times:times
 				}));
@@ -161,10 +173,22 @@
 				ws.onmessage = function(data) {//接收消息
 					//let msg = "<div class='chat_content_show'>"+JSON.parse(data.data).message  +"</div>" 
 					if(JSON.parse(data.data).num){
-						console.log("板栗壳家庭群（"+JSON.parse(data.data)+")")
+						console.log(JSON.parse(data.data).list)
+						$(".title")[0].innerHTML="板栗壳家庭群（"+JSON.parse(data.data).num+")";
+						var html = ''
+						JSON.parse(data.data).list.forEach(function each(data) {
+							html =html+ "<li>"+data+"</li>"
+						});
+						$(".online_list")[0].innerHTML=html;
+						console.log(html)
+					/* 	 var show_content= document.getElementById("online_list")
+						var li = document.createElement("li");
+						var textnode=document.createTextNode(JSON.parse(data.data).list[0]);
+						 li.appendChild(textnode)
+						li.setAttribute("class", "chat_content_join");
+						show_content.appendChild(li); */
 						
-						$(".title")[0].innerHTML="板栗壳家庭群（"+JSON.parse(data.data).num+")"
-					}else{
+					}else if(JSON.parse(data.data).message){
 						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
 						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
 						var show_content= document.getElementById("chat_content")
@@ -172,6 +196,17 @@
 						var textnode=document.createTextNode(JSON.parse(data.data).message);
 						 div.appendChild(textnode)
 						div.setAttribute("class", "chat_content_show");
+						show_content.appendChild(div);
+						show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+					}else if(JSON.parse(data.data).join){
+						console.log(JSON.parse(data.data))
+						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
+						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
+						var show_content= document.getElementById("chat_content")
+						var div = document.createElement("div");
+						var textnode=document.createTextNode(JSON.parse(data.data).join+'加入了群聊');
+						 div.appendChild(textnode)
+						div.setAttribute("class", "chat_content_join");
 						show_content.appendChild(div);
 						show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
 					}

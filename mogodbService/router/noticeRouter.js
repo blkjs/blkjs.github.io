@@ -25,23 +25,35 @@ const router =express.Router()
  *     }
  */
 //chat
-
+var events = require('events');
+var eventEmitter = new events.EventEmitter();
 const WebSocket = require('ws');
  
 const wss = new WebSocket.Server({ port: 3001 });
  var arr = [];
- var data =[];
+ var data ='';
 setInterval(()=>{
-	arr.forEach(function each(client) {
-		client.send(JSON.stringify({
-				"num":arr.length,
-		}));
-	});
+	//if(arr.length !== data){
+		var list =[];
+		arr.forEach(function each(client) {
+			list.push(client.id);
+		});
+		arr.forEach(function each(client) {
+			client.send(JSON.stringify({
+					"num":arr.length,
+					"list":list
+			}));
+		});
+		
+		 data = arr.length
+	//}
+	
 },3000)
  function websocket_add_listener(client_sock,req) {
 	
  	client_sock.on("message", function(data) {
  		if(arr.indexOf(client_sock) === -1){//未找到则返回 -1
+			client_sock.id=JSON.parse(data).join
  			arr.push(client_sock);
  		}
 		console.log(arr.length)
