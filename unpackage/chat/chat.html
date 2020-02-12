@@ -132,8 +132,9 @@
 	}
 	var ws =ws1()
 	window.onload=()=>{
-		
-		sub('hello')
+		setTimeout(()=>{
+			sub('hello')
+		},2000)
 	};
 	var sub=(data)=>{
 		let times=new Date().getTime()//时间戳
