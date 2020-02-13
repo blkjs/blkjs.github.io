@@ -105,7 +105,7 @@
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
 	border-radius: 7px;
-	text-align: left;
+	text-align: center;
 	padding: 0.1rem;
 	margin-top: 0.1rem;
 }
@@ -124,14 +124,14 @@
 
 .chat_content_show_1 {
 	position: relative;
-	right: -2rem;
+	right: -2.7rem;
 	width: 2rem;
 
 	background: #9EEA6A;
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
 	border-radius: 6px;
-	text-align: right;
+	text-align: center;
 	padding: 0.1rem;
 	margin-top: 0.1rem;
 }

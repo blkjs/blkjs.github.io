@@ -176,18 +176,26 @@
 		},2000)
 		if(localStorage.getItem('random')){
 			$(".modify_input")[0].value=localStorage.getItem('random')
+		}else{
+			$(".modify_input")[0].value=randomWord(1,12,12);//随机一个
+		}
+		if(localStorage.getItem('id')){
+		}else{
+			var id = randomWord(1,12,12);//随机一个
+			localStorage.setItem("id",id)
 		}
 	};
 	var sub=(data)=>{
 		let times=new Date().getTime()//时间戳
 		if(!localStorage.getItem('random')){
-			random =randomWord(1,12,12);//随机一个id
+			random =randomWord(1,12,12);//随机一个
 			localStorage.setItem("random",random)
 		}
 		if(data==='hello'){
 			ws.send(JSON.stringify({//发送消息
 						join:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
 						times,times,
+						id:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12)
 			}));
 			
 		}else if(data==='modify_name'){
@@ -204,8 +212,9 @@
 	 	
 				ws.send(JSON.stringify({//发送消息
 									  message:send_content,
-									  id:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
-									  times:times
+									  name:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
+									  times:times,
+									  id:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12)
 				}));
 				
 				ws.onmessage = function(data) {//接收消息
@@ -225,9 +234,9 @@
 						li.setAttribute("class", "chat_content_join");
 						show_content.appendChild(li); */
 						
-					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id===localStorage.getItem("random")){
+					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id===localStorage.getItem("id")){
 						chat_bubbles(JSON.parse(data.data).message,'chat_content_show_1','header_img2')
-					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id!==localStorage.getItem("random")){
+					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id!==localStorage.getItem("id")){
 						chat_bubbles(JSON.parse(data.data).message,'chat_content_show','header_img1')
 					}else if(JSON.parse(data.data).join){//新人加入
 						tips(JSON.parse(data.data).join+'加入了群聊','chat_content_join')
@@ -262,7 +271,8 @@
 			ws.send(JSON.stringify({//发送消息
 					modify_name:$(".modify_input")[0].value,
 					times,times,
-					old_name:old_name
+					old_name:old_name,
+					id:localStorage.getItem("id") ? localStorage.getItem("id",id):randomWord(1,12,12)
 			}));
 		}
 	}

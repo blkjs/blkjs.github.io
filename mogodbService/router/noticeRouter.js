@@ -37,12 +37,12 @@ setInterval(()=>{
 	if(arr.length !== data){
 		var list =[];
 		arr.forEach(function each(client) {
-			list.push(client.id);
+			list.push(client.name);
 		});
 		arr.forEach(function each(client) {
 			client.send(JSON.stringify({
 					"num":arr.length,//在线人数
-					"list":list,//在线人员id
+					"list":list,//在线人员name
 			}));
 		});
 		
@@ -56,7 +56,8 @@ setInterval(()=>{
 			messages.push(data)//把消息存在服务器内存
 		}
  		if(arr.indexOf(client_sock) === -1){//未找到则返回 -1,第一次连接
-			client_sock.id=JSON.parse(data).join;
+			client_sock.name=JSON.parse(data).join;
+			client_sock.id=JSON.parse(data).id;
  			arr.push(client_sock);
 			messages.forEach(function each(data) {//新用户接时把旧消息发送给新用户
 				client_sock.send(data);
@@ -67,15 +68,15 @@ setInterval(()=>{
  		arr.forEach(function each(client) {
 			if(JSON.parse(data).modify_name){//发送修改昵称消息给所有人
 				var n = arr.indexOf(client_sock);
-				arr[n].id=JSON.parse(data).modify_name
+				arr[n].name=JSON.parse(data).modify_name
 				client.send(data);//发送修改昵称消息给所有人
 				var list =[];
 				arr.forEach(function each(client) {
-					list.push(client.id);
+					list.push(client.name);
 				});
 				client.send(JSON.stringify({//推送在线人员列表
 						"num":arr.length,//在线人数
-						"list":list,//在线人员id
+						"list":list,//在线人员name
 				}));
 			}else if(client !== client_sock && client.readyState === WebSocket.OPEN) {//转发除自己外的所有消息
 				client.send(data);
@@ -84,17 +85,17 @@ setInterval(()=>{
  	});
  	// close事件
  	client_sock.on("close", function() {
-		//console.log(client_sock.id)
+		//console.log(client_sock.name)
  		var n = arr.indexOf(client_sock);//找到关闭连接的客户端信息在arr数组中的位置
 		arr.forEach(function each(client) {
-			if(client !== client_sock && client.readyState === WebSocket.OPEN) {//发送退出者id消息,除退出者自己以外的所有人
+			if(client !== client_sock && client.readyState === WebSocket.OPEN) {//发送退出者name消息,除退出者自己以外的所有人
 			client.send(JSON.stringify({
-						close:client_sock.id,
+						close:client_sock.name,
 			}));
 		  }
 		});
  		var t = arr.splice(n,1)//从索引n开始删除1个元素,删除关闭连接的客户端信息
-		//console.log(t[0].id)
+		//console.log(t[0].name)
  	});
  	 
  	// error事件
