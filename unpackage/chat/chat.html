@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/chat.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/public.js"></script>
     </head>
     <body>
 			<div class="app-top-2">
@@ -106,7 +107,6 @@
 			</div>
 			
 
-		<script src="../../js/public.js"></script>
         <script>
 			function randomWord(randomFlag, min, max){//随机数
 						var str = "",
@@ -125,6 +125,20 @@
 	var tips=(data,classs)=>{
 		var show_content= document.getElementById("chat_content")
 		var div = document.createElement("div");
+		
+		var textnode=document.createTextNode(data);
+		 div.appendChild(textnode)
+		div.setAttribute("class", classs);
+		show_content.appendChild(div);
+		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+	}
+	var chat_bubbles=(data,classs,classs1)=>{
+		var show_content= document.getElementById("chat_content")
+		var div = document.createElement("div");
+		var img = document.createElement("img");
+		img.setAttribute("src", "../../img/IE.png");
+		img.setAttribute("class", classs1);
+		div.appendChild(img);
 		var textnode=document.createTextNode(data);
 		 div.appendChild(textnode)
 		div.setAttribute("class", classs);
@@ -150,6 +164,12 @@
 		if($(".app-content-top-2")[0]){
 			$(".app-content-top-2")[0].style.minHeight=window.innerHeight-80+"px"
 		}
+		$('#service').mouseover(function() {
+			//console.log($('#WeChat')[0].style)
+			$('#WeChat')[0].style.display = "block"
+		}).mouseout(function() {
+			$('#WeChat')[0].style.display = "none"
+		})
 		
 		setTimeout(()=>{
 			sub('hello')
@@ -179,7 +199,7 @@
 				alert("请输入内容")
 				return false
 			}
-			tips(send_content,'chat_content_show_1')
+			chat_bubbles(send_content,'chat_content_show_1','header_img2')
 		}
 	 	
 				ws.send(JSON.stringify({//发送消息
@@ -189,16 +209,15 @@
 				}));
 				
 				ws.onmessage = function(data) {//接收消息
+				console.log(data)
 					//let msg = "<div class='chat_content_show'>"+JSON.parse(data.data).message  +"</div>" 
 					if(JSON.parse(data.data).num){
-						console.log(JSON.parse(data.data).list)
 						$(".title")[0].innerHTML="板栗壳家庭群（"+JSON.parse(data.data).num+")";
 						var html = ''
 						JSON.parse(data.data).list.forEach(function each(data) {
 							html =html+ "<li>"+data+"</li>"
 						});
 						$(".online_list")[0].innerHTML=html;
-						console.log(html)
 					/* 	 var show_content= document.getElementById("online_list")
 						var li = document.createElement("li");
 						var textnode=document.createTextNode(JSON.parse(data.data).list[0]);
@@ -206,17 +225,15 @@
 						li.setAttribute("class", "chat_content_join");
 						show_content.appendChild(li); */
 						
-					}else if(JSON.parse(data.data).message){
-						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
-						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
-						tips(JSON.parse(data.data).message,'chat_content_show')
+					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id===localStorage.getItem("random")){
+						chat_bubbles(JSON.parse(data.data).message,'chat_content_show_1','header_img2')
+					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id!==localStorage.getItem("random")){
+						chat_bubbles(JSON.parse(data.data).message,'chat_content_show','header_img1')
 					}else if(JSON.parse(data.data).join){//新人加入
 						tips(JSON.parse(data.data).join+'加入了群聊','chat_content_join')
 					}else if(JSON.parse(data.data).close){
 						tips(JSON.parse(data.data).close+'退出了群聊','chat_content_join')
 					}else if(JSON.parse(data.data).modify_name){
-						console.log(JSON.parse(data.data))
-						console.log(localStorage.getItem("random"),localStorage.getItem("times"))
 						if(localStorage.getItem("random")==JSON.parse(data.data).modify_name 
 						&& localStorage.getItem("times")==JSON.parse(data.data).times){
 							tips('昵称已修改为：'+JSON.parse(data.data).modify_name ,'chat_content_join')
