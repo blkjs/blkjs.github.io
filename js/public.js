@@ -67,6 +67,15 @@ window.onload = function() {
 	if($(".app-content")[0]){
 		$(".app-content")[0].style.minHeight=window.innerHeight-80+"px"
 	}
+	if($(".chat_content")[0]){
+		$(".app-content-top-1")[0].style.minHeight=window.innerHeight-330+"px"
+	}
+	if($(".chat_content")[0]){
+		$(".chat_content")[0].style.minHeight=window.innerHeight-330+"px"
+	}
+	if($(".app-content-top-2")[0]){
+		$(".app-content-top-2")[0].style.minHeight=window.innerHeight-80+"px"
+	}
 	if($(".app-title")[0]){
 		$(".app-title")[0].style.backgroundColor="yellow"
 		$(".app-title")[0].style.color="black"

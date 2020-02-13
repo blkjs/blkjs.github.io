@@ -8,12 +8,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/chat.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
-		<script src="../../js/public.js"></script>
-		<style>
-			.message{
-				background-color: #5CB85C ;
-			}
-		</style>
     </head>
     <body>
 			<div class="app-top-2">
@@ -35,9 +29,15 @@
 						<img src="../../img/logo.png" />
 						<div>
 							<h1>在线列表</h1>
-							<ul class="online_list" id="online_list">
-								
-							</ul>
+							<ul class="online_list" id="online_list"></ul>
+							<h5>设置名字</h5>
+							<div class="modify_name">
+								<input type="text" class="modify_input" />
+								<div>
+									<button onclick="modify_name(1)">随机</button>
+									<button onclick="modify_name(2)">确定</button>
+								</div>
+							</div>
 						</div>
 					</div>
 					<div class="app-content-top-2">
@@ -106,11 +106,9 @@
 			</div>
 			
 
-		
-		<script src="http://pv.sohu.com/cityjson?ie=utf-8"></script>
+		<script src="../../js/public.js"></script>
         <script>
-			
-			function randomWord(randomFlag, min, max){
+			function randomWord(randomFlag, min, max){//随机数
 						var str = "",
 							range = min,
 							arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
@@ -124,7 +122,15 @@
 							}
 							return str;
 				}
-	
+	var tips=(data,classs)=>{
+		var show_content= document.getElementById("chat_content")
+		var div = document.createElement("div");
+		var textnode=document.createTextNode(data);
+		 div.appendChild(textnode)
+		div.setAttribute("class", classs);
+		show_content.appendChild(div);
+		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+	}
 	var ws1 =()=>{
 		let ws = new WebSocket("ws://localhost:3001");
 		ws.onopen = function() {};
@@ -132,9 +138,25 @@
 	}
 	var ws =ws1()
 	window.onload=()=>{
+		if($(".app-content")[0]){
+			$(".app-content")[0].style.minHeight=window.innerHeight-80+"px"
+		}
+		if($(".chat_content")[0]){
+			$(".app-content-top-1")[0].style.minHeight=window.innerHeight-330+"px"
+		}
+		if($(".chat_content")[0]){
+			$(".chat_content")[0].style.minHeight=window.innerHeight-330+"px"
+		}
+		if($(".app-content-top-2")[0]){
+			$(".app-content-top-2")[0].style.minHeight=window.innerHeight-80+"px"
+		}
+		
 		setTimeout(()=>{
 			sub('hello')
 		},2000)
+		if(localStorage.getItem('random')){
+			$(".modify_input")[0].value=localStorage.getItem('random')
+		}
 	};
 	var sub=(data)=>{
 		let times=new Date().getTime()//时间戳
@@ -144,9 +166,11 @@
 		}
 		if(data==='hello'){
 			ws.send(JSON.stringify({//发送消息
-						join:localStorage.getItem('random'),
+						join:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
 						times,times,
 			}));
+			
+		}else if(data==='modify_name'){
 			
 		}else{
 			var send_content=document.getElementById("chat_textarea").value;//需要发送的聊天内容
@@ -155,19 +179,12 @@
 				alert("请输入内容")
 				return false
 			}
-			
-			var show_content= document.getElementById("chat_content")
-			var div = document.createElement("div");
-			var textnode=document.createTextNode(send_content);
-			 div.appendChild(textnode)
-			div.setAttribute("class", "chat_content_show_1");
-			show_content.appendChild(div); 
-			show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+			tips(send_content,'chat_content_show_1')
 		}
 	 	
 				ws.send(JSON.stringify({//发送消息
 									  message:send_content,
-									  id:localStorage.getItem('random'),
+									  id:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
 									  times:times
 				}));
 				
@@ -192,24 +209,20 @@
 					}else if(JSON.parse(data.data).message){
 						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
 						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
-						var show_content= document.getElementById("chat_content")
-						var div = document.createElement("div");
-						var textnode=document.createTextNode(JSON.parse(data.data).message);
-						 div.appendChild(textnode)
-						div.setAttribute("class", "chat_content_show");
-						show_content.appendChild(div);
-						show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
-					}else if(JSON.parse(data.data).join){
+						tips(JSON.parse(data.data).message,'chat_content_show')
+					}else if(JSON.parse(data.data).join){//新人加入
+						tips(JSON.parse(data.data).join+'加入了群聊','chat_content_join')
+					}else if(JSON.parse(data.data).close){
+						tips(JSON.parse(data.data).close+'退出了群聊','chat_content_join')
+					}else if(JSON.parse(data.data).modify_name){
 						console.log(JSON.parse(data.data))
-						var d=new Date(JSON.parse(data.data).times);   //创建一个指定的日期对象
-						//console.log(d.getFullYear(),d.getMonth()+1,d.getDate(),d.getHours(),d.getMinutes())
-						var show_content= document.getElementById("chat_content")
-						var div = document.createElement("div");
-						var textnode=document.createTextNode(JSON.parse(data.data).join+'加入了群聊');
-						 div.appendChild(textnode)
-						div.setAttribute("class", "chat_content_join");
-						show_content.appendChild(div);
-						show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
+						console.log(localStorage.getItem("random"),localStorage.getItem("times"))
+						if(localStorage.getItem("random")==JSON.parse(data.data).modify_name 
+						&& localStorage.getItem("times")==JSON.parse(data.data).times){
+							tips('昵称已修改为：'+JSON.parse(data.data).modify_name ,'chat_content_join')
+						}else{
+							tips(JSON.parse(data.data).old_name+'昵称修改为：'+JSON.parse(data.data).modify_name,'chat_content_join')
+						}
 					}
 				};
 				ws.onclose = (params)=> {
@@ -219,6 +232,22 @@
 				};
 
 		
+	}
+	var modify_name=(data)=>{
+		let times=new Date().getTime()//时间戳
+		random =randomWord(1,12,12);//随机一个id
+		if(data==1){
+			$(".modify_input")[0].value=random
+		}else if(data==2){
+			var old_name=localStorage.getItem("random")
+			localStorage.setItem("random",$(".modify_input")[0].value,"times",times)
+			localStorage.setItem("times",times)
+			ws.send(JSON.stringify({//发送消息
+					modify_name:$(".modify_input")[0].value,
+					times,times,
+					old_name:old_name
+			}));
+		}
 	}
         </script>
     </body>

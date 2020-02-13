@@ -105,7 +105,7 @@
 	background: #088cb7;
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
-	border-radius: 12px;
+	border-radius: 7px;
 	text-align: center;
 	padding: 0.1rem;
 	margin-top: 0.1rem;
@@ -131,7 +131,7 @@
 	background: #9EEA6A;
 	-moz-border-radius: 12px;
 	-webkit-border-radius: 12px;
-	border-radius: 12px;
+	border-radius: 6px;
 	text-align: center;
 	padding: 0.1rem;
 	margin-top: 0.1rem;
@@ -160,3 +160,36 @@
 	background: #C5C6C1;
 }
 
+.modify_name{
+	border: 1px solid #C5C6C1;
+	height: 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	position:relative;
+	bottom: 0;
+	
+}
+.modify_input{
+	width: 1.5rem;
+	height: 0.25rem;
+	text-align: center;
+}
+.modify_name button{
+	width: 0.8rem;
+	height: 0.3rem;
+	margin-top: 0.1rem;
+	border: 0; 
+	outline: none; 
+	-webkit-appearance: none;
+	background-color: white;
+	cursor: pointer;
+	color: #796F6F;
+	background-color: #F0F0F0;
+	cursor: pointer;
+}
+.modify_name button:hover{
+	background-color: #62BC1F;
+	color: white;
+}

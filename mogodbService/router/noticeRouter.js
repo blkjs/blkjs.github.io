@@ -33,47 +33,66 @@ const wss = new WebSocket.Server({ port: 3001 });
  var arr = [];
  var data ='';
 setInterval(()=>{
-	//if(arr.length !== data){
+	if(arr.length !== data){
 		var list =[];
 		arr.forEach(function each(client) {
 			list.push(client.id);
 		});
 		arr.forEach(function each(client) {
 			client.send(JSON.stringify({
-					"num":arr.length,
-					"list":list
+					"num":arr.length,//在线人数
+					"list":list,//在线人员id
 			}));
 		});
 		
 		 data = arr.length
-	//}
+	}
 	
-},3000)
+},2000)
  function websocket_add_listener(client_sock,req) {
 	
  	client_sock.on("message", function(data) {
  		if(arr.indexOf(client_sock) === -1){//未找到则返回 -1
-			client_sock.id=JSON.parse(data).join
+			client_sock.id=JSON.parse(data).join;
  			arr.push(client_sock);
  		}
-		console.log(arr.length)
+		console.log('当前在线人数:'+arr.length)
  		arr.forEach(function each(client) {
- 		  if (client !== client_sock && client.readyState === WebSocket.OPEN) {
- 			client.send(data);
+			if(JSON.parse(data).modify_name){
+				var n = arr.indexOf(client_sock);
+				arr[n].id=JSON.parse(data).modify_name
+				client.send(data);//发送修改昵称消息给所有人
+				var list =[];
+				arr.forEach(function each(client) {
+					list.push(client.id);
+				});
+				client.send(JSON.stringify({//更新在线人员列表
+						"num":arr.length,//在线人数
+						"list":list,//在线人员id
+				}));
+			}else if(client !== client_sock && client.readyState === WebSocket.OPEN) {//转发除自己外的所有消息
+				client.send(data);
  		  }
  		});
  	});
  	// close事件
  	client_sock.on("close", function() {
+		//console.log(client_sock.id)
  		var n = arr.indexOf(client_sock);
- 		arr.splice(n,1)//从索引n开始删除1个元素
+		arr.forEach(function each(client) {
+			if(client !== client_sock && client.readyState === WebSocket.OPEN) {//发送退出者id消息,除退出者自己以外的所有人
+			client.send(JSON.stringify({
+						close:client_sock.id,
+			}));
+		  }
+		});
+ 		var t = arr.splice(n,1)//从索引n开始删除1个元素
+		//console.log(t[0].id)
  	});
  	 
  	// error事件
  	client_sock.on("error", function(err) {
  		console.log("client error", err);
- 		var n = arr.indexOf(client_sock);
- 		arr.splice(n,1)//从索引n开始删除1个元素
  	});
  }
 
