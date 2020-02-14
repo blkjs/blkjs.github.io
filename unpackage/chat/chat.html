@@ -88,7 +88,7 @@
 							<h5>商务合作</h5>
 							<p>开发合作</p>
 							<p>广告合作</p>
-							<p>其他</p>
+							<p  onclick="app(6)">其他(群聊系统)</p>
 						</div>
 					</div>
 					<div class="footer_1">
@@ -132,16 +132,22 @@
 		show_content.appendChild(div);
 		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
 	}
-	var chat_bubbles=(data,classs,classs1)=>{
+	var chat_bubbles=(data,msg_classs,header_classs,header_img,name,name_classs)=>{
+		console.log(name)
 		var show_content= document.getElementById("chat_content")
 		var div = document.createElement("div");
 		var img = document.createElement("img");
-		img.setAttribute("src", "../../img/IE.png");
-		img.setAttribute("class", classs1);
+		var span = document.createElement("span");
+		img.setAttribute("src", header_img);
+		img.setAttribute("class", header_classs);
+		span.setAttribute("class", name_classs);
+		var name=document.createTextNode(name);
+		var msg=document.createTextNode(data);
+		span.appendChild(name)
+		show_content.appendChild(span)
 		div.appendChild(img);
-		var textnode=document.createTextNode(data);
-		 div.appendChild(textnode)
-		div.setAttribute("class", classs);
+		div.appendChild(msg)
+		div.setAttribute("class", msg_classs);
 		show_content.appendChild(div);
 		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
 	}
@@ -193,9 +199,10 @@
 		}
 		if(data==='hello'){
 			ws.send(JSON.stringify({//发送消息
-						join:localStorage.getItem('random') ? localStorage.getItem('random'):randomWord(1,12,12),
+						join:localStorage.getItem('random') ,
 						times,times,
-						id:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12)
+						id:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12),
+						name:localStorage.getItem('random'),
 			}));
 			
 		}else if(data==='modify_name'){
@@ -207,7 +214,7 @@
 				alert("请输入内容")
 				return false
 			}
-			chat_bubbles(send_content,'chat_content_show_1','header_img2')
+			chat_bubbles(send_content,'chat_content_show_1','header_img2','../../img/IE.png',localStorage.getItem('random'),'chat_name')
 		}
 	 	
 				ws.send(JSON.stringify({//发送消息
@@ -235,9 +242,9 @@
 						show_content.appendChild(li); */
 						
 					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id===localStorage.getItem("id")){
-						chat_bubbles(JSON.parse(data.data).message,'chat_content_show_1','header_img2')
+						chat_bubbles(JSON.parse(data.data).message,'chat_content_show_1','header_img2','../../img/IE.png',JSON.parse(data.data).name,'chat_name')
 					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id!==localStorage.getItem("id")){
-						chat_bubbles(JSON.parse(data.data).message,'chat_content_show','header_img1')
+						chat_bubbles(JSON.parse(data.data).message,'chat_content_show','header_img1','../../img/360浏览器.png',JSON.parse(data.data).name,'chat_name1')
 					}else if(JSON.parse(data.data).join){//新人加入
 						tips(JSON.parse(data.data).join+'加入了群聊','chat_content_join')
 					}else if(JSON.parse(data.data).close){
@@ -272,7 +279,8 @@
 					modify_name:$(".modify_input")[0].value,
 					times,times,
 					old_name:old_name,
-					id:localStorage.getItem("id") ? localStorage.getItem("id",id):randomWord(1,12,12)
+					name:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12),
+					id:localStorage.getItem("id") ? localStorage.getItem("id"):randomWord(1,12,12),
 			}));
 		}
 	}

@@ -24,7 +24,10 @@ var app = (data) => {
 		window.open("../about/about.html", '_self')
 	}else if(data==5){
 		window.open("../help/help.html", '_self')
+	}else if(data==6){
+		window.open("../chat/chat.html", '_self')
 	}
+	
 	
 }
 var login = () => {
