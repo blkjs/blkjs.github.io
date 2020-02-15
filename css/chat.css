@@ -1,6 +1,7 @@
 .content-left {
 	width: 5.8rem;
 	height: 6.3rem;
+	margin-right: 0.1rem;
 }
 .title{
 	font-size: 18px;
@@ -172,6 +173,21 @@
 	position: relative;
 	left: 4.1rem;
 	top: 0.03rem;
+}
+@media screen and (max-width:680px){
+.chat_name{
+	left: 3.8rem;
+}
+}
+@media screen and (max-width:520px){
+.chat_name{
+	left: 3.5rem;
+}
+}
+@media screen and (max-width:400px){
+.chat_name{
+	left: 3.1rem;
+}
 }
 .chat_name1{
 	color: #686A6D;

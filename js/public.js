@@ -100,7 +100,7 @@ window.onload = function() {
 		$(".app-content-top-2")[0].style.minHeight=window.innerHeight-80+"px"
 	}
 	if($(".app-title")[0]){
-		$(".app-title")[0].style.backgroundColor="yellow"
+		$(".app-title")[0].style.backgroundColor="#2196F3"
 		$(".app-title")[0].style.color="black"
 		$(".app-title")[0].style.fontSize="0.231rem"
 		$(".app-title")[0].style.fontWeight="600"

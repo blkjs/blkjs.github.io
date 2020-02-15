@@ -133,7 +133,7 @@
 				 		qq: $("#qq")[0].value,
 						wechat:$("#wechat")[0].value,
 						content:$("#content")[0].value,
-						userEmail:JSON.parse(localStorage.getItem("login_msg")).userEmail ? JSON.parse(localStorage.getItem("login_msg")).userEmail:'未登录用户'
+						userEmail:localStorage.getItem("login_msg") ? JSON.parse(localStorage.getItem("login_msg")).userEmail:'未登录用户'
 				 	},
 				 	success: (data)=> {
 				 		console.log(data);

@@ -52,9 +52,9 @@ setInterval(()=>{
 },2000)
  function websocket_add_listener(client_sock,req) {
  	client_sock.on("message", function(data) {
-		if(JSON.parse(data).message){
+		//if(JSON.parse(data).message){
 			messages.push(data)//把消息存在服务器内存
-		}
+		//}
  		if(arr.indexOf(client_sock) === -1){//未找到则返回 -1,第一次连接
 			client_sock.name=JSON.parse(data).join;
 			client_sock.id=JSON.parse(data).id;
