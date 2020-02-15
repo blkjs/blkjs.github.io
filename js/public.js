@@ -40,8 +40,28 @@ var login = () => {
 }
 var register = () => {
 	if (localStorage.getItem("login_msg")) { //退出登录
-		localStorage.removeItem("login_msg");
-		location.reload()
+		$.ajax({
+			url: topurl + "user/loginOut",
+			type: 'POST',
+			async: true,
+			xhrFields: {
+				withCredentials: true
+			},
+			data: {},
+			success: (data) => {
+				if(data.status===1){
+					localStorage.removeItem("login_msg");
+					location.reload()
+				}else{
+					alert(data.message)
+				}
+				
+			},
+			error: function() {
+				alert('服务器发生错误！');
+			}
+		});
+		
 	} else { //跳转注册页面
 		window.open("../register/register.html", '_self')
 	}
@@ -86,16 +106,33 @@ window.onload = function() {
 		$(".app-title")[0].style.fontWeight="600"
 	}
 	
+	
 	$('#service').mouseover(function() {
 		//console.log($('#WeChat')[0].style)
 		$('#WeChat')[0].style.display = "block"
 	}).mouseout(function() {
 		$('#WeChat')[0].style.display = "none"
 	})
-
-	if (localStorage.getItem("login_msg")) {
+	
+	if($('#chat_content')[0]){
+		console.log($('#chat_content'))
+		setTimeout(()=>{
+			sub('hello')
+		},2000)
+		if(localStorage.getItem('random')){
+			$(".modify_input")[0].value=localStorage.getItem('random')
+		}else{
+			$(".modify_input")[0].value=randomWord(1,12,12);//随机一个
+		}
+		if(localStorage.getItem('id')){
+		}else{
+			var id = randomWord(1,12,12);//随机一个
+			localStorage.setItem("id",id)
+		}
+	}
+	if (localStorage.getItem("login_msg")) {//检查是否登录
 		$.ajax({
-			url: topurl + "iflogin",
+			url: topurl + "user/iflogin",
 			type: 'POST',
 			async: true,
 			xhrFields: {
@@ -104,12 +141,12 @@ window.onload = function() {
 			data: {},
 			success: (data) => {
 				var login_msg=JSON.parse(localStorage.getItem("login_msg"));
+				console.log(login_msg)
 				var logo ="../../img/logo.png";
 				var header_img=login_msg.headerImg ? login_msg.headerImg:logo;
-				
 				if (data.status == 1) {
 					document.getElementById("login").innerHTML = '<img src="' + header_img +
-						'" class="header_img" />' + '<span class="username">' + login_msg.username +
+						'" class="header_img" />' + '<span class="username">' + login_msg.userName +
 						'</span>'; //取出用户名
 					document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
 				} else {

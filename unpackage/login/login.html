@@ -72,7 +72,7 @@
 				methods: {
 					VCode() {
 						$.ajax({
-							url: topurl + "VCode/VCode",
+							url: topurl + "user/VCode",
 							type: 'POST',
 							async: true,
 							xhrFields: {
@@ -80,7 +80,7 @@
 							},
 							data: {},
 							success: (data)=> {
-								this.VCode_img = data.img
+								this.VCode_img = data.codeData.img
 							},
 							error: ()=> {
 								alert('服务器发生错误！');
@@ -99,31 +99,32 @@
 						this.password_msg="";
 						this.VCode_msg="";
 						$.ajax({
-							url: topurl + "login",
+							url: topurl + "user/login",
 							type: 'POST',
 							async: true,
 							xhrFields: {
 								withCredentials: true
 							},
 							data: {
-								username: this.username,
-								password: this.password,
-								VerificationCode: this.VCode_num
+								userEmail: this.username,
+								userPass: this.password,
+								VCode: this.VCode_num
 							},
 							success: (data)=> {
 								console.log(data);
-								
 								if(data.status==0){
 									console.log(data.message);
-									if(data.message==="请填写验证码！" || data.message==="验证码错误！"){
+									if(data.message==="请填写验证码！" || data.message==="验证码错误"){
 										this.VCode_msg=data.message;
 										this.VCode();
-										return
+									}else{
+										alert(data.message)
 									}
 									this.VCode_msg="";
 									this.password_msg=data.message;
+									return
 								}else if(data.status==1){
-									localStorage.setItem("login_msg", JSON.stringify(data.data));
+									localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
 									window.open("../app/app.html",'_self')
 								}
 								

@@ -158,17 +158,17 @@
 						return false;
 				      }
 						$.ajax({
-							url: topurl + "VCode/VCode",
+							url: topurl + "user/getMailCde",
 							type: 'POST',
 							async: true,
 							xhrFields: {
 								withCredentials: true
 							},
 							data: {
-								email:$(".email")[0].value,
+								mail:$(".email")[0].value,
 								},
 							success: (data)=> {
-								console.log(data.img)
+								console.log(data)
 								alert(data.message);
 							},
 							error: ()=> {
@@ -212,21 +212,20 @@
 				}
 			   
 			   $.ajax({
-			   	url: topurl + "register",
+			   	url: topurl + "user/reg",
 			   	type: 'POST',
 			   	async: true,
 			   	xhrFields: {
 			   		withCredentials: true
 			   	},
 			   	data: {
-			   		username: $(".username")[0].value,
-			   		password: $(".pass")[0].value,
-			   		email: $(".email")[0].value,
-					VerificationCode:$(".VCode")[0].value
+			   		userName: $(".username")[0].value,
+			   		userPass: $(".pass")[0].value,
+			   		userEmail: $(".email")[0].value,
+					code:$(".VCode")[0].value
 			   	},
 			   	success: (data)=> {
 			   		console.log(data);
-			   		
 			   		if(data.status==0){
 			   			if(data.message==="该邮箱已被注册"){
 							$(".email-msg")[0].innerHTML="该邮箱已被注册！"
@@ -237,7 +236,7 @@
 							alert(data.message);
 						}
 			   		}else if(data.status==1){
-			   			localStorage.setItem("login_msg", JSON.stringify(data));
+			   			localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
 						alert(data.message);
 			   			window.open("../app/app.html",'_self')
 			   		}

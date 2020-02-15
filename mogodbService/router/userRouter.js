@@ -26,14 +26,14 @@ let VCode={}//通过内存保存图片验证码客户端ip,sessionID,请求次�
  */
 //注册接口
 router.post('/reg',(req,res)=>{ 
-	let {userEmail,userPass,code}=req.body
-	if(!userEmail || !userPass || !code){
-		res.send({massage:"缺少参数",status:0})
+	let {userName,userEmail,userPass,code}=req.body
+	if(!userName||!userEmail || !userPass || !code){
+		res.send({message:"缺少参数",status:0})
 		return false
 	}
 	 if(codes[userEmail]===code){//判断验证码是否正确
 	}else{
-		res.send({massage:"验证码错误",status:0})
+		res.send({message:"验证码错误",status:0})
 		return false
 	}
 	
@@ -41,20 +41,20 @@ router.post('/reg',(req,res)=>{
 	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 	  .then((data)=>{
 		  if(data.length===0){
-			 return User.insertMany({userEmail,userPass})//增加{userEmail,userPass}==={userEmail:userEmail,userPass:userPass}
+			 return User.insertMany({userName,userEmail,userPass})//增加{userEmail,userPass}==={userEmail:userEmail,userPass:userPass}
 		  }else{
-			  res.send({massage:"该邮箱已经被注册",status:0})
+			  res.send({message:"该邮箱已经被注册",status:0})
 			  return false
 		  }
 	  })
 	 .then((data)=>{
 		  console.log(data)
 		  console.log('插入成功')
-		  res.send({massage:"注册成功",status:1})
+		  res.send({message:"注册成功",status:1,data:data})
 	 })
 	 .catch((err)=>{
 		  console.log(err)
-		  res.send({massage:"注册失败",status:0,error:err})
+		  res.send({message:"注册失败",status:0,error:err})
 	 })
 	
 })
@@ -76,32 +76,94 @@ router.post('/reg',(req,res)=>{
 router.post('/login',(req,res)=>{
 	const sessionCaptcha = req.session.captcha;//服务器生成待验证码
 	  console.log(sessionCaptcha,'验证码')
-	let {userEmail,userPass}=req.body
-	if(!userEmail || !userPass){
-		res.send({massage:"缺少参数",status:0})
+	let {userEmail,userPass,VCode}=req.body
+	if(!userEmail || !userPass || !VCode){
+		res.send({message:"缺少参数",status:0})
 		return false
+	}else if(sessionCaptcha !== VCode){
+		res.send({message:"验证码错误",status:0})
 	}
 	User.find({userEmail,userPass})//查询
 	  .then((data)=>{
 	 	  console.log(data)
 		  if(data.length>0){
-			  res.send({massage:"登录成功",status:1})
+				var userifo ={'userEmail':userEmail,'iflogin':true}
+			    req.session.userifo = userifo;
+			  res.send({message:"登录成功",status:1,data:data})
 		  }else{
-			  res.send({massage:"用户名或密码不正确",status:0})
+			  res.send({message:"用户名或密码不正确",status:0})
 		  }
 	  })
 	  .catch((err)=>{
 	 	  console.log(err)
-		   res.send({massage:"内部错误",status:0})
+		   res.send({message:"内部错误",status:0})
 	  })
 	
 })
 
 /**
+ * @api {post} /user/iflogin 检查是否登陆
+ * @apiName 检查是否登陆
+ * @apiGroup user
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *     }
+ */
+router.post('/iflogin',(req,res)=>{//检查是否登陆
+
+var iflogin = req.session.userifo ? req.session.userifo:false
+ if(iflogin.iflogin===true){
+		console.log("已经登陆");
+		return	res.json({
+			 status:1,
+		})
+}else{
+	console.log("未登陆");
+		return res.json({
+					 status:0,
+				})
+}
+});
+
+
+
+/**
+ * @api {post} /user/loginOut 退出登录
+ * @apiName 退出登录
+ * @apiGroup user
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *     }
+ */
+router.post('/loginOut',(req,res)=>{//退出登录
+
+req.session.userifo.iflogin=false
+  if(req.session.userifo.iflogin!==false){
+	  console.log("注销失败");
+	  return res.json({
+	  	 status:0,
+		 message:"注销失败",
+		 error:err
+	  })
+  }else if(req.session.userifo.iflogin===false){
+	  console.log("注销成功");
+	  	return res.json({
+	  				 status:1,
+	  			})
+  }
+})
+
+
+
+/**
  * @api {post} /user/getMailCde 邮箱验证码
  * @apiName 邮箱验证码
  * @apiGroup user
- * @apiSuccess {String} userEmail 用户邮箱号.
+ * @apiSuccess {String} mail 用户邮箱号.
  * @apiSuccessExample 成功的返回示例:
  *     HTTP/1.1 200 OK
  *     {
@@ -118,7 +180,7 @@ router.post('/getMailCde',(req,res)=>{
 	let {lastTime}  = {lastTime:mail+'-lastTime'}//上次请求时间的名字
 	let {lastTime1}  = {lastTime1:mail+'-lastTime1'}//上上次请求时间的名字
 	if(!mail){
-		res.send({massage:"缺少参数",status:0})
+		res.send({messagee:"缺少参数",status:0})
 		return false
 	}
 	if((times-codes[lastTime1])<300000 && codes[cum]>=3){//5分钟只能请求3次接口,当前时间-上上次时间

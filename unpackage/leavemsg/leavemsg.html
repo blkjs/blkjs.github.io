@@ -121,7 +121,7 @@
 					 return false;
 				 }
 				 $.ajax({
-				 	url: topurl + "leavemsg/leavemsg",
+				 	url: topurl + "file/leavemsg",
 				 	type: 'POST',
 				 	async: true,
 				 	xhrFields: {
@@ -133,7 +133,7 @@
 				 		qq: $("#qq")[0].value,
 						wechat:$("#wechat")[0].value,
 						content:$("#content")[0].value,
-						
+						userEmail:JSON.parse(localStorage.getItem("login_msg")).userEmail ? JSON.parse(localStorage.getItem("login_msg")).userEmail:'未登录用户'
 				 	},
 				 	success: (data)=> {
 				 		console.log(data);
@@ -144,9 +144,7 @@
 				 			alert("留言成功！我们将尽快联系您！")
 				 			window.open("../app/app.html",'_self')
 				 		}
-				 		
-				 			
-				 		
+
 				 	},
 				 	error: function() {
 				 		alert('服务器发生错误！');

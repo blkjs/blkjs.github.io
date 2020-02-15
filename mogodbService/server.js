@@ -9,7 +9,7 @@ app.use(bodyParser.json());//数据JSON类型
 app.use(bodyParser.urlencoded({ extended: false }));//解析post请求数据
 
 app.use(session({
-	 name: '123',
+	 name: 'www.blkjs.com',
 store:new FileStore({reapInterval: 5 * 1000,}),//数据持久化方式，这里表示本地文件存储
  cookie: {maxAge: 24*60*60*1000},//两次请求的时间差 即超过这个时间再去访问 session就会失效
  secret: 'random_string_goes_here',////加密key 可以随意书写
@@ -17,6 +17,7 @@ store:new FileStore({reapInterval: 5 * 1000,}),//数据持久化方式，这里�
  activeDuration: 5 * 1000,// 激活时间，这个时间内再次请求就重新计算
  reapInterval:1,// 间隔以秒为单位清除过期的会话，如果不需要则为-1。默认为1 hour
  ttl:10,//默认3600秒
+ resave: true,
  reapAsync:true ,//使用不同的工作进程来删除陈旧的会话。默认为false
  reapSyncFallback:true,// 如果不能异步执行，则同步收到过时会话。默认为false
 }));
@@ -33,23 +34,6 @@ app.all('*', function(req, res, next) {
 	res.header("Access-Control-Allow-Credentials", true)
     next();
 });
-
-app.post("/add",function(req,res){
-  //往session里存储数据
-  req.session.loginok=true;			//loginok:可以是任意内容，可以为true或false
-  console.log(req.session)
-    console.log(req.sessionID)
-  res.send("添加成功")
-})
-
-
-//读取session
-app.post("/select",function(req,res){
-  //查看session
-   console.log(req.session)
-  console.log(req.sessionID)
-  res.send("查询成功")
-})
 
 
 app.use('/public',express.static(path.join(__dirname,'./apiStatic')));//静态资源

@@ -1,6 +1,6 @@
  var mongoose =require('mongoose')
  var userSchema = new mongoose.Schema({
-    userName : {type:String,required:false},
+    userName : {type:String,required:true},
 	userEmail: {type:String,required:true},
 	userPass : {type:String,required:true},
 	userAge : 	Number,

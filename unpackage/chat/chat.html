@@ -8,7 +8,6 @@
 		<link rel="stylesheet" type="text/css" href="../../css/chat.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
-		<script src="../../js/public.js"></script>
     </head>
     <body>
 			<div class="app-top-2">
@@ -152,45 +151,12 @@
 		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
 	}
 	var ws1 =()=>{
-		let ws = new WebSocket("ws://localhost:3001");
+		let ws = new WebSocket("ws://49.235.80.50:3001");
 		ws.onopen = function() {};
 		return ws
 	}
 	var ws =ws1()
-	window.onload=()=>{
-		if($(".app-content")[0]){
-			$(".app-content")[0].style.minHeight=window.innerHeight-80+"px"
-		}
-		if($(".chat_content")[0]){
-			$(".app-content-top-1")[0].style.minHeight=window.innerHeight-330+"px"
-		}
-		if($(".chat_content")[0]){
-			$(".chat_content")[0].style.minHeight=window.innerHeight-330+"px"
-		}
-		if($(".app-content-top-2")[0]){
-			$(".app-content-top-2")[0].style.minHeight=window.innerHeight-80+"px"
-		}
-		$('#service').mouseover(function() {
-			//console.log($('#WeChat')[0].style)
-			$('#WeChat')[0].style.display = "block"
-		}).mouseout(function() {
-			$('#WeChat')[0].style.display = "none"
-		})
-		
-		setTimeout(()=>{
-			sub('hello')
-		},2000)
-		if(localStorage.getItem('random')){
-			$(".modify_input")[0].value=localStorage.getItem('random')
-		}else{
-			$(".modify_input")[0].value=randomWord(1,12,12);//随机一个
-		}
-		if(localStorage.getItem('id')){
-		}else{
-			var id = randomWord(1,12,12);//随机一个
-			localStorage.setItem("id",id)
-		}
-	};
+
 	var sub=(data)=>{
 		let times=new Date().getTime()//时间戳
 		if(!localStorage.getItem('random')){
@@ -285,6 +251,7 @@
 		}
 	}
         </script>
+		<script src="../../js/public.js"></script>
     </body>
 </html>
 
