@@ -72,7 +72,7 @@
 				methods: {
 					VCode() {
 						$.ajax({
-							url: topurl + "user/VCode",
+							url: topurl + "/user/VCode",
 							type: 'POST',
 							async: true,
 							xhrFields: {
@@ -99,7 +99,7 @@
 						this.password_msg="";
 						this.VCode_msg="";
 						$.ajax({
-							url: topurl + "user/login",
+							url: topurl + "/user/login",
 							type: 'POST',
 							async: true,
 							xhrFields: {

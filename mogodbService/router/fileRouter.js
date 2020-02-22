@@ -7,14 +7,14 @@ const multipartyMiddleware = multipart()
 const nodemailer = require('nodemailer');//邮件功能
 
  var saveimg=(email,dataBuffer,type)=>{
-	 let name=type===1 ? "headerImg" : "others"
+	 let name = type==1 ? "headerImg" : "others"
 	 return new Promise((resolve,reject)=>{
 	  fs.writeFile('./uploads/'+email+'/'+name+'.png', dataBuffer, (err)=> {
 	      if(err){
 			  reject(err)
 	  	  console.log(err)
 	      }else{
-	        resolve('/uploads/'+email+'/'+name+'.png')
+	        resolve('/public/'+email+'/'+name+'.png')
 	      }
 	  });
 	 })
@@ -252,7 +252,7 @@ router.post('/leavemsg',(req,res)=>{
  			  console.log(err)
  		    }else{
  				let options = {
- 				        from: ' "板栗壳技术有限公司" <blkjs@qq.com>',
+ 				        from: ' 板栗壳技术有限公司 <blkjs@qq.com>',
  				        to: '<1051011877@qq.com>',
  				        bcc: '密送',
  				        subject: '板栗壳官网收到一条来自'+username+'的留言',

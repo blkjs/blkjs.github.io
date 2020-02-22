@@ -41,23 +41,99 @@ router.post('/reg',(req,res)=>{
 	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 	  .then((data)=>{
 		  if(data.length===0){
-			 return User.insertMany({userName,userEmail,userPass})//增加{userEmail,userPass}==={userEmail:userEmail,userPass:userPass}
+			 //return User.insertMany({userName,userEmail,userPass})//增加{userEmail,userPass}==={userEmail:userEmail,userPass:userPass}
+			 var userifo = new User();
+			// {userifo.userName,userifo.userEmail,userifo.userPass}={userName,userEmail,userPass}
+			 userifo.userName=userName;
+			 userifo.userEmail=userEmail;
+			 userifo.userPass=userPass;
+			 userifo.save(function(){
+				 res.send({message:"注册成功",status:1,data:data})
+			 })
 		  }else{
 			  res.send({message:"该邮箱已经被注册",status:0})
 			  return false
 		  }
 	  })
-	 .then((data)=>{
+	 /* .then((data)=>{
 		  console.log(data)
 		  console.log('插入成功')
 		  res.send({message:"注册成功",status:1,data:data})
-	 })
+	 }) */
 	 .catch((err)=>{
 		  console.log(err)
 		  res.send({message:"注册失败",status:0,error:err})
 	 })
 	
 })
+
+/**
+ * @api {post} /user/userIfo 用户信息修改
+ * @apiName 用户信息修改
+ * @apiGroup user
+ * @apiSuccess {String} userEmail 用户邮箱号.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *     }
+ */
+router.post('/modify',(req,res)=>{//修改用户信息
+
+let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
+	if(!_id || !userEmail || !userName || !userAge || !headerImg || !sex){
+		res.send({message:"缺少参数",status:0})
+		return false
+	}
+	User.findById({_id}).exec((err,data)=>{
+		data.userName=req.body.userName;
+		data.userEmail=req.body.userEmail;
+		data.userAge=req.body.userAge;
+		data.headerImg=req.body.headerImg;
+		data.sex=req.body.sex;
+		data.save(function(err){
+			if(err){
+				res.send({message:"修改失败",status:0,err:err})
+				return false
+			}
+			res.send({message:"修改成功",status:1,data:data})
+		})
+	})
+
+});
+
+/**
+ * @api {post} /user/userIfo 用户信息查询
+ * @apiName 用户信息查询
+ * @apiGroup user
+ * @apiSuccess {String} userEmail 用户邮箱号.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *     }
+ */
+router.post('/userIfo',(req,res)=>{//查询用户信息
+let {userEmail}=req.body
+	if(!userEmail){
+		res.send({message:"缺少参数",status:0})
+		return false
+	}
+	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+	  .then((data)=>{
+		  if(data.length===0){
+				 res.send({message:"查无此人",status:0})
+		  }else{
+			  	 res.send({message:"查询成功",status:1,data:data})
+		  }
+	  })
+
+	 .catch((err)=>{
+		  console.log(err)
+		  res.send({message:"查询失败",status:0,error:err})
+	 })
+
+});
 
 /**
  * @api {post} /user/login 登录接口

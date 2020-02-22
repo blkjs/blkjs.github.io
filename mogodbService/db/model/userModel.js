@@ -4,9 +4,9 @@
 	userEmail: {type:String,required:true},
 	userPass : {type:String,required:true},
 	userAge : 	Number,
-	sex:		{type:Number,default:0},
+	sex:		{type:Number,default:1},
 	headerImg:{type:String,required:false}
   });
   
-  var User = mongoose.model('users', userSchema);//转化为数据模型,会自动转复数形式users
+  var User = mongoose.model('users', userSchema,'users');//转化为数据模型,会自动转复数形式users,('模型名称', userSchema,'集合名称')
   module.exports=User

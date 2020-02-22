@@ -36,7 +36,7 @@ app.all('*', function(req, res, next) {
 });
 
 
-app.use('/public',express.static(path.join(__dirname,'./apiStatic')));//静态资源
+app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源
  
 const userRouter=require('./router/userRouter')
 app.use('/user',userRouter)

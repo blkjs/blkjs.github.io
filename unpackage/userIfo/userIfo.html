@@ -5,10 +5,15 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
         <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
         <title>板栗壳技术有限公司</title>
-        <link rel="stylesheet" type="text/css" href="../../css/leavemsg.css">
+		<link rel="stylesheet" type="text/css" href="../../css/userIfo.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
 		<script src="../../js/public.js"></script>
+		<style>
+			.message{
+				background-color: #5CB85C ;
+			}
+		</style>
     </head>
     <body>
 			<div class="app-top-2">
@@ -31,57 +36,44 @@
 					</div>
 					<div class="app-content-top-2">
 						<div class="content-right">
-							<div class="content-right-top">在线留言<span></span></div>
+							<div class="content-right-top">我的资料<span></span></div>
 						</div>
 						<div class="content-left">
-						<!-- 	<div class="content-left-1">
-								<span>姓名：</span>
-								<span>电话：</span>
-								<span>QQ：</span>
-								<span>微信：</span>
-								<p>留言内容：</p>
-							</div>
-							<div class="content-left-2">
-								<input id="username" maxlength="20" placeholder="您的姓名或公司名称" type="text" />
-								<input id="phone" maxlength="20" placeholder="您的电话" type="text" />
-								<input id="qq" maxlength="20" placeholder="您的QQ号码" type="text" />
-								<input id="wechat" maxlength="20" placeholder="您的微信号" type="text" />
-								<textarea id="content" maxlength="120" placeholder="请适当的进行需求描述,限120字"></textarea>
-								<div onclick="submit()">提交</div>
-							</div> -->
 							<div class="content-left-L">
-								<h1>姓名：</h1>
+								<h1>昵称：</h1>
 							</div>
 							<div class="content-left-R">
-								<input id="username" maxlength="20" placeholder="您的姓名或公司名称" type="text" />
+								<input id="name" type="text" />
 							</div>
 							
 							<div class="content-left-L">
-								<h1>电话：</h1>
+								<h1>邮箱：</h1>
 							</div>
 							<div class="content-left-R">
-								<input id="phone" maxlength="20" placeholder="您的电话" type="text" />
+								<input id="email" type="text" />
 							</div>
 							
 							<div class="content-left-L">
-								<h1>QQ：</h1>
+								<h1>头像：</h1>
 							</div>
-							<div class="content-left-R">
-								<input id="qq" maxlength="20" placeholder="您的QQ号码" type="text" />
-							</div>
-							
-							<div class="content-left-L">
-								<h1>微信：</h1>
-							</div>
-							<div class="content-left-R">
-								<input id="wechat" maxlength="20" placeholder="您的微信号" type="text" />
+							<div  onclick="upload()" class="content-left-R">
+								<!-- <img src="http://localhost:3000/public/1051011877@qq.com/headerImg.png" /> -->
+								<div id="header_img" class="content-left-R-header">+</div>
+								<input onchange="up_img(event)" id="file" type="file" accept="image/gif, image/jpeg, image/png, image/jpg"/>
 							</div>
 							
 							<div class="content-left-L">
-								<h1>留言内容：</h1>
+								<h1>性别：</h1>
 							</div>
 							<div class="content-left-R">
-								<textarea id="content" maxlength="120" placeholder="请适当的进行需求描述,限120字"></textarea>
+								<input id="sex" type="text" />
+							</div>
+							
+							<div class="content-left-L">
+								<h1>年龄：</h1>
+							</div>
+							<div class="content-left-R">
+								<input id="birth" type="text" />
 							</div>
 							
 							<div class="content-left-L">
@@ -90,9 +82,7 @@
 							<div class="content-left-R">
 								<div class="content-left-submit" onclick="submit()">提交</div>
 							</div>
-							
 						</div>
-						
 					</div>
 				</div>
 				<div class="app-content-1">
@@ -146,54 +136,113 @@
 				</div>
 				
 			</div>
+		<script>
+			var header_img = ''
+			var upload=()=>{
+				$('#file')[0].click()
+			}
+			var up_img=(data)=>{
+				console.log(data.target.files)
+				var reader = new FileReader();
+				reader.readAsDataURL(data.target.files[0]);
+				reader.onload = function(){
+				    console.log(reader.result); //获取到base64格式图片
+					
+					$.ajax({
+						url: topurl + "/file/upload",
+						type: 'POST',
+						async: true,
+						xhrFields: {
+							withCredentials: true
+						},
+						data: {
+							_id: JSON.parse(localStorage.getItem("login_msg"))._id,
+							userEmail: JSON.parse(localStorage.getItem("login_msg")).userEmail,
+							imgBase64:reader.result,
+							type:1
+						
+						},
+						success: (data)=> {//nodeservice
+						
+						header_img=data.imgURL
+						console.log(header_img)
+							console.log(JSON.stringify(localStorage.getItem("login_msg")))
+							$('#header_img')[0].style.backgroundImage  = "url("+reader.result+")"
+							$('#header_img')[0].style.backgroundSize  = "cover"
+							$('#header_img')[0].innerHTML  = ""
+						},
+						error: function() {
+							alert('服务器发生错误！');
+						}
+					});
+					
+				};
+
+				
+			}
+			var submit=()=>{
+				console.log($('#name')[0].value)
+				console.log($('#email')[0].value)
+				console.log($('#sex')[0].value)
+				console.log($('#birth')[0].value)
+				var id=JSON.parse(localStorage.getItem("login_msg"))._id
+				$.ajax({
+					url: topurl + "/user/modify",
+					type: 'POST',
+					async: true,
+					xhrFields: {
+						withCredentials: true
+					},
+					data: {
+						_id: id,
+						userEmail: $('#email')[0].value,
+						userName: $('#name')[0].value,
+						userAge: $('#birth')[0].value,
+						headerImg: header_img,
+						sex: $('#sex')[0].value,
+					},
+					success: (data)=> {
+						alert(data.message)
+						localStorage.setItem("login_msg", JSON.stringify(data.data));
+				
+					},
+					error: function() {
+						alert('服务器发生错误！');
+					}
+				});
+			}
+		</script>
+        <script>
+			//console.log(JSON.parse(localStorage.getItem("login_msg")).userEmail)
+			$.ajax({
+				url: topurl + "/user/userIfo",
+				type: 'POST',
+				async: true,
+				xhrFields: {
+					withCredentials: true
+				},
+				data: {
+					userEmail: JSON.parse(localStorage.getItem("login_msg")).userEmail,
+				},
+				success: (data)=> {
+					console.log(data);
+					$('#name')[0].value=data.data[0].userName || ''
+					$('#email')[0].value=data.data[0].userEmail || ''
+					$('#birth')[0].value=data.data[0].userAge || ''
+					$('#sex')[0].value=data.data[0].sex || ''
+					$('#header_img')[0].style.backgroundImage  = "url("+topurl+data.data[0].headerImg+")"
+					$('#header_img')[0].style.backgroundSize  = "cover"
+					$('#header_img')[0].innerHTML  = ""
+					localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
 			
-
-
-       <script>
-		 
-			 
-			 var submit=()=>{
-				 if($("#username")[0].value===""){
-					 alert("姓名不能为空！")
-					 return false;
-				 }else if($("#phone")[0].value===""&& $("#qq")[0].value==="" && $("#wechat")[0].value===""){
-					 alert("请至少留一个联系方式！")
-					 return false;
-				 }else if($("#content")[0].value===""){
-					 alert("请输入留言内容！")
-					 return false;
-				 }
-				 $.ajax({
-				 	url: topurl + "/file/leavemsg",
-				 	type: 'POST',
-				 	async: true,
-				 	xhrFields: {
-				 		withCredentials: true
-				 	},
-				 	data: {
-				 		username: $("#username")[0].value,
-				 		phone: $("#phone")[0].value,
-				 		qq: $("#qq")[0].value,
-						wechat:$("#wechat")[0].value,
-						content:$("#content")[0].value,
-						userEmail:localStorage.getItem("login_msg") ? JSON.parse(localStorage.getItem("login_msg")).userEmail:'未登录用户'
-				 	},
-				 	success: (data)=> {
-				 		console.log(data);
-				 		
-				 		if(data._status==0){
-				 			
-				 		}else if(data._status==1){
-				 			alert("留言成功！我们将尽快联系您！")
-				 			window.open("../app/app.html",'_self')
-				 		}
-
-				 	},
-				 	error: function() {
-				 		alert('服务器发生错误！');
-				 	}
-				 });
-			 }
-       </script>
+				},
+				error: function() {
+					alert('服务器发生错误！');
+				}
+			});
+        </script>
     </body>
 </html>
+
+
+

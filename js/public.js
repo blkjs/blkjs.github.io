@@ -1,4 +1,4 @@
-var topurl = "http://49.235.80.50:3000/"
+var topurl = "http://localhost:3000"
 
 !function(n){
 			　　　　var e=n.document,
@@ -26,6 +26,8 @@ var app = (data) => {
 		window.open("../help/help.html", '_self')
 	}else if(data==6){
 		window.open("../chat/chat.html", '_self')
+	}else if(data==7){
+		window.open("../userIfo/userIfo.html", '_self')
 	}
 	
 	
@@ -41,7 +43,7 @@ var login = () => {
 var register = () => {
 	if (localStorage.getItem("login_msg")) { //退出登录
 		$.ajax({
-			url: topurl + "user/loginOut",
+			url: topurl + "/user/loginOut",
 			type: 'POST',
 			async: true,
 			xhrFields: {
@@ -132,7 +134,7 @@ window.onload = function() {
 	}
 	if (localStorage.getItem("login_msg")) {//检查是否登录
 		$.ajax({
-			url: topurl + "user/iflogin",
+			url: topurl + "/user/iflogin",
 			type: 'POST',
 			async: true,
 			xhrFields: {
@@ -140,13 +142,13 @@ window.onload = function() {
 			},
 			data: {},
 			success: (data) => {
-				var login_msg=JSON.parse(localStorage.getItem("login_msg"));
-				console.log(login_msg)
-				var logo ="../../img/logo.png";
-				var header_img=login_msg.headerImg ? login_msg.headerImg:logo;
+				console.log(data)
 				if (data.status == 1) {
-					document.getElementById("login").innerHTML = '<img src="' + header_img +
-						'" class="header_img" />' + '<span class="username">' + login_msg.userName +
+					var login_msg=JSON.parse(localStorage.getItem("login_msg"));
+					var logo ="../../img/logo.png";
+					var header_img=login_msg.headerImg ? topurl+login_msg.headerImg:logo;
+					document.getElementById("login").innerHTML = '<img onclick="app(7)" src="' + header_img +
+						'" class="header_img" />' + '<span onclick="app(7)" class="username">' + login_msg.userName +
 						'</span>'; //取出用户名
 					document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
 				} else {

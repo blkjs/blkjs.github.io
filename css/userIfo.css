@@ -1,25 +1,3 @@
-
-.content-left-submit{
-	width: 1.3rem;
-	height: 0.4rem;
-	background-color: #4198C5;
-	display: flex;
-	align-items: center;
-	justify-content: center;	
-	border-radius: 5px;
-	cursor: pointer;
-	color: white;
-	
-}
-textarea{
-	width: 4rem;
-	height: 1.3rem;
-	border-radius: 5px;
-	text-align: left;
-	 outline:none; 
-	border: 1px solid gainsboro;
-	resize: none;
-}
 .content-left{
 	
 	width: 87%;
@@ -58,4 +36,19 @@ input{
 	text-align: left;
 	 outline:none; 
 	 border:1px solid gainsboro;
+}
+.content-left-submit{
+	width: 1.3rem;
+	height: 0.4rem;
+	background-color: #4198C5;
+	display: flex;
+	align-items: center;
+	justify-content: center;	
+	border-radius: 5px;
+	cursor: pointer;
+	color: white;
+	
+}
+#file{
+	display: none;
 }
