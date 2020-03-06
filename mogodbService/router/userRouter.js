@@ -81,6 +81,7 @@ router.post('/reg',(req,res)=>{
 router.post('/modify',(req,res)=>{//修改用户信息
 
 let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
+	console.log()
 	if(!_id || !userEmail || !userName || !userAge || !headerImg || !sex){
 		res.send({message:"缺少参数",status:0})
 		return false

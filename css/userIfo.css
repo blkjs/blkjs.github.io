@@ -52,3 +52,40 @@ input{
 #file{
 	display: none;
 }
+.radio{
+	width: 100%;
+	height:0.3rem;
+	display: flex;
+	align-items: center;
+}
+.choose-box{
+        padding-left:20px;
+		margin-right:20px;
+        position:relative;
+        display:inline-block;
+        height:45px;
+        line-height:45px;
+    }
+    .choose-box input[type="radio"]::before{
+        content:'';
+        display:inline-block;
+        width:13px;
+        height:13px;
+        border-radius:50%;
+        border:1px solid #0069AB;
+        margin-right:15px;
+        position:absolute;
+        top:15px;
+        left:0;
+    }
+    .choose-box input[type="radio"]:checked::before{
+        background-clip: content-box;
+        background-color:#0069AB;
+        width:9px;
+        height:9px;
+        padding:2px;
+    }
+    .choose-box input[type="radio"]{
+        width:0;
+        height:0;
+    }

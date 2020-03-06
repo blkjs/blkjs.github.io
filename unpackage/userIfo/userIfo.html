@@ -50,7 +50,7 @@
 								<h1>邮箱：</h1>
 							</div>
 							<div class="content-left-R">
-								<input id="email" type="text" />
+								<input disabled="" id="email" type="text" />
 							</div>
 							
 							<div class="content-left-L">
@@ -58,7 +58,7 @@
 							</div>
 							<div  onclick="upload()" class="content-left-R">
 								<!-- <img src="http://localhost:3000/public/1051011877@qq.com/headerImg.png" /> -->
-								<div id="header_img" class="content-left-R-header">+</div>
+								<img id="header_img" src="" class="content-left-R-header">
 								<input onchange="up_img(event)" id="file" type="file" accept="image/gif, image/jpeg, image/png, image/jpg"/>
 							</div>
 							
@@ -66,7 +66,10 @@
 								<h1>性别：</h1>
 							</div>
 							<div class="content-left-R">
-								<input id="sex" type="text" />
+								<div class="radio">
+									<label  class="choose-box"><input type="radio"  value="1" name="sex" />男</label>
+									<label  class="choose-box"><input type="radio" value="2" name="sex" />女</label>
+								</div>
 							</div>
 							
 							<div class="content-left-L">
@@ -166,10 +169,8 @@
 						
 						header_img=data.imgURL
 						console.log(header_img)
-							console.log(JSON.stringify(localStorage.getItem("login_msg")))
-							$('#header_img')[0].style.backgroundImage  = "url("+reader.result+")"
-							$('#header_img')[0].style.backgroundSize  = "cover"
-							$('#header_img')[0].innerHTML  = ""
+						
+							$('#header_img')[0].src  =reader.result
 						},
 						error: function() {
 							alert('服务器发生错误！');
@@ -180,11 +181,22 @@
 
 				
 			}
-			var submit=()=>{
-				console.log($('#name')[0].value)
-				console.log($('#email')[0].value)
-				console.log($('#sex')[0].value)
-				console.log($('#birth')[0].value)
+			var cheack=()=>{
+				//var patrn = /[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘’，。、]/im;
+				
+				     if (!patrn.test(str)) {// 如果包含特殊字符返回false
+				
+				         return false;
+				
+				     }
+				if($('#name')[0].value===''){
+					alert('昵称不能为空！')
+					return false
+				}else if($('#name')[0].value===''){
+					
+				}
+			}
+			var submit=()=>{ //提交修改
 				var id=JSON.parse(localStorage.getItem("login_msg"))._id
 				$.ajax({
 					url: topurl + "/user/modify",
@@ -199,12 +211,12 @@
 						userName: $('#name')[0].value,
 						userAge: $('#birth')[0].value,
 						headerImg: header_img,
-						sex: $('#sex')[0].value,
+						sex: $("input[name='sex']:checked").val(),
 					},
 					success: (data)=> {
 						alert(data.message)
 						localStorage.setItem("login_msg", JSON.stringify(data.data));
-				
+						location.reload()
 					},
 					error: function() {
 						alert('服务器发生错误！');
@@ -213,8 +225,7 @@
 			}
 		</script>
         <script>
-			//console.log(JSON.parse(localStorage.getItem("login_msg")).userEmail)
-			$.ajax({
+			$.ajax({//进入页面加载数据
 				url: topurl + "/user/userIfo",
 				type: 'POST',
 				async: true,
@@ -229,10 +240,9 @@
 					$('#name')[0].value=data.data[0].userName || ''
 					$('#email')[0].value=data.data[0].userEmail || ''
 					$('#birth')[0].value=data.data[0].userAge || ''
-					$('#sex')[0].value=data.data[0].sex || ''
-					$('#header_img')[0].style.backgroundImage  = "url("+topurl+data.data[0].headerImg+")"
-					$('#header_img')[0].style.backgroundSize  = "cover"
-					$('#header_img')[0].innerHTML  = ""
+					$('.radio input[value="'+data.data[0].sex+'"]').attr("checked","checked")
+					$('#header_img')[0].src  = topurl+data.data[0].headerImg
+					header_img=data.data[0].headerImg
 					localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
 			
 				},

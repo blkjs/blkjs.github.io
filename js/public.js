@@ -1,4 +1,4 @@
-var topurl = "http://localhost:3000"
+var topurl = "http://49.235.80.50:3000"
 
 !function(n){
 			　　　　var e=n.document,
@@ -36,7 +36,7 @@ var login = () => {
 	if (!localStorage.getItem("login_msg")) { //跳转登录页面
 		window.open("../login/login.html", '_self')
 	} else { //已登录
-
+		console.log('已经登录')
 	}
 
 }
