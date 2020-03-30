@@ -257,7 +257,7 @@ router.post('/getMailCde',(req,res)=>{
 	let {lastTime}  = {lastTime:mail+'-lastTime'}//上次请求时间的名字
 	let {lastTime1}  = {lastTime1:mail+'-lastTime1'}//上上次请求时间的名字
 	if(!mail){
-		res.send({messagee:"缺少参数",status:0})
+		res.send({message:"缺少参数",status:0})
 		return false
 	}
 	if((times-codes[lastTime1])<300000 && codes[cum]>=3){//5分钟只能请求3次接口,当前时间-上上次时间

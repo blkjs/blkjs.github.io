@@ -114,18 +114,24 @@
 								console.log(data);
 								if(data.status==0){
 									console.log(data.message);
-									if(data.message==="请填写验证码！" || data.message==="验证码错误"){
+									uni.showToast({
+										title: "登录成功",
+										icon: "none"
+									});
+									/* if(data.message==="请填写验证码！" || data.message==="验证码错误"){
 										this.VCode_msg=data.message;
 										this.VCode();
 									}else{
 										alert(data.message)
 									}
 									this.VCode_msg="";
-									this.password_msg=data.message;
+									this.password_msg=data.message; */
 									return
 								}else if(data.status==1){
-									localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
-									window.open("../app/app.html",'_self')
+									uni.showToast({
+										title: "登录失败",
+										icon: "none"
+									});
 								}
 								
 									
