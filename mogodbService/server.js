@@ -46,6 +46,8 @@ const fileRouter=require('./router/fileRouter')
 app.use('/file',fileRouter)
 const noticeRouter=require('./router/noticeRouter')
 app.use('/notice',noticeRouter)
+const analysisRouter=require('./router/analysisRouter')
+app.use('/analysis',analysisRouter)
 const gameWebSokect=require('./router/gameWebSokect')
 app.use('/game',gameWebSokect)
  /* User.insertMany({userName:'张三',userPass:'123456',userAge:24,headerImg:"headerImg"})//增加

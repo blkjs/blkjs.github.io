@@ -3,8 +3,8 @@ const router =express.Router()
 
 
 /**
- * @api {ws} ws://ip:3001 chat
- * @apiName 登录接口
+ * @api {ws} ws://ip:3002 game
+ * @apiName 游戏接口
  * @apiGroup chat
  * 
  * @apiSuccess {String} message 用户发送的消息.
@@ -62,9 +62,8 @@ setInterval(()=>{
 			messages.forEach(function each(data) {//新用户接时把旧消息发送给新用户
 				client_sock.send(data);
 			})
-			
+			console.log('当前在线人数:'+arr.length)
  		}
-		console.log('当前在线人数:'+arr.length)
  		arr.forEach(function each(client) {
 			if(JSON.parse(data).modify_name){//发送修改昵称消息给所有人
 				var n = arr.indexOf(client_sock);
@@ -96,6 +95,7 @@ setInterval(()=>{
 		});
  		var t = arr.splice(n,1)//从索引n开始删除1个元素,删除关闭连接的客户端信息
 		//console.log(t[0].name)
+		console.log('当前在线人数:'+arr.length)
  	});
  	 
  	// error事件
