@@ -34,6 +34,7 @@ header .showtime {
   top: 0;
 }
 .section {
+  overflow: hidden;
   display: flex;
   padding: 0.125rem 0.125rem 0;
 }
@@ -179,8 +180,8 @@ header .showtime {
   width: 5.475rem;
   height: 5.475rem;
   position: absolute;
-  top: 15%;
-  left: 25%;
+  top: 2.7375rem;
+  left: 2.7375rem;
   transform: translate(-50%, -50%);
   background: url(../img/diqiu.png);
   background-size: 100% 100%;
@@ -191,8 +192,8 @@ header .showtime {
   width: 8.5rem;
   height: 8.5rem;
   position: absolute;
-  top: 0%;
-  left: 10%;
+  top: 1.2rem;
+  left: 1.2rem;
   transform: translate(-50%, -50%);
   background: url(../img/huang.png);
   background-size: 100% 100%;
