@@ -103,6 +103,66 @@ let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
 
 });
 
+
+/**
+ * @api {post} /user/exchange 兑换时长
+ * @apiName 兑换时长
+ * @apiGroup user
+ * @apiSuccess {String} userEmail 用户邮箱号.
+ * @apiSuccess {String} time 要兑换的时长(天).
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": 1,
+ *     }
+ */
+router.post('/exchange',(req,res)=>{//修改用户信息
+
+let {userEmail,time}=req.body
+	console.log(userEmail,time)
+	if(!userEmail || !time){
+		res.send({message:"缺少参数",status:0})
+		return false
+	}
+	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+	  .then((data)=>{
+		  if(data.length===0){
+				 res.send({message:"userEmail错误！",status:0})
+				 return false
+		  }else{
+				var nowTime =new Date().getTime()
+				if(nowTime<parseInt(data[0].expirationDate)){
+					nowTime=parseInt(data[0].expirationDate)
+				}
+			  	var diamonds =parseInt(data[0].diamonds)-parseInt(time)
+				var expirationDate=parseInt(time)*24*60*60*1000 + nowTime
+				console.log(nowTime)
+				console.log(parseInt(time)*24*60*60*60)
+				if(diamonds>=0){
+				}else{
+					res.send({message:"余额不足，兑换失败！",status:0})
+					return false
+				}
+				User.updateOne({'userEmail': userEmail}, { 'diamonds': diamonds,'expirationDate':expirationDate },function(err, response) {
+					if (err){
+						res.send({message:"兑换失败！",status:0})
+						return false
+					  console.log(err);
+					} else {
+						console.log('兑换成功')
+					  res.send({message:"兑换成功！",status:1})
+					}
+				  })
+				
+		  }
+	  })
+	 .catch((err)=>{
+		  console.log(err)
+		  res.send({message:"查询失败",status:0,error:err})
+	 })
+
+});
+
 /**
  * @api {post} /user/userIfo 用户信息查询
  * @apiName 用户信息查询

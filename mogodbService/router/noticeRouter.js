@@ -4,7 +4,7 @@ const router =express.Router()
 
 /**
  * @api {ws} ws://ip:3001 chat
- * @apiName 登录接口
+ * @apiName 登接口
  * @apiGroup chat
  * 
  * @apiSuccess {String} message 用户发送的消息.

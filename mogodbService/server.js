@@ -5,6 +5,7 @@ const db=require('./db/connect')//数据库连接
 const bodyParser = require('body-parser');
 var session = require('express-session');
 const FileStore = require('session-file-store')(session);
+const router = express.Router()
 app.use(bodyParser.json());//数据JSON类型
 app.use(bodyParser.urlencoded({ extended: false }));//解析post请求数据
 
@@ -50,6 +51,13 @@ const analysisRouter=require('./router/analysisRouter')
 app.use('/analysis',analysisRouter)
 const gameWebSokect=require('./router/gameWebSokect')
 app.use('/game',gameWebSokect)
+const talkingSkillRouter=require('./router/talkingSkillRouter')
+app.use('/talkingSkill',talkingSkillRouter)
+const playRouter=require('./router/playRouter')
+app.use('/play',playRouter)
+const updateRouter=require('./router/updateRouter')
+app.use('/update',updateRouter)
+
  /* User.insertMany({userName:'张三',userPass:'123456',userAge:24,headerImg:"headerImg"})//增加
   .then((data)=>{
 	  console.log(data)

@@ -9,11 +9,18 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.2.0",
+    "cheerio": "^1.0.0-rc.3",
     "connect-multiparty": "^2.2.0",
+    "ejs": "^3.1.2",
     "express": "^4.17.1",
     "express-session": "^1.17.0",
+    "md5": "^2.2.1",
     "mongoose": "^5.8.11",
     "nodemailer": "^6.4.2",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "selenium-webdriver": "^4.0.0-alpha.7",
     "session-file-store": "^1.4.0",
     "svg-captcha": "^1.4.0",
     "ws": "^7.2.1"
