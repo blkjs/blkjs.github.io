@@ -2,6 +2,7 @@ const express =require('express')
 const app=express()
 const router =express.Router()
 const User=require('../db/model/userModel')//引入用户表的Schema模型
+const Message=require('../db/model/messageModel')//引入用户表的Schema模型
 const Mail=require('../utils/mail')
 var svgCaptcha = require('svg-captcha');
 let codes={}//通过内存保存邮箱验证码,邮箱,时间戳
@@ -132,25 +133,29 @@ let {userEmail,time}=req.body
 		  }else{
 				var nowTime =new Date().getTime()
 				if(nowTime<parseInt(data[0].expirationDate)){
-					nowTime=parseInt(data[0].expirationDate)
+					nowTime1=parseInt(data[0].expirationDate)
 				}
 			  	var diamonds =parseInt(data[0].diamonds)-parseInt(time)
-				var expirationDate=parseInt(time)*24*60*60*1000 + nowTime
-				console.log(nowTime)
-				console.log(parseInt(time)*24*60*60*60)
+				var expirationDate=parseInt(time)*24*60*60*1000 + nowTime1
 				if(diamonds>=0){
 				}else{
 					res.send({message:"余额不足，兑换失败！",status:0})
 					return false
 				}
-				User.updateOne({'userEmail': userEmail}, { 'diamonds': diamonds,'expirationDate':expirationDate },function(err, response) {
+				User.updateOne({'userEmail': userEmail}, { 'diamonds': diamonds,'expirationDate':expirationDate },(err, response)=> {
 					if (err){
 						res.send({message:"兑换失败！",status:0})
 						return false
 					  console.log(err);
 					} else {
-						console.log('兑换成功')
-					  res.send({message:"兑换成功！",status:1})
+					var msg = new Message();
+					 res.send({message:"兑换成功！",status:1})
+					 msg.messages='您已成功兑换'+ time +'天使用时长！';
+					 msg.userEmail=userEmail;
+					 msg.isRead=0;
+					 msg.creatTime=nowTime
+					 msg.diamonds=diamonds//本次兑换后剩余钻石数量
+					 msg.save()
 					}
 				  })
 				

@@ -57,6 +57,8 @@ const playRouter=require('./router/playRouter')
 app.use('/play',playRouter)
 const updateRouter=require('./router/updateRouter')
 app.use('/update',updateRouter)
+const messageRouter=require('./router/messageRouter')
+app.use('/message',messageRouter)
 
  /* User.insertMany({userName:'张三',userPass:'123456',userAge:24,headerImg:"headerImg"})//增加
   .then((data)=>{
