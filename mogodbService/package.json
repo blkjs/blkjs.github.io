@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.0",
+    "baidu-aip-sdk": "^2.4.6",
     "cheerio": "^1.0.0-rc.3",
     "connect-multiparty": "^2.2.0",
     "ejs": "^3.1.2",

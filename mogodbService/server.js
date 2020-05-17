@@ -1,4 +1,5 @@
 const express =require('express')
+var ejs = require('ejs');
 const app=express()
 const path =require('path')
 const db=require('./db/connect')//数据库连接
@@ -6,6 +7,18 @@ const bodyParser = require('body-parser');
 var session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const router = express.Router()
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.set('views','./views');
+app.set('view engine','ejs');
+//为html扩展名注册ejs
+app.engine('html',ejs.renderFile);
+app.get('/ejs',function(req,res){
+	console.log(req.query)
+    res.render('user_ejs.html',req.query);
+})
+
+
 app.use(bodyParser.json());//数据JSON类型
 app.use(bodyParser.urlencoded({ extended: false }));//解析post请求数据
 
@@ -59,6 +72,8 @@ const updateRouter=require('./router/updateRouter')
 app.use('/update',updateRouter)
 const messageRouter=require('./router/messageRouter')
 app.use('/message',messageRouter)
+const imgRecognition=require('./router/imgRecognition')
+app.use('/imgRecognition',imgRecognition)
 
  /* User.insertMany({userName:'张三',userPass:'123456',userAge:24,headerImg:"headerImg"})//增加
   .then((data)=>{

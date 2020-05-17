@@ -6,6 +6,7 @@ var md5=require("md5")
 var rp = require('request-promise');
 const Play=require('../db/model/playModel')//引入用户表的Schema模型
 const Order=require('../db/model/orderModel')//引入用户表的Schema模型
+
 /**
  * @api {post} /play/play 用户支付
  * @apiName 用户支付
@@ -85,7 +86,13 @@ router.post('/creatOrder', (req, res) => {
 		 if (err) {
 		    console.log(err);
 		  } else {
-			  res.send({message:"订单创建成功"})
+			  res.send({
+				  message:"订单创建成功",
+				  time,
+				  money,
+				  name,
+				  type
+				  })
 			  setTimeout(()=>{
 				  Order.updateOne({'price': money,'payType':type,status:0}, { 'status': '-1' },function(err, response) {
 				  	if (err){
@@ -103,6 +110,7 @@ router.post('/test',(req, res, next)=> {//收款测试
 	console.log(money,time,title,type)
 	var thisTime = new Date().getTime()
 		Order.updateOne({'price': money,'payType':type,status:0}, { 'status': '1' },function(err, response) {
+			console.log(response)
 			if (err){
 			  console.log(err);
 			} else {
@@ -112,4 +120,25 @@ router.post('/test',(req, res, next)=> {//收款测试
 		  })
 	  
 });
+router.post('/getQrCode',(req, res, next)=> {//二维码测试
+	let {price,payType} = JSON.parse(req.body.data)
+	
+	console.log(price,payType)
+	Order.find({price,payType,'status':0})//查询
+	  .then((data)=>{
+	 	  console.log(data)
+		  if(data.length>0){
+			 res.send({url:"http://49.235.80.50/m/a.png"})
+		  }else{
+			  res.send({message:"链接失效",status:0})
+		  }
+	  })
+	  .catch((err)=>{
+	 	  console.log(err)
+		   res.send({message:"内部错误",status:0})
+	  })
+	  
+});
+router.get('/getPlay',(req, res, next)=> {//二维码测试
+})
 module.exports=router
