@@ -32,7 +32,6 @@ HttpClient.setRequestInterceptor(function(requestOptions) {
 	return requestOptions;
 });
 
-var image = fs.readFileSync("./uploads/1.png").toString("base64");
 
 var mk = (folderName) => {
 	fs.mkdir('./uploads', (error) => {
@@ -84,17 +83,15 @@ router.post('/upload', multipartyMiddleware, (req, res) => {
 	let send = []
 	let pList= []
 	for(let i=0;i<imgs.length;i++){
-		console.log(imgs.length)
 		let imgBase64 = imgs[i].file.src.replace(/^data:image\/\w+;base64,/, "")//替换图片前缀 data:image\/\w+;base64,
+		let arri= i
 		pList.push(new Promise((resolve, reject)=> {
 			client.generalBasic(imgBase64).then((result) => { //开始百度图像识别
 				let data = JSON.parse(JSON.stringify(result)).words_result
 				let money
 				for (var i = 0; i < data.length; i++) {
-					console.log(data.length)
 					if (data[i].words.indexOf('￥') > -1) {
 						money = data[i].words.slice(1, data[i].words.length)
-						console.log(data[i].words.length)
 						let dataBuffer = new Buffer.from(imgBase64, 'base64');
 						saveimg('wechat', dataBuffer, money)
 						.then((path)=>{
@@ -104,16 +101,17 @@ router.post('/upload', multipartyMiddleware, (req, res) => {
 								}
 								var time=new Date().getTime()
 								if(resp.length>0){
-									console.log(resp.length)
 									resp[0].money=money
 									resp[0].time=time.toString()
 									resp[0].type='wechat'
 									resp[0].path=path
-									resp[0].save(function(err){
+									resp[0].save((err)=>{
 										if(err){
 											console.log('修改失败'+money)
+											send.push({ 'money':money, status:0, message:'保存失败', arri:arri })
 										}else{
 											console.log('修改成功'+money)
+											send.push({ 'money':money, status:1, message:'保存成功',  arri:arri })
 										}
 									})
 								}else{
@@ -122,12 +120,14 @@ router.post('/upload', multipartyMiddleware, (req, res) => {
 									QrCode.time=time.toString()
 									QrCode.type='wechat'
 									QrCode.path=path
-									QrCode.save(function(err){
+									QrCode.save((err)=>{
 										if(err){
 											console.log(err)
 											console.log('保存失败'+money)
+											send.push({ 'money':money, status:0, message:'保存失败',  arri:arri })
 										}else{
 											console.log('保存成功'+money)
+											send.push({ 'money':money, status:1, message:'保存成功',  arri:arri })
 										}
 									})
 								}
@@ -135,7 +135,6 @@ router.post('/upload', multipartyMiddleware, (req, res) => {
 						})
 					}
 				}
-				send.push(money)
 				console.log(money)
 				resolve()
 			}).catch(function(err) {
@@ -146,7 +145,9 @@ router.post('/upload', multipartyMiddleware, (req, res) => {
 		}))
 	}
 	Promise.all(pList).then((resp)=> {
-	    res.send(send)
+		setTimeout(()=>{
+			res.send(send)
+		},1000)
 	})
 })
 router.post('/getQrCode', multipartyMiddleware, (req, res) => {//查询二维码
@@ -191,7 +192,7 @@ router.post('/delQrCode', multipartyMiddleware, (req, res) => {//查询二维码
 	qrCode.deleteOne({_id})
 	.then((data)=>{
 		console.log(data)
-		res.send({massage:"删除成功",status:1,data})
+		res.send({massage:"操作完成",status:1,data})
 		deleteFile('../'+path.replace(/public/, "uploads"),false)
 	})
 	.catch((err)=>{

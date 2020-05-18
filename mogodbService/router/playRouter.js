@@ -6,7 +6,7 @@ var md5=require("md5")
 var rp = require('request-promise');
 const Play=require('../db/model/playModel')//引入用户表的Schema模型
 const Order=require('../db/model/orderModel')//引入用户表的Schema模型
-
+const qrCode = require('../db/model/qrCodeModel');
 /**
  * @api {post} /play/play 用户支付
  * @apiName 用户支付
@@ -72,38 +72,48 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/creatOrder', (req, res) => {
-	let {money,name,type} = req.body
-	console.log(money,name,type)
+	let { num, name, type, userEmail } = req.body
+	let money = 0.1 * num
+	if( !num || !name || !type || !userEmail ){
+		res.send({message:"订单创建失败，缺少参数"})
+		return false
+	}
+	console.log(money,name,type,userEmail,num)
 	var time = new Date().getTime()
 	var status=0
-	var order = new Order();
-	 order.time=time;
-	 order.price=money;
-	 order.name=name;
-	 order.status=status;
-	 order.payType=type;
-	 order.save((err, response)=>{
+	qrCode.find({$and:[{'money':money},{type:'wechat'}]})
+	 .then((data)=>{
+		var order = new Order();
+		 order.time=time;
+		 order.price=money;
+		 order.name=name;
+		 order.status=status;
+		 order.payType=type;
+		 order.userEmail=userEmail;
+		 order.num=num;
+		 order.payUrl=data[0].path
+		order.save((err, response)=>{
 		 if (err) {
-		    console.log(err);
+			console.log(err);
 		  } else {
-			  res.send({
-				  message:"订单创建成功",
-				  time,
-				  money,
-				  name,
-				  type
-				  })
+			  console.log(typeof(payUrl))
+			  res.send({ message:"订单创建成功", time, money, name, type, userEmail, num ,payUrl:data[0].path})
 			  setTimeout(()=>{
 				  Order.updateOne({'price': money,'payType':type,status:0}, { 'status': '-1' },function(err, response) {
-				  	if (err){
-				  	  console.log(err);
-				  	} else {
-				  		console.log('订单超时自动取消！')
-				  	}
-				    })
+					if (err){
+					  console.log(err);
+					} else {
+						console.log('订单超时自动取消！')
+					}
+					})
 			  },300000)
 		  }
+		})
 	 })
+	 .catch(()=>{
+		 res.send({ message:"订单创建失败", ststus: 0 })
+	 })
+	
 })
 router.post('/test',(req, res, next)=> {//收款测试
 	let {money,time,title,type} = req.body

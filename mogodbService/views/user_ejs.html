@@ -28,7 +28,12 @@
 			<text class="play-text"> <%= uname %> </text>
 			<% } %>
 		</div>
-		<Script language="javascript"> 
+		<script language="javascript"> 
+		window.onload=function(){
+			setTimeout(()=>{
+				alert("长按二维码支付即可！")
+			},800)
+		}
 		</script> 
 	</body>
 </html>
