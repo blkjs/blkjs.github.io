@@ -5,7 +5,9 @@ var http = require('http');
 var md5=require("md5")  
 var rp = require('request-promise');
 const Play=require('../db/model/playModel')//引入用户表的Schema模型
+const User=require('../db/model/userModel')//引入用户表的Schema模型
 const Order=require('../db/model/orderModel')//引入用户表的Schema模型
+const Message=require('../db/model/messageModel')//引入用户表的Schema模型
 const qrCode = require('../db/model/qrCodeModel');
 /**
  * @api {post} /play/play 用户支付
@@ -22,7 +24,6 @@ const qrCode = require('../db/model/qrCodeModel');
  *       "code":"s55g"
  *     }
  */
-//注册接口
 router.post('/play', (req, res) => {
 	let msg ={
 		"order_id":"1321456548",	//外部订单编号
@@ -71,7 +72,7 @@ router.get('/', function(req, res, next) {
   )
 });
 
-router.post('/creatOrder', (req, res) => {
+router.post('/creatOrder', (req, res) => { //增加订单
 	let { num, name, type, userEmail } = req.body
 	let money = 0.1 * num
 	if( !num || !name || !type || !userEmail ){
@@ -97,7 +98,7 @@ router.post('/creatOrder', (req, res) => {
 			console.log(err);
 		  } else {
 			  console.log(typeof(payUrl))
-			  res.send({ message:"订单创建成功", time, money, name, type, userEmail, num ,payUrl:data[0].path})
+			  res.send({ message:"订单创建成功", time, money, name, type, userEmail, num ,payUrl:data[0].path,status})
 			  setTimeout(()=>{
 				  Order.updateOne({'price': money,'payType':type,status:0}, { 'status': '-1' },function(err, response) {
 					if (err){
@@ -115,21 +116,104 @@ router.post('/creatOrder', (req, res) => {
 	 })
 	
 })
-router.post('/test',(req, res, next)=> {//收款测试
+
+router.post('/test',(req, res, next)=> {//修改订单  收款,安卓APP监听到收款后通知服务器
 	let {money,time,title,type} = req.body
-	console.log(money,time,title,type)
-	var thisTime = new Date().getTime()
-		Order.updateOne({'price': money,'payType':type,status:0}, { 'status': '1' },function(err, response) {
-			console.log(response)
-			if (err){
-			  console.log(err);
+	//console.log(money,time,title,type)
+	let thisTime = new Date().getTime()
+	let userEmail=''
+	let num=''
+	let diamonds='' //钻石数
+	let surplus=''
+	Order.find({'price': Number(money),'payType':type,status:0})
+	.then((response)=>{//查询订单信息
+		console.log(response[0].userEmail)
+		userEmail = response[0].userEmail
+		num = response[0].num
+		return Order.updateOne({'price': Number(money),'payType':type,status:0}, { 'status': '1' })
+	})
+	.then((response)=>{//修改订单为已支付
+		console.log(response)
+		return User.find({userEmail})
+	})
+	.then((response)=>{
+		console.log(response)
+		surplus = Number(response[0].diamonds)+Number(num)
+		return User.updateOne({userEmail}, { 'diamonds':surplus })
+	})
+	.then(()=>{
+		var nowTime =new Date().getTime()
+		var msg = new Message()
+		msg.messages='您已成功充值'+num+'钻石！实付'+money+'元';
+		msg.userEmail=userEmail;
+		msg.isRead=0;
+		msg.creatTime=nowTime
+		msg.diamonds=surplus//本次充值后剩余钻石数量
+		msg.save()
+		console.log('付款成功')
+		res.send({message:"付款成功"})
+	})
+	.catch((err)=>{
+		if (err){
+			res.send({message:"付款失败，订单已取消，请联系客服！",time ,title,type,money,err})
+		  console.log(err);
+		}
+	})
+});
+
+router.post('/cancelOrder',(req, res, next)=> {//取消订单
+	let { userEmail,_id} = req.body
+	console.log(userEmail,_id)
+		Order.updateOne({userEmail,_id,status:0}, { 'status': -1 },function(err, doc) {
+			console.log(doc)
+			if (err || doc.nModified===0){
+				res.send({message:"取消订单失败",status:0,err})
+				console.log(err);
 			} else {
-				console.log('付款成功')
-			  res.send({message:"付款成功"})
+				console.log('取消订单成功')
+			  res.send({message:"取消成功",status:1,doc})
 			}
 		  })
-	  
 });
+router.post('/delOrder',(req, res, next)=> {//删除订单
+let { userEmail,_id} = req.body
+console.log(userEmail,_id)
+	Order.deleteOne({userEmail,_id},(err,doc)=>{
+		if(err){
+			res.send({message:"操作失败",status:0,err})
+		}
+		res.send({message:"操作成功",status:1,doc})
+	})
+})
+
+router.post('/getOrder',(req, res, next)=> {//分页查询所有订单
+	let { pageSize=5, page=1, userEmail=''} = req.body
+    Order.find({userEmail}).limit(Number(pageSize)).skip(Number((page-1)*pageSize))//默认查询5条跳过(skip)0条
+     .then((data)=>{
+    	  console.log(data)
+    	  		res.send({massage:"查询成功",status:1,data})
+    	 
+     })
+     .catch((err)=>{
+    	 console.log(err)
+    	  res.send({massage:"查询失败",status:0})
+     })
+})
+
+router.post('/getOrderByTime',(req, res, next)=> {//按订单号查询订单
+	let { time } = req.body
+    Order.find({time})
+     .then((data)=>{
+    	 console.log(data)
+    	 res.send({massage:"查询成功",status:1,data})
+    	 
+     })
+     .catch((err)=>{
+    	 console.log(err)
+    	  res.send({massage:"查询失败",status:0})
+     })
+})
+
 router.post('/getQrCode',(req, res, next)=> {//二维码测试
 	let {price,payType} = JSON.parse(req.body.data)
 	
@@ -149,6 +233,5 @@ router.post('/getQrCode',(req, res, next)=> {//二维码测试
 	  })
 	  
 });
-router.get('/getPlay',(req, res, next)=> {//二维码测试
-})
+
 module.exports=router

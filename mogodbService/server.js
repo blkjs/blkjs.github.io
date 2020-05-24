@@ -7,20 +7,7 @@ const bodyParser = require('body-parser');
 var session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const router = express.Router()
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.set('views','./views');
-app.set('view engine','ejs');
-//为html扩展名注册ejs
-app.engine('html',ejs.renderFile);
-app.get('/ejs',function(req,res){
-	console.log(req.query)
-    res.render('user_ejs.html',req.query);
-})
 
-
-app.use(bodyParser.json());//数据JSON类型
-app.use(bodyParser.urlencoded({ extended: false }));//解析post请求数据
 
 app.use(session({
 	 name: 'www.blkjs.com',
@@ -35,6 +22,16 @@ store:new FileStore({reapInterval: 5 * 1000,}),//数据持久化方式，这里�
  reapAsync:true ,//使用不同的工作进程来删除陈旧的会话。默认为false
  reapSyncFallback:true,// 如果不能异步执行，则同步收到过时会话。默认为false
 }));
+
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.set('views','./views');
+app.set('view engine','ejs');
+//为html扩展名注册ejs
+app.engine('html',ejs.renderFile);
+app.get('/ejs',function(req,res){
+    res.render('pay_qrCode.html',req.query);
+})
 
  //设置跨域访问
 app.all('*', function(req, res, next) {
@@ -75,43 +72,6 @@ app.use('/message',messageRouter)
 const imgRecognition=require('./router/imgRecognition')
 app.use('/imgRecognition',imgRecognition)
 
- /* User.insertMany({userName:'张三',userPass:'123456',userAge:24,headerImg:"headerImg"})//增加
-  .then((data)=>{
-	  console.log(data)
-	  console.log('插入成功')
-  })
-  .catch((err)=>{
-	  console.log(err)
-  }) */
-  
- /* User.find({userName:'张三',userPass:'123456'})//查询
-   .then((data)=>{
-  	  console.log(data)
-  	  console.log('查询成功')
-   })
-   .catch((err)=>{
-  	  console.log(err)
-   }) */
-   
- /*  User.remove({userName:'张三',userPass:'123456'})//删除
-     .then((data)=>{
-    	  console.log(data)
-    	  console.log('删除成功')
-     })
-     .catch((err)=>{
-    	  console.log(err)
-     }) */
-	 
-	/* var query = { userName: '张三',userPass:'12345678'};
-	User.update(query, { userName: '李四1' })//更改
-	.then((data)=>{
-		 	  console.log(data)
-		 	  console.log('更改成功')
-	})
-	.catch((err)=>{
-		 	  console.log(err)
-	}) */
-	
 	//配置服务端口
 	var server = app.listen(3000, function() {
 	

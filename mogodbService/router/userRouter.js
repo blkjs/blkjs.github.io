@@ -257,9 +257,12 @@ router.post('/iflogin',(req,res)=>{//检查是否登陆
 
 var iflogin = req.session.userifo ? req.session.userifo:false
  if(iflogin.iflogin===true){
-		console.log("已经登陆");
-		return	res.json({
-			 status:1,
+		console.log(req.session.userifo);
+		Message.find({'userEmail':req.session.userifo.userEmail,'isRead':0},(err,doc)=>{
+			return	res.json({
+				 status:1,
+				 unReadMessage:doc.length || 0
+			})
 		})
 }else{
 	console.log("未登陆");

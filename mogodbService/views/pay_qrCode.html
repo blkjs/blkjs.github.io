@@ -25,14 +25,14 @@
 		<div class="parent">
 			<% if (url) { %>
 			<img class="play-img" src=" <%= url %> " alt="扫描二维码"/>
-			<text class="play-text"> <%= uname %> </text>
 			<% } %>
 		</div>
+		<div>长按二维码支付即可</div>
 		<script language="javascript"> 
 		window.onload=function(){
 			setTimeout(()=>{
 				alert("长按二维码支付即可！")
-			},800)
+			},500)
 		}
 		</script> 
 	</body>
