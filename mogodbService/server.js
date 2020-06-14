@@ -1,4 +1,4 @@
-const express =require('express')
+﻿const express =require('express')
 var ejs = require('ejs');
 const app=express()
 const path =require('path')
@@ -29,7 +29,7 @@ app.set('views','./views');
 app.set('view engine','ejs');
 //为html扩展名注册ejs
 app.engine('html',ejs.renderFile);
-app.get('/ejs',function(req,res){
+app.get('/payImg',function(req,res){
     res.render('pay_qrCode.html',req.query);
 })
 
@@ -47,8 +47,10 @@ app.all('*', function(req, res, next) {
 });
 
 
-app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源
+app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
  
+ const download=require('./router/download')
+ app.use('/download',download) //文件下载
 const userRouter=require('./router/userRouter')
 app.use('/user',userRouter)
 const foodRouter=require('./router/foodRouter')
@@ -71,6 +73,9 @@ const messageRouter=require('./router/messageRouter')
 app.use('/message',messageRouter)
 const imgRecognition=require('./router/imgRecognition')
 app.use('/imgRecognition',imgRecognition)
+//const PuppeteerRouter=require('./router/PuppeteerRouter')
+//app.use('/puppeteer',PuppeteerRouter)
+
 
 	//配置服务端口
 	var server = app.listen(3000, function() {

@@ -1,4 +1,4 @@
-const express =require('express')
+﻿const express =require('express')
 const app=express()
 const router =express.Router()
 var fs = require('fs');
@@ -34,8 +34,8 @@ router.post('/update',(req,res)=>{
 	  * type：平台（1101是安卓，1102是IOS）
 	  * version:app版本号
 	  */
-	 let serverVersion = "100"
-	 let serverVersionName = "1.0.0"
+	 let serverVersion = "101"
+	 let serverVersionName = "1.0.1"
 	 console.log(parseInt(version) < parseInt(serverVersion))
 	if(parseInt(version) < parseInt(serverVersion) && type==="1101"){//安卓更新
 		res.send({// 内容以空格换行
@@ -45,7 +45,7 @@ router.post('/update',(req,res)=>{
 				"versionName": serverVersionName,
 				"versionInfo": "本次更新内容： \r 1、初始版本a",
 				"forceUpdate": true,//是否强制更新
-				 "downloadUrl": "http://49.235.80.50:3000/public/1051011877@qq.com/android_debug.apk" ,
+				 "downloadUrl": "http://49.235.80.50:3000/public/1051011877@qq.com/__UNI__E577F13.wgt" ,
 			 } 
 		})
 	}

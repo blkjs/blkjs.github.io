@@ -2,19 +2,20 @@ const express =require('express')
 const router =express.Router()
 const fs = require('fs');
 const path = require('path');
-const multipart = require('connect-multiparty')//解决from-data接收不到数据问题...
-const multipartyMiddleware = multipart()
+const multiparty = require('connect-multiparty')//解决from-data接收不到file数据问题...
+const multipartyMiddleware = multiparty()
 const nodemailer = require('nodemailer');//邮件功能
 
  var saveimg=(email,dataBuffer,type)=>{
+	 let nowDate = new Date().getTime()
 	 let name = type==1 ? "headerImg" : "others"
 	 return new Promise((resolve,reject)=>{
-	  fs.writeFile('./uploads/'+email+'/'+name+'.png', dataBuffer, (err)=> {
+	  fs.writeFile('./uploads/'+email+'/'+nowDate+'.png', dataBuffer, (err)=> {
 	      if(err){
 			  reject(err)
 	  	  console.log(err)
 	      }else{
-	        resolve('/public/'+email+'/'+name+'.png')
+	        resolve('/public/'+email+'/'+nowDate+'.png')
 	      }
 	  });
 	 })
@@ -138,6 +139,33 @@ router.post('/upload',multipartyMiddleware,(req,res)=>{
 
 })
 
+router.post('/uploadVideo',multipartyMiddleware,(req,res)=>{ //上传视频，客户端以formData文件流形式上传
+	 try{
+		 const files = req.files
+		 console.log(files)
+		 var nowDte=new Date().getTime()
+		 var filesTmp = JSON.stringify(files,null,2);
+	      var inputFile = files.file;
+	      var uploadedPath = inputFile.path;
+		 var Suffix = inputFile.type.split("/")[1]  //后缀名
+		 console.log(Suffix)
+	      var dstPath = './uploads/' + nowDte + '.' + Suffix;
+	      //重命名为真实文件名
+	       fs.rename(uploadedPath, dstPath, function(err) {
+		       if(err){
+					res.send({ data: "上传失败！" ,code:0 ,err:err});
+		        	console.log('rename error: ' + err);
+		        } else {
+		         console.log('rename ok');
+		        }
+	        });
+			res.send({ data: "上传成功！" ,code:1,data:{
+				image_url:'uploads/' + nowDte + '.' + Suffix
+			}});
+	 } catch (err) {
+		 res.send({ data: "上传失败！" ,code:0 ,err:err});
+	 }
+})
 /**
  * @api {post} /file/iflogin 留言
  * @apiName 留言

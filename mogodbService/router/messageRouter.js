@@ -32,7 +32,7 @@ router.post('/getMessage',(req,res)=>{
 	Message.find({
 		userEmail,
 		creatTime:{
-	     "$gte": nowTime-1000*60*60*24*5,//查询5天以内的所有已读和未读消息
+	     "$gte": nowTime-1000*60*60*24*5,
 	     "$lte":nowTime
 		},
 	})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}

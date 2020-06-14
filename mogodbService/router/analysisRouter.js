@@ -253,4 +253,37 @@ router.post('/img', function(req, res, next) {
 
 });
 
+
+router.post('/screenshot', function(req, res, next) {//获取网页截图
+	let {url} = req.body
+	console.log(req.body)
+	console.log(url)
+	var driver = new webdriver.Builder()
+	    .forBrowser('chrome')
+	    .setChromeOptions(new chrome.Options())
+	    .build();
+
+	async function fn(){
+		await driver.get(url)
+		driver.takeScreenshot().then((base64Data)=>{
+		    //这里为截图结果的base64字符串
+			var dataBuffer = new Buffer.from(base64Data, 'base64');
+			var nowDate = new Date().getTime()
+			fs.writeFile('./uploads/'+nowDate+'.png', dataBuffer, (err)=> {
+			    if(err){
+				  console.log(err)
+			    }else{
+				  res.send({
+					  data:'http://49.235.80.50:3000/public/'+nowDate+'.png'
+				  })
+				  driver.close()//关闭页面
+			    }
+			});
+		});
+		}
+		fn()
+
+});
+
+
 module.exports = router;
