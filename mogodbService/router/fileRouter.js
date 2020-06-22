@@ -145,13 +145,18 @@ router.post('/uploadVideo',multipartyMiddleware,(req,res)=>{ //上传视频，�
 		 console.log(files)
 		 var nowDte=new Date().getTime()
 		 var filesTmp = JSON.stringify(files,null,2);
-	      var inputFile = files.file;
-	      var uploadedPath = inputFile.path;
-		 var Suffix = inputFile.type.split("/")[1]  //后缀名
+	     var inputFile = files.file;
+	     var uploadedPath = inputFile.path;
+		 var inputFileName = inputFile.name;
+		 var index1=inputFileName.lastIndexOf(".");
+		 console.log(index1)
+		 var index2=inputFileName.length;
+		 var Suffix=inputFileName.substring(index1,index2);
+		 //var Suffix = inputFile.type.split("/")[1]  //后缀名
 		 console.log(Suffix)
-	      var dstPath = './uploads/' + nowDte + '.' + Suffix;
+	      var dstPath = './uploads/' + nowDte + Suffix;
 	      //重命名为真实文件名
-	       fs.rename(uploadedPath, dstPath, function(err) {
+	       fs.rename(uploadedPath, dstPath, (err)=> {
 		       if(err){
 					res.send({ data: "上传失败！" ,code:0 ,err:err});
 		        	console.log('rename error: ' + err);
@@ -160,7 +165,7 @@ router.post('/uploadVideo',multipartyMiddleware,(req,res)=>{ //上传视频，�
 		        }
 	        });
 			res.send({ data: "上传成功！" ,code:1,data:{
-				image_url:'uploads/' + nowDte + '.' + Suffix
+				image_url:'uploads/' + nowDte + Suffix
 			}});
 	 } catch (err) {
 		 res.send({ data: "上传失败！" ,code:0 ,err:err});

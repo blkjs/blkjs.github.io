@@ -1,4 +1,4 @@
-﻿const express =require('express')
+const express =require('express')
 var ejs = require('ejs');
 const app=express()
 const path =require('path')
@@ -47,7 +47,7 @@ app.all('*', function(req, res, next) {
 });
 
 
-app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
+app.use('/uploads',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
  
  const download=require('./router/download')
  app.use('/download',download) //文件下载

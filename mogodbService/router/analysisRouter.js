@@ -26,12 +26,28 @@ router.post('/shiping', function(req, res, next) {
 		await driver.getPageSource()
 		 .then((souce)=> {
 			let $ = cheerio.load(souce)
-			if($('#hide-pagedata').attr('data-pagedata')){
-				let kURL = JSON.parse($('#hide-pagedata').attr('data-pagedata')).video.srcNoMark;//快手无水印
-				if(kURL){
-					list.push(kURL)
-				}
-			}else{
+			if($('script')){
+				let data = $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
+				for (let i in el.children[0]) {
+					let data = el.children[0].data
+					let start = data.indexOf('"srcNoMark":"http')
+					if(start>0){
+						let str = data.slice(start,99999999999)
+						let end = str.indexOf('.mp4')+4
+						let str1 = str.slice(13,end)
+						console.log(str1)
+						list.push(str1)
+						if(str1.length > 40){
+							res.send({
+								data:[str1]
+							})
+							break
+						}
+					}
+					
+				 }
+				
+				})
 				$('video').each((index,el)=>{//移动版抖音快手链接检测
 					if($(el).attr('src')!==null && $(el).attr('src')!=='' && $(el).attr('src')!==undefined){
 						let src=str_geturl($(el).attr('src'))
@@ -39,7 +55,7 @@ router.post('/shiping', function(req, res, next) {
 					}
 				})
 			}
-			 $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
+			 /* $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
 				for (let i in el.children[0]) {
 					if(el.children[0][i]!==null && el.children[0][i]!=='' && el.children[0][i]!==undefined){
 						var str = el.children[0][i].toString()
@@ -49,8 +65,8 @@ router.post('/shiping', function(req, res, next) {
 						}
 					}
 				}
-				
-			})
+				 
+				})*/
 			if(list.length>0){//返回数据
 				//driver.quit() //完全关闭浏览器
 				driver.close()//关闭页面

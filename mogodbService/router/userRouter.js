@@ -121,8 +121,8 @@ router.post('/exchange',(req,res)=>{//修改用户信息
 
 let {userEmail,time}=req.body
 	console.log(userEmail,time)
-	if(!userEmail || !time){
-		res.send({message:"缺少参数",status:0})
+	if(!userEmail || !time || time<=0){
+		res.send({message:"参数错误",status:0})
 		return false
 	}
 	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
@@ -163,7 +163,7 @@ let {userEmail,time}=req.body
 	  })
 	 .catch((err)=>{
 		  console.log(err)
-		  res.send({message:"查询失败",status:0,error:err})
+		  res.send({message:"未找到该用户",status:0,error:err})
 	 })
 
 });
