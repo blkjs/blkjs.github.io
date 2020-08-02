@@ -140,14 +140,15 @@ router.post('/posts',(req,res)=>{
 /**
  * @api {post} /user/userIfo 查询帖子信息
  * @apiName 查询帖子信息
+ * @apiGroup user
  * @apiSuccess {String} email 用户邮箱号,查询该用户下的帖子(所有字段非必须传，什么都不传返回最新发帖).
- * @apiSuccess {String} _id  帖子ID，精确查找帖子
+ * @apiSuccess {String} _id  帖子ID，精确查找帖子.
  * @apiSuccess {String} page  当前页数
  * @apiSuccess {String} num  每次接收多少条数据
  * @apiSuccessExample 成功的返回示例:
  *     HTTP/1.1 200 OK
  *     {
- *       "status": 1,
+ *       "code":"s55g"
  *     }
  */
 router.post('/postsIfo',(req,res)=>{//查询帖子信息

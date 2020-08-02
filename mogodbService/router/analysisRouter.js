@@ -10,6 +10,18 @@ var https=require('https')
 var http=require('http')
 var fs=require('fs')
 const async = require('async');
+const lotteryModel=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
+/**
+ * @api {post} /analysis/shiping 解析快手视频
+ * @apiName 视频解析
+ * @apiGroup 解析
+ * @apiSuccess {url} url 视频地址.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "code":"s55g"
+ *     }
+ */
 
 /* GET users listing. */
 router.post('/shiping', function(req, res, next) {
@@ -36,8 +48,8 @@ router.post('/shiping', function(req, res, next) {
 						let end = str.indexOf('.mp4')+4
 						let str1 = str.slice(13,end)
 						console.log(str1)
-						list.push(str1)
 						if(str1.length > 40){
+							list.push(str1)
 							res.send({
 								data:[str1]
 							})
@@ -48,13 +60,16 @@ router.post('/shiping', function(req, res, next) {
 				 }
 				
 				})
+			}
+			setTimeout(()=>{
+				console.log($('video'))
+				console.log('123')
 				$('video').each((index,el)=>{//移动版抖音快手链接检测
 					if($(el).attr('src')!==null && $(el).attr('src')!=='' && $(el).attr('src')!==undefined){
 						let src=str_geturl($(el).attr('src'))
 						list.push(src)
 					}
-				})
-			}
+				})},6000)
 			 /* $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
 				for (let i in el.children[0]) {
 					if(el.children[0][i]!==null && el.children[0][i]!=='' && el.children[0][i]!==undefined){
@@ -245,6 +260,18 @@ var get_url=(url)=>{//获取单页面所有img标签src属性值
 	})
 }
 
+/**
+ * @api {post} /analysis/img 解析网页图片
+ * @apiName 图片解析
+ * @apiGroup 解析
+ * @apiSuccess {url} url 网页地址.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "code":"s55g"
+ *     }
+ */
+
 router.post('/img', function(req, res, next) {
 	let {url} = req.body
 	console.log(url)
@@ -290,7 +317,7 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 				  console.log(err)
 			    }else{
 				  res.send({
-					  data:'http://49.235.80.50:3000/public/'+nowDate+'.png'
+					  data:'http://localhost:3000/uploads/'+nowDate+'.png'
 				  })
 				  driver.close()//关闭页面
 			    }
@@ -301,5 +328,157 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 
 });
 
+router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
+	//let {url} = req.body
+	(async function example() {
+		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		var url = "http://www.cwl.gov.cn/kjxx/ssq/kjgg/"
+		let result = []
+		await driver.get(url);
+		  //await driver.findElement(By.css('#changeCityBox .checkTips .tab.focus')).click();
+		  //await driver.findElement(By.id('search_input')).sendKeys('前端', Key.ENTER);
+		  //let items = await driver.findElements(By.className('ball_box01'))
+		  let items = await driver.getPageSource()
+		  let $ = await cheerio.load(items)
+		  let list = await $('.ball_box01 ul li')
+		  $('.bgzt table tbody tr').each((index,el)=>{
+			  let data = {}
+			  $(el).children().each((index1,el)=>{
+					if(Number(index1)===0){ //第0个tr，第几期
+						data.phase = $(el).html()
+					}else if(Number(index1)===1){ //第1个tr,开奖日期
+						data.data = $(el).html()
+					}else if(Number(index1)===2){ //第2个tr,红球数组
+						let redBall = []
+						$(el).children().each((index,el)=>{
+						  if($(el).html() || $(el).html() !== ""){
+							  redBall.push($(el).html())
+						  }
+						})
+						data.redBall = redBall
+					}else if(Number(index1)===3){ //第3个tr,蓝球
+						let blueBall = []
+						$(el).children().each((index,el)=>{
+						  if($(el).html() || $(el).html() !== ""){
+							  blueBall.push($(el).html())
+						  }
+						})
+						data.blueBall = blueBall
+					}else if(Number(index1)===4){ //第4个tr,总销售额
+						data.sales = $(el).html()
+					}else if(Number(index1)===5){ //第5个tr,一等奖中奖注数
+						data.winPrize1 = $(el).html()
+					}else if(Number(index1)===6){ //第6个tr,一等奖中奖金额
+						data.winPrize1Money = $(el).html()
+					}else if(Number(index1)===7){ //第7个tr,二等奖中奖注数
+						data.winPrize2 = $(el).html()
+					}else if(Number(index1)===8){ //第8个tr,二等奖中奖金额
+						data.winPrize2Money = $(el).html()
+					}else if(Number(index1)===9){ //第9个tr,三等奖中奖注数
+						data.winPrize3 = $(el).html()
+					}else if(Number(index1)===10){ //第10个tr,三等奖中奖金额
+						data.winPrize3Money = $(el).html()
+					}else if(Number(index1)===11){ //第11个tr,奖池金额
+						data.jackpot = $(el).html()
+					}else{
+						//result.push($(el).html())
+					}
+			  })
+			  result.push(data)
+		  })
+		  if(res){
+			  res.send({result})
+		  }
+		  driver.close()//关闭页面
+		  result.forEach((item,index,arr)=>{ //循环取出保存到数据库
+			  lotteryModel.find({phase:item.phase})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+			    .then((data)=>{
+			  	  if(data.length===0){
+			  		 var lottery = new lotteryModel();
+			  		 var nowDate = new Date().getTime()
+					 console.log(item.redBall)
+			  		 lottery.redBall=item.redBall;
+					 lottery.blueBall=item.blueBall;
+			  		 lottery.phase=item.phase;
+					 lottery.data=item.data;
+					 lottery.name="双色球";
+			  		 lottery.getTime=nowDate
+			  		 lottery.type=1;
+					 lottery.sales=JSON.stringify(item.sales)//总销售额
+					 lottery.winPrize1=JSON.stringify(item.winPrize1)  //一等奖中奖注数
+					 lottery.winPrize1Money=JSON.stringify(item.winPrize1Money)//一等奖中奖金额
+					 lottery.winPrize2=JSON.stringify(item.winPrize2)//二等奖中奖注数
+					 lottery.winPrize2Money=JSON.stringify(item.winPrize2Money)//二等奖中奖金额
+					 lottery.winPrize3=JSON.stringify(item.winPrize3) //三等奖中奖注数
+					 lottery.winPrize3Money=JSON.stringify(item.winPrize3Money) //三等奖中奖金额
+					 lottery.jackpot=JSON.stringify(item.jackpot) //奖池金额
+			  		 lottery.save((data)=>{
+						 //console.log(data)
+			  			console.log("保存成功")
+			  		 })
+			  	  }else{
+			  			console.log("该期已经存在")
+			  	  }
+			    })
+			   .catch((err)=>{
+			  	  console.log(err)
+			  			  console.log("保存失败")
+			   })
+		  })
+	})();
+});
 
+router.get('/caipiao2', function(req, res, next) {//500彩票数据
+	//let {url} = req.body
+	(async function example() {
+		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		var phase = req.query.phase //第几期
+		var url = "http://kaijiang.500.com/shtml/ssq/"+phase+".shtml"
+		let result = []
+		let order = ""
+		await driver.get(url);
+		  //await driver.findElement(By.css('#changeCityBox .checkTips .tab.focus')).click();
+		  //await driver.findElement(By.id('search_input')).sendKeys('前端', Key.ENTER);
+		  //let items = await driver.findElements(By.className('ball_box01'))
+		  let items = await driver.getPageSource()
+		  let $ = await cheerio.load(items)
+		  let list = await $('.ball_box01 ul li')
+		  $('.ball_box01 ul li').each((index,el)=>{
+			result.push($(el).html())
+		  })
+		  $('kj_tablelist02 tr:nth-child(1) td table tbody tr:nth-child(1) td:nth-child(1)').each((index,el)=>{
+			console.log($(el).html())
+			order = $(el).html()
+		  })
+		  console.log(result)
+		  if(res){
+			  res.send({result,phase,order})
+		  }
+		  driver.close()//关闭页面
+
+		  lotteryModel.find({phase})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+		    .then((data)=>{
+		  	  if(data.length===0){
+		  		 var lottery = new lotteryModel();
+				 var nowDate = new Date().getTime()
+		  		 lottery.lotteryNumber=result;
+		  		 lottery.phase=phase;
+		  		 lottery.userAge=req.body.userAge;
+		  		 lottery.getTime=nowDate
+		  		 lottery.type=1;
+				 lottery.order=order;
+		  		 lottery.save(()=>{
+					 console.log("保存成功")
+		  		 })
+		  	  }else{
+				  console.log("该期已经存在")
+		  	  }
+		    })
+		   .catch((err)=>{
+		  	  console.log(err)
+			  console.log("保存失败")
+		   })
+	})();
+	
+});
 module.exports = router;
