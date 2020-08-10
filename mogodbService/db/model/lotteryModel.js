@@ -1,7 +1,10 @@
  var mongoose =require('mongoose')
  var lotterySchema = new mongoose.Schema({
-    redBall : {type:Array,required:true},//红球
-	blueBall : {type:Array,required:true},//蓝球
+    redBall : {type:Array},//红球
+	blueBall : {type:Array},//蓝球
+	forecastBlueBall : {type:Array},//预测蓝球
+	forecastRedBall : {type:Array},//预测红球
+	forecast :{type:Array},//预测
 	phase:{type:Number,required:true},//第几期
 	getTime: {type:Number},//爬取时间
 	order : {type:Array},//开奖顺序

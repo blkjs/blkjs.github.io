@@ -39,7 +39,7 @@ router.post('/shiping', function(req, res, next) {
 		 .then((souce)=> {
 			let $ = cheerio.load(souce)
 			if($('script')){
-				let data = $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
+				let data = $('script').each((index,el)=>{//快手视频地址放script标签的（无水印）
 				for (let i in el.children[0]) {
 					let data = el.children[0].data
 					let start = data.indexOf('"srcNoMark":"http')
@@ -61,15 +61,13 @@ router.post('/shiping', function(req, res, next) {
 				
 				})
 			}
-			setTimeout(()=>{
-				console.log($('video'))
-				console.log('123')
+			
 				$('video').each((index,el)=>{//移动版抖音快手链接检测
 					if($(el).attr('src')!==null && $(el).attr('src')!=='' && $(el).attr('src')!==undefined){
 						let src=str_geturl($(el).attr('src'))
 						list.push(src)
 					}
-				})},6000)
+				})
 			 /* $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
 				for (let i in el.children[0]) {
 					if(el.children[0][i]!==null && el.children[0][i]!=='' && el.children[0][i]!==undefined){
@@ -100,6 +98,67 @@ router.post('/shiping', function(req, res, next) {
 	fn()
 	//},10)
 
+});
+
+
+router.post('/shiping1', function(req, res, next) {//
+	//let {url} = req.body
+	(async function example() {
+		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		let {url} = req.body 
+		let result = []
+		await driver.get(url);
+		  //await driver.findElement(By.css('#changeCityBox .checkTips .tab.focus')).click();
+		  //await driver.findElement(By.id('search_input')).sendKeys('前端', Key.ENTER);
+		  //let items = await driver.findElements(By.className('ball_box01'))
+		  let items = await driver.getPageSource()
+		  let $ = await cheerio.load(items)
+		  let list = await $('.player-video') //快手class取视频地址（无水印）
+		  let list1 = await $('video') //通用video标签获取
+		  
+		  if($('script')){
+		  	let data = await $('script').each((index,el)=>{//快手视频地址放script标签的
+		  	for (let i in el.children[0]) {
+		  		let data =  el.children[0].data
+		  		let start =  data.indexOf('"srcNoMark":"http')
+		  		if(start>0){
+		  			let str =  data.slice(start,99999999999)
+		  			let end =  str.indexOf('.mp4')+4
+		  			let str1 =  str.slice(13,end)
+		  			console.log(str1)
+		  			if(str1.length > 40){
+						console.log("1")
+		  				list.push(str1)
+		  				res.send({
+		  					data:[str1]
+		  				})
+		  				break
+		  			}
+		  		}
+		  		
+		  	 }
+		  	
+		  	})
+		  }
+		  if(result.length===0){
+			  console.log("2")
+			  list.each((index,el)=>{ //快手class取视频地址（有水印）
+				  result.push($(el).attr('src'))
+			  })
+		  }
+		  if(result.length===0){
+			  console.log("3")
+		  	list1.each((index,el)=>{ //通用video标签获取
+		  	result.push($(el).attr('src'))
+		  	})	  
+		  }
+		  
+		  if(res && result.length>0){
+			  res.send({result})
+		  }
+		  driver.close()//关闭页面
+
+	})();
 });
 
 var str_geturl=(str)=>{//检测字符串中的url
@@ -396,7 +455,6 @@ router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
 			  	  if(data.length===0){
 			  		 var lottery = new lotteryModel();
 			  		 var nowDate = new Date().getTime()
-					 console.log(item.redBall)
 			  		 lottery.redBall=item.redBall;
 					 lottery.blueBall=item.blueBall;
 			  		 lottery.phase=item.phase;
@@ -422,7 +480,7 @@ router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
 			    })
 			   .catch((err)=>{
 			  	  console.log(err)
-			  			  console.log("保存失败")
+			  			  console.log("查找失败")
 			   })
 		  })
 	})();
@@ -481,4 +539,6 @@ router.get('/caipiao2', function(req, res, next) {//500彩票数据
 	})();
 	
 });
+
+
 module.exports = router;

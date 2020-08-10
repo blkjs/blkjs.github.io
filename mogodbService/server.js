@@ -73,6 +73,8 @@ const messageRouter=require('./router/messageRouter')
 app.use('/message',messageRouter)
 const imgRecognition=require('./router/imgRecognition')
 app.use('/imgRecognition',imgRecognition)
+const lottery=require('./router/lottery')
+app.use('/lottery',lottery)
 //const PuppeteerRouter=require('./router/PuppeteerRouter')
 //app.use('/puppeteer',PuppeteerRouter)
 
