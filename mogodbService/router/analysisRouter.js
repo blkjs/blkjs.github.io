@@ -10,7 +10,9 @@ var https=require('https')
 var http=require('http')
 var fs=require('fs')
 const async = require('async');
-const lotteryModel=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
+const {Lottery}=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
+const schedule = require('node-schedule');//定时任务
+const Mail=require('../utils/mail')
 /**
  * @api {post} /analysis/shiping 解析快手视频
  * @apiName 视频解析
@@ -386,10 +388,42 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 		fn()
 
 });
+let phase = 2020075
+const  scheduleCronstyle = ()=>{ //定时任务
+	 let res = selectData({phase}).then((res)=>{
+		console.log(res) 
+	 })
+	 console.log(res)
+	schedule.scheduleJob('10 16 21 * * 3',()=>{ //周二 22点 0分0秒
+		//example()
+		return
+		let mail = "1051011877@qq.com"
+		let html = "<h4>"+selectData[0]+"</h4>"
+		Mail.sendLottery(mail,html).then((res)=>{
+			console.log(res)
+		}).catch((err)=>{
+			console.log(err)
+		})
+	    console.log('scheduleCronstyle:' + new Date());
+	}); 
+    schedule.scheduleJob('0 0 22 * * 2',()=>{ //周二 22点 0分0秒
+        console.log('scheduleCronstyle:' + new Date());
+    }); 
+}
+scheduleCronstyle();
 
-router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
-	//let {url} = req.body
-	(async function example() {
+ function selectData(query){ //查询mongodb中的彩票数据
+	return new Promise((resolve, reject) => {
+	   Lottery.find(query).then((data)=>{
+	  	resolve(data)
+	  }).catch((error)=>{
+	  	reject(error)
+	  })
+	})
+}
+
+
+async function example() {//中国福利彩票数据
 		let driver = await new webdriver.Builder().forBrowser('chrome').build();
 		var url = "http://www.cwl.gov.cn/kjxx/ssq/kjgg/"
 		let result = []
@@ -450,7 +484,7 @@ router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
 		  }
 		  driver.close()//关闭页面
 		  result.forEach((item,index,arr)=>{ //循环取出保存到数据库
-			  lotteryModel.find({phase:item.phase})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+			  Lottery.find({phase:item.phase})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 			    .then((data)=>{
 			  	  if(data.length===0){
 			  		 var lottery = new lotteryModel();
@@ -483,7 +517,10 @@ router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
 			  			  console.log("查找失败")
 			   })
 		  })
-	})();
+	}
+
+router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
+	example()
 });
 
 router.get('/caipiao2', function(req, res, next) {//500彩票数据

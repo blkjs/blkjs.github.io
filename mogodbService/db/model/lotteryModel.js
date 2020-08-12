@@ -1,10 +1,7 @@
  var mongoose =require('mongoose')
- var lotterySchema = new mongoose.Schema({
-    redBall : {type:Array},//红球
+ var lotterySchema = new mongoose.Schema({ //数据表
+	redBall : {type:Array},//红球
 	blueBall : {type:Array},//蓝球
-	forecastBlueBall : {type:Array},//预测蓝球
-	forecastRedBall : {type:Array},//预测红球
-	forecast :{type:Array},//预测
 	phase:{type:Number,required:true},//第几期
 	getTime: {type:Number},//爬取时间
 	order : {type:Array},//开奖顺序
@@ -18,7 +15,20 @@
 	winPrize3Money :{type:String},//三等奖中奖金额
 	jackpot:{type:String},//奖池金额
 	remarks:{type:String}//备注
-  });
+});
   
-  var Lottery = mongoose.model('lottery', lotterySchema);//转化为数据模型,会自动转复数形式foods
-  module.exports=Lottery
+var forecastSchema = new mongoose.Schema({ //预测表
+   forecastBlueBall : {type:Array},//预测蓝球
+   forecastRedBall : {type:Array},//预测红球
+   forecast :{type:Array},//预测
+   phase:{type:Number,required:true},//第几期
+   email :{type:String,required:true},//邮件
+})
+
+var Lottery = mongoose.model('lottery', lotterySchema);
+var Forecast = mongoose.model('forecast', forecastSchema);
+
+module.exports={
+  Lottery,
+  Forecast
+}
