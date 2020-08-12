@@ -10,7 +10,7 @@ var https=require('https')
 var http=require('http')
 var fs=require('fs')
 const async = require('async');
-const {Lottery}=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
+const {Lottery,Forecast}=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
 const schedule = require('node-schedule');//定时任务
 const Mail=require('../utils/mail')
 /**
@@ -388,23 +388,16 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 		fn()
 
 });
-let phase = 2020075
+let phase = null
+let redBall = null
+let blueBall = null
 const  scheduleCronstyle = ()=>{ //定时任务
-	 let res = selectData({phase}).then((res)=>{
-		console.log(res) 
-	 })
-	 console.log(res)
-	schedule.scheduleJob('10 16 21 * * 3',()=>{ //周二 22点 0分0秒
+	schedule.scheduleJob('10 47 0 * * 4',()=>{ //每周4 22点 0分0秒
 		//example()
-		return
-		let mail = "1051011877@qq.com"
-		let html = "<h4>"+selectData[0]+"</h4>"
-		Mail.sendLottery(mail,html).then((res)=>{
-			console.log(res)
-		}).catch((err)=>{
-			console.log(err)
-		})
-	    console.log('scheduleCronstyle:' + new Date());
+		if(!phase && !phase && !blueBall){
+			return false	
+		}
+		sendEmail()
 	}); 
     schedule.scheduleJob('0 0 22 * * 2',()=>{ //周二 22点 0分0秒
         console.log('scheduleCronstyle:' + new Date());
@@ -412,9 +405,33 @@ const  scheduleCronstyle = ()=>{ //定时任务
 }
 scheduleCronstyle();
 
+function sendEmail(){ //循环发送邮件
+	selectData({phase}).then((res)=>{
+		console.log("111") 
+		res.forEach((item,index,arr)=>{
+			let mail = item.email
+			console.log(item.phase+'===='+phase)
+			console.log(item.phase===phase)
+			if(item.phase===phase){
+				let myForecast = []
+				item.forecast.forEach((item1,index1,arr1)=>{
+					myForecast.push("<span>红球:" +item1.redBall+ '')  
+					myForecast.push("</span> 蓝球:" +item1.blueBall+ '<br/>')
+				})
+				let html = "<h4>红球："+redBall+"蓝球："+blueBall+"</h4><br/> 我的预测：<br/>"+myForecast+" "
+				console.log(html)
+				Mail.sendLottery(mail,html).then((res)=>{
+					console.log(res)
+				}).catch((err)=>{
+					console.log(err)
+				})
+			}
+		})
+	})
+}
  function selectData(query){ //查询mongodb中的彩票数据
 	return new Promise((resolve, reject) => {
-	   Lottery.find(query).then((data)=>{
+	   Forecast.find(query).then((data)=>{
 	  	resolve(data)
 	  }).catch((error)=>{
 	  	reject(error)
@@ -423,7 +440,7 @@ scheduleCronstyle();
 }
 
 
-async function example() {//中国福利彩票数据
+async function example(res) {//中国福利彩票数据
 		let driver = await new webdriver.Builder().forBrowser('chrome').build();
 		var url = "http://www.cwl.gov.cn/kjxx/ssq/kjgg/"
 		let result = []
@@ -437,6 +454,29 @@ async function example() {//中国福利彩票数据
 		  $('.bgzt table tbody tr').each((index,el)=>{
 			  let data = {}
 			  $(el).children().each((index1,el)=>{
+					if(index===0){ //将当前期数据保存到内存
+						if(Number(index1)===0){ //第0个tr，第几期
+							phase = Number($(el).html())
+						}
+						if(Number(index1)===2){ //第2个tr,红球数组
+							let redList = []
+							$(el).children().each((index,el)=>{
+							  if($(el).html() || $(el).html() !== ""){
+								  redList.push($(el).html())
+							  }
+							})
+							redBall = list
+						}
+						if(Number(index1)===3){ //第3个tr,蓝球
+							let blueList = []
+							$(el).children().each((index,el)=>{
+							  if($(el).html() || $(el).html() !== ""){
+								  blueList.push($(el).html())
+							  }
+							})
+							blueBall = blueList
+						}
+					}
 					if(Number(index1)===0){ //第0个tr，第几期
 						data.phase = $(el).html()
 					}else if(Number(index1)===1){ //第1个tr,开奖日期
@@ -520,7 +560,7 @@ async function example() {//中国福利彩票数据
 	}
 
 router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
-	example()
+	example(res)
 });
 
 router.get('/caipiao2', function(req, res, next) {//500彩票数据
