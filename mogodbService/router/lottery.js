@@ -41,7 +41,7 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 	if(typeof(redBall)==="string"){
 		redBall = [redBall]
 	}
-	Forecast.find({phase:Number(phase)},(err,ret)=>{
+	Forecast.find({email},(err,ret)=>{
 		if(err){
 			console.log('查询失败')
 		} else {

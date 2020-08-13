@@ -388,37 +388,55 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 		fn()
 
 });
-let phase = null
-let redBall = null
-let blueBall = null
-const  scheduleCronstyle = ()=>{ //定时任务
-	schedule.scheduleJob('10 47 0 * * 4',()=>{ //每周4 22点 0分0秒
-		//example()
+function scheduleCronstyle(){ //定时任务
+	schedule.scheduleJob('10 27 23 * * 4',()=>{ //每周3 10点 30分0秒
+			if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall ){
+				example().then((sendEmaildata)=>{
+					 console.log(sendEmaildata)
+					 if(sendEmaildata){
+						 sendEmail(sendEmaildata)
+					 }
+				})
+			}
+	});
+	schedule.scheduleJob('0 30 10 * * 3',()=>{ //每周3 10点 30分0秒
 		if(!phase && !phase && !blueBall){
-			return false	
+			example()
+		}
+		sendEmail()
+	});
+	schedule.scheduleJob('0 30 10 * * 5',()=>{ //每周5 10点 30分0秒
+		if(!phase && !phase && !blueBall){
+			example()
 		}
 		sendEmail()
 	}); 
-    schedule.scheduleJob('0 0 22 * * 2',()=>{ //周二 22点 0分0秒
-        console.log('scheduleCronstyle:' + new Date());
+    schedule.scheduleJob('0 30 10 * * 7',()=>{ //每周7 10点 30分0秒
+    	if(!phase && !phase && !blueBall){
+    		example()
+    	}
+    	sendEmail()
     }); 
 }
 scheduleCronstyle();
 
-function sendEmail(){ //循环发送邮件
-	selectData({phase}).then((res)=>{
-		console.log("111") 
+function sendEmail(sendEmaildata){ //循环发送邮件
+	selectData(sendEmaildata).then((res)=>{
+		console.log("======>")
+		console.log(sendEmaildata)
+		console.log(res)
+		console.log("进入发送邮件") 
 		res.forEach((item,index,arr)=>{
+			console.log("进入发送邮件1") 
 			let mail = item.email
-			console.log(item.phase+'===='+phase)
-			console.log(item.phase===phase)
-			if(item.phase===phase){
+			console.log(sendEmaildata)
+			if(item.phase===sendEmaildata.phase){
 				let myForecast = []
 				item.forecast.forEach((item1,index1,arr1)=>{
 					myForecast.push("<span>红球:" +item1.redBall+ '')  
 					myForecast.push("</span> 蓝球:" +item1.blueBall+ '<br/>')
 				})
-				let html = "<h4>红球："+redBall+"蓝球："+blueBall+"</h4><br/> 我的预测：<br/>"+myForecast+" "
+				let html = "<h4>红球："+sendEmaildata.redBall+"蓝球："+sendEmaildata.blueBall+"</h4><br/> 我的预测：<br/>"+myForecast+" "
 				console.log(html)
 				Mail.sendLottery(mail,html).then((res)=>{
 					console.log(res)
@@ -431,7 +449,8 @@ function sendEmail(){ //循环发送邮件
 }
  function selectData(query){ //查询mongodb中的彩票数据
 	return new Promise((resolve, reject) => {
-	   Forecast.find(query).then((data)=>{
+		console.log({phase:query.phase})
+	   Forecast.find({phase:query.phase}).then((data)=>{
 	  	resolve(data)
 	  }).catch((error)=>{
 	  	reject(error)
@@ -439,9 +458,14 @@ function sendEmail(){ //循环发送邮件
 	})
 }
 
-
-async function example(res) {//中国福利彩票数据
-		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+let sendEmails = { //用于保存当前期彩票数据
+			   phase:null,
+			   redBall:null,
+			   blueBall:null,
+		  }
+ function example(res) {//中国福利彩票数据
+	return  new Promise(async (resolve, reject)=>{
+		let driver = await  new webdriver.Builder().forBrowser('chrome').build();
 		var url = "http://www.cwl.gov.cn/kjxx/ssq/kjgg/"
 		let result = []
 		await driver.get(url);
@@ -451,12 +475,15 @@ async function example(res) {//中国福利彩票数据
 		  let items = await driver.getPageSource()
 		  let $ = await cheerio.load(items)
 		  let list = await $('.ball_box01 ul li')
-		  $('.bgzt table tbody tr').each((index,el)=>{
+		  if(!list){
+			  reject()
+		  }
+		 await $('.bgzt table tbody tr').each((index,el)=>{
 			  let data = {}
-			  $(el).children().each((index1,el)=>{
+			 $(el).children().each((index1,el)=>{
 					if(index===0){ //将当前期数据保存到内存
 						if(Number(index1)===0){ //第0个tr，第几期
-							phase = Number($(el).html())
+							 sendEmails.phase = Number($(el).html())
 						}
 						if(Number(index1)===2){ //第2个tr,红球数组
 							let redList = []
@@ -465,7 +492,7 @@ async function example(res) {//中国福利彩票数据
 								  redList.push($(el).html())
 							  }
 							})
-							redBall = list
+							sendEmails.redBall = redList
 						}
 						if(Number(index1)===3){ //第3个tr,蓝球
 							let blueList = []
@@ -474,7 +501,7 @@ async function example(res) {//中国福利彩票数据
 								  blueList.push($(el).html())
 							  }
 							})
-							blueBall = blueList
+							sendEmails.blueBall = blueList
 						}
 					}
 					if(Number(index1)===0){ //第0个tr，第几期
@@ -522,12 +549,13 @@ async function example(res) {//中国福利彩票数据
 		  if(res){
 			  res.send({result})
 		  }
+		  resolve(sendEmails)
 		  driver.close()//关闭页面
 		  result.forEach((item,index,arr)=>{ //循环取出保存到数据库
 			  Lottery.find({phase:item.phase})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 			    .then((data)=>{
 			  	  if(data.length===0){
-			  		 var lottery = new lotteryModel();
+			  		 var lottery = new Lottery();
 			  		 var nowDate = new Date().getTime()
 			  		 lottery.redBall=item.redBall;
 					 lottery.blueBall=item.blueBall;
@@ -557,6 +585,7 @@ async function example(res) {//中国福利彩票数据
 			  			  console.log("查找失败")
 			   })
 		  })
+		})
 	}
 
 router.post('/caipiao', function(req, res, next) {//中国福利彩票数据
