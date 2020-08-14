@@ -21,7 +21,6 @@ var forecastSchema = new mongoose.Schema({ //预测表
    forecastBlueBall : {type:Array},//预测蓝球
    forecastRedBall : {type:Array},//预测红球
    forecast :{type:Array},//预测
-   phase:{type:Number,required:true},//第几期
    email :{type:String,required:true},//邮件
 })
 

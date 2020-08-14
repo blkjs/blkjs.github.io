@@ -389,33 +389,57 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 
 });
 function scheduleCronstyle(){ //定时任务
-	schedule.scheduleJob('10 27 23 * * 4',()=>{ //每周3 10点 30分0秒
-			if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall ){
+	schedule.scheduleJob('10 37 21 * * 5',()=>{ //每周3 10点 30分0秒
+			let nowTime = new Date().getTime()
+			if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
 				example().then((sendEmaildata)=>{
 					 console.log(sendEmaildata)
 					 if(sendEmaildata){
 						 sendEmail(sendEmaildata)
 					 }
 				})
+			}else{
+				sendEmail(sendEmails)
 			}
 	});
 	schedule.scheduleJob('0 30 10 * * 3',()=>{ //每周3 10点 30分0秒
-		if(!phase && !phase && !blueBall){
-			example()
+		let nowTime = new Date().getTime()
+		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
+			example().then((sendEmaildata)=>{
+				 console.log(sendEmaildata)
+				 if(sendEmaildata){
+					 sendEmail(sendEmaildata)
+				 }
+			})
+		}else{
+			sendEmail(sendEmails)
 		}
-		sendEmail()
 	});
 	schedule.scheduleJob('0 30 10 * * 5',()=>{ //每周5 10点 30分0秒
-		if(!phase && !phase && !blueBall){
-			example()
+		let nowTime = new Date().getTime()
+		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
+			example().then((sendEmaildata)=>{
+				 console.log(sendEmaildata)
+				 if(sendEmaildata){
+					 sendEmail(sendEmaildata)
+				 }
+			})
+		}else{
+			sendEmail(sendEmails)
 		}
-		sendEmail()
 	}); 
     schedule.scheduleJob('0 30 10 * * 7',()=>{ //每周7 10点 30分0秒
-    	if(!phase && !phase && !blueBall){
-    		example()
+    	let nowTime = new Date().getTime()
+    	if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
+    		example().then((sendEmaildata)=>{
+    			 console.log(sendEmaildata)
+    			 if(sendEmaildata){
+    				 sendEmail(sendEmaildata)
+    			 }
+    		})
+    	}else{
+    		sendEmail(sendEmails)
     	}
-    	sendEmail()
     }); 
 }
 scheduleCronstyle();
@@ -462,6 +486,7 @@ let sendEmails = { //用于保存当前期彩票数据
 			   phase:null,
 			   redBall:null,
 			   blueBall:null,
+			   data:null,
 		  }
  function example(res) {//中国福利彩票数据
 	return  new Promise(async (resolve, reject)=>{
@@ -503,6 +528,7 @@ let sendEmails = { //用于保存当前期彩票数据
 							})
 							sendEmails.blueBall = blueList
 						}
+						sendEmails.data=new Date().getTime()
 					}
 					if(Number(index1)===0){ //第0个tr，第几期
 						data.phase = $(el).html()

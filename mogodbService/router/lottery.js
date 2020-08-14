@@ -47,21 +47,21 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 		} else {
 			console.log(ret)
 			if(ret.length===0){
-			 var lottery = new Forecast();
-			 lottery.forecastBlueBall=blueBall; //蓝球
-			 lottery.forecastRedBall=redBall;//红球
-			 lottery.forecast=[{'blueBall':blueBall,'redBall':redBall}];//预测
-			 lottery.phase=phase;//第几期
-			 lottery.email=email;//第几期
-			 lottery.save((data)=>{
+			 var Lottery = new Forecast();
+			 Lottery.forecastBlueBall=blueBall; //蓝球
+			 Lottery.forecastRedBall=redBall;//红球
+			 Lottery.forecast=[{'blueBall':blueBall,'redBall':redBall,phase}];//预测
+			 Lottery.email=email;//邮箱
+			 console.log(Lottery)
+			 Lottery.save((data)=>{
 				 //console.log(data)
 				console.log("保存成功")
 				res.send({code:200,msg:'添加成功'})
 			 })
 			}else if(ret.length>0){
-			 Forecast.updateOne({phase:Number(phase)},{
+			 Forecast.updateOne({email},{
 				  $push: {
-					forecast: {'blueBall':blueBall,'redBall':redBall}
+					forecast: {'blueBall':blueBall,'redBall':redBall,phase}
 				  }
 				},
 				err => {
