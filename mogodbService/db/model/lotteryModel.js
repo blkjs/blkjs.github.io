@@ -22,6 +22,8 @@ var forecastSchema = new mongoose.Schema({ //预测表
    forecastRedBall : {type:Array},//预测红球
    forecast :{type:Array},//预测
    email :{type:String,required:true},//邮件
+   isSendEmail:{type:Boolean},//是否发送邮件通知
+   phase:{type:Number,required:true},//第几期
 })
 
 var Lottery = mongoose.model('lottery', lotterySchema);

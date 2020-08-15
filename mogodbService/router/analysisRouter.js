@@ -389,11 +389,10 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 
 });
 function scheduleCronstyle(){ //定时任务
-	schedule.scheduleJob('10 37 21 * * 5',()=>{ //每周3 10点 30分0秒
+	schedule.scheduleJob('10 2 12 * * 6',()=>{ //每周3 10点 30分0秒
 			let nowTime = new Date().getTime()
 			if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
 				example().then((sendEmaildata)=>{
-					 console.log(sendEmaildata)
 					 if(sendEmaildata){
 						 sendEmail(sendEmaildata)
 					 }
@@ -406,7 +405,6 @@ function scheduleCronstyle(){ //定时任务
 		let nowTime = new Date().getTime()
 		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
 			example().then((sendEmaildata)=>{
-				 console.log(sendEmaildata)
 				 if(sendEmaildata){
 					 sendEmail(sendEmaildata)
 				 }
@@ -419,7 +417,6 @@ function scheduleCronstyle(){ //定时任务
 		let nowTime = new Date().getTime()
 		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
 			example().then((sendEmaildata)=>{
-				 console.log(sendEmaildata)
 				 if(sendEmaildata){
 					 sendEmail(sendEmaildata)
 				 }
@@ -432,7 +429,6 @@ function scheduleCronstyle(){ //定时任务
     	let nowTime = new Date().getTime()
     	if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
     		example().then((sendEmaildata)=>{
-    			 console.log(sendEmaildata)
     			 if(sendEmaildata){
     				 sendEmail(sendEmaildata)
     			 }
@@ -444,27 +440,29 @@ function scheduleCronstyle(){ //定时任务
 }
 scheduleCronstyle();
 
-function sendEmail(sendEmaildata){ //循环发送邮件
+function sendEmail(sendEmaildata){ //找出要发送邮件的用户发送邮件
 	selectData(sendEmaildata).then((res)=>{
-		console.log("======>")
-		console.log(sendEmaildata)
 		console.log(res)
-		console.log("进入发送邮件") 
 		res.forEach((item,index,arr)=>{
-			console.log("进入发送邮件1") 
 			let mail = item.email
-			console.log(sendEmaildata)
 			if(item.phase===sendEmaildata.phase){
 				let myForecast = []
 				item.forecast.forEach((item1,index1,arr1)=>{
-					myForecast.push("<span>红球:" +item1.redBall+ '')  
-					myForecast.push("</span> 蓝球:" +item1.blueBall+ '<br/>')
+					if(item1.isSendEmail===true){
+						console.log("66")
+						myForecast.push("<span>红球:" +item1.redBall+ '')
+						myForecast.push("</span> 蓝球:" +item1.blueBall+ '<br/>')
+					}
 				})
-				let html = "<h4>红球："+sendEmaildata.redBall+"蓝球："+sendEmaildata.blueBall+"</h4><br/> 我的预测：<br/>"+myForecast+" "
-				console.log(html)
+				if(myForecast.length===0){ //没有订阅的，取消发送
+					return
+				}
+				let html = "<h4>红球： "+sendEmaildata.redBall+"蓝球： "+sendEmaildata.blueBall+"</h4><br/> 我的预测：<br/>"+myForecast+" "
 				Mail.sendLottery(mail,html).then((res)=>{
+					console.log("邮件发送成功"+new Date())
 					console.log(res)
 				}).catch((err)=>{
+					console.log("邮件发送失败"+new Date())
 					console.log(err)
 				})
 			}
@@ -473,7 +471,6 @@ function sendEmail(sendEmaildata){ //循环发送邮件
 }
  function selectData(query){ //查询mongodb中的彩票数据
 	return new Promise((resolve, reject) => {
-		console.log({phase:query.phase})
 	   Forecast.find({phase:query.phase}).then((data)=>{
 	  	resolve(data)
 	  }).catch((error)=>{

@@ -31,7 +31,7 @@ router.post('/selectForecast', (req, res) => {//查询预测彩票数据
 })
 
 router.post('/addLottery', (req, res) => {//添加彩票数据
-	let {blueBall,redBall,phase,email} = req.body
+	let {blueBall,redBall,phase,email,isSendEmail} = req.body
 	if( !blueBall || !redBall || !email || !phase){
 		res.send({code:400,msg:'缺少参数'})
 	}
@@ -50,8 +50,9 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 			 var Lottery = new Forecast();
 			 Lottery.forecastBlueBall=blueBall; //蓝球
 			 Lottery.forecastRedBall=redBall;//红球
-			 Lottery.forecast=[{'blueBall':blueBall,'redBall':redBall,phase}];//预测
-			 Lottery.email=email;//邮箱
+			 Lottery.forecast = [{'blueBall':blueBall,'redBall':redBall,phase,isSendEmail:isSendEmail? true:false}];//预测
+			 Lottery.email = email;//邮箱
+			 Lottery.phase = phase
 			 console.log(Lottery)
 			 Lottery.save((data)=>{
 				 //console.log(data)
@@ -61,8 +62,9 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 			}else if(ret.length>0){
 			 Forecast.updateOne({email},{
 				  $push: {
-					forecast: {'blueBall':blueBall,'redBall':redBall,phase}
-				  }
+					forecast: {'blueBall':blueBall,'redBall':redBall,phase,isSendEmail:isSendEmail? true:false}
+				  },
+				  phase,
 				},
 				err => {
 				  if (err) {
