@@ -50,7 +50,7 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 			 var Lottery = new Forecast();
 			 Lottery.forecastBlueBall=blueBall; //蓝球
 			 Lottery.forecastRedBall=redBall;//红球
-			 Lottery.forecast = [{'blueBall':blueBall,'redBall':redBall,phase,isSendEmail:isSendEmail? true:false}];//预测
+			 Lottery.forecast = [{'blueBall':blueBall,'redBall':redBall,phase,isSendEmail}];//预测
 			 Lottery.email = email;//邮箱
 			 Lottery.phase = phase
 			 console.log(Lottery)
@@ -62,7 +62,7 @@ router.post('/addLottery', (req, res) => {//添加彩票数据
 			}else if(ret.length>0){
 			 Forecast.updateOne({email},{
 				  $push: {
-					forecast: {'blueBall':blueBall,'redBall':redBall,phase,isSendEmail:isSendEmail? true:false}
+					forecast: {'blueBall':blueBall,'redBall':redBall,phase,isSendEmail}
 				  },
 				  phase,
 				},
