@@ -388,8 +388,10 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 		fn()
 
 });
-function scheduleCronstyle(){ //定时任务
-	schedule.scheduleJob('10 2 12 * * 6',()=>{ //每周3 10点 30分0秒
+function scheduleCronstyle(scheduleArr){ //彩票邮件定时任务
+	scheduleArr.forEach((item,index,arr)=>{
+		schedule.scheduleJob(item,()=>{
+			console.log(item)
 			let nowTime = new Date().getTime()
 			if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
 				example().then((sendEmaildata)=>{
@@ -400,45 +402,11 @@ function scheduleCronstyle(){ //定时任务
 			}else{
 				sendEmail(sendEmails)
 			}
-	});
-	schedule.scheduleJob('0 30 10 * * 3',()=>{ //每周3 10点 30分0秒
-		let nowTime = new Date().getTime()
-		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
-			example().then((sendEmaildata)=>{
-				 if(sendEmaildata){
-					 sendEmail(sendEmaildata)
-				 }
-			})
-		}else{
-			sendEmail(sendEmails)
-		}
-	});
-	schedule.scheduleJob('0 30 10 * * 5',()=>{ //每周5 10点 30分0秒
-		let nowTime = new Date().getTime()
-		if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
-			example().then((sendEmaildata)=>{
-				 if(sendEmaildata){
-					 sendEmail(sendEmaildata)
-				 }
-			})
-		}else{
-			sendEmail(sendEmails)
-		}
-	}); 
-    schedule.scheduleJob('0 30 10 * * 7',()=>{ //每周7 10点 30分0秒
-    	let nowTime = new Date().getTime()
-    	if(!sendEmails.phase || !sendEmails.redBall || !sendEmails.blueBall || (nowTime-sendEmails.data)>1000*60*60*24 ){
-    		example().then((sendEmaildata)=>{
-    			 if(sendEmaildata){
-    				 sendEmail(sendEmaildata)
-    			 }
-    		})
-    	}else{
-    		sendEmail(sendEmails)
-    	}
-    }); 
+		})
+	})
 }
-scheduleCronstyle();
+let scheduleDate = ['0 30 22 * * 5','0 30 22 * * 5','0 30 22 * * 7']
+scheduleCronstyle(scheduleDate);
 
 function sendEmail(sendEmaildata){ //找出要发送邮件的用户发送邮件
 	selectData(sendEmaildata).then((res)=>{
@@ -448,8 +416,7 @@ function sendEmail(sendEmaildata){ //找出要发送邮件的用户发送邮件
 			if(item.phase===sendEmaildata.phase){
 				let myForecast = []
 				item.forecast.forEach((item1,index1,arr1)=>{
-					if(item1.isSendEmail===true){
-						console.log("66")
+					if(item1.isSendEmail==='true' && Number(item1.phase)===Number(sendEmaildata.phase)){
 						myForecast.push("<span>红球:" +item1.redBall+ '')
 						myForecast.push("</span> 蓝球:" +item1.blueBall+ '<br/>')
 					}
@@ -470,6 +437,7 @@ function sendEmail(sendEmaildata){ //找出要发送邮件的用户发送邮件
 	})
 }
  function selectData(query){ //查询mongodb中的彩票数据
+	console.log(query)
 	return new Promise((resolve, reject) => {
 	   Forecast.find({phase:query.phase}).then((data)=>{
 	  	resolve(data)
