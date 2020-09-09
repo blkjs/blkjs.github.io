@@ -637,5 +637,61 @@ router.get('/caipiao2', function(req, res, next) {//500彩票数据
 	
 });
 
+ function example(req) {//自定义抓取
+	return  new Promise(async (resolve, reject)=>{
+		let driver = await  new webdriver.Builder().forBrowser('chrome').build();
+		console.log(req.body.class)
+		let classs = req.body.class
+		var url = req.body.url
+		let attribute = req.body.attribute || 'src'
+		let result = []
+		await driver.get(url);
+		setTimeout(async()=>{
+			//await driver.findElement(By.css('#changeCityBox .checkTips .tab.focus')).click();
+			 //await driver.findElement(By.id('search_input')).sendKeys('前端', Key.ENTER);
+			 //let items = await driver.findElements(By.className('ball_box01'))
+			 let items = await driver.getPageSource()
+			 let $ = await cheerio.load(items)
+			 //let list = await $('.block-icon-list .icon-twrap img')
+			 let list = await $(classs)
+			 if(!list){
+					reject('没有找到节点')
+			 }
+			await list.each((index,el)=>{
+						console.log($(el).attr(attribute))
+						 let data = $(el).attr(attribute)
+						 result.push(data)
+			 })
+			 resolve(result)
+			 driver.close()//关闭页面
+		},3000)
+		})
+	}
+/**
+ * @api {post} /analysis/custom 自定义解析
+ * @apiName 自定义解析
+ * @apiGroup 解析
+ * @apiSuccess {url} url 页面地址.
+ * @apiSuccess {attribute} attribute 查找哪个属性的值.
+ * @apiSuccess {class} class 要查找的class如：（.block-icon-list .icon-twrap img）.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "code":"s55g"
+ *     }
+ */
+router.post('/custom', function(req, res, next) {//自定义扒取
+	example(req).then((respon)=>{
+		console.log(respon)
+		res.send({
+			respon
+		})
+	}).catch((err)=>{
+		console.log(err)
+		res.send({
+			err
+		})
+	})
+});
 
 module.exports = router;

@@ -1,11 +1,11 @@
 <template>
   <div class="index-top">
 	  <div class="search animated bounceInDown" v-if="showSearch">
-		  <el-input placeholder="请输入音乐名称" v-model="search" class="input-with-select" clearable>
+		  <el-input placeholder="请输入音乐名称" v-model="search" @keyup.enter="startSearch" class="input-with-select" clearable>
 		    <el-select v-model="select" slot="prepend" placeholder="请选择" >
 		      <el-option label="网易云音乐" value="1"></el-option>
-		      <el-option label="酷狗音乐" disabled="true" value="2"></el-option>
-		      <el-option label="QQ音乐" disabled="true" value="3"></el-option>
+		      <el-option label="酷狗音乐" :disabled="true" value="2"></el-option>
+		      <el-option label="QQ音乐" :disabled="true" value="3"></el-option>
 		    </el-select>
 		    <el-button slot="append" @click="startSearch" icon="el-icon-search"></el-button>
 		  </el-input>
