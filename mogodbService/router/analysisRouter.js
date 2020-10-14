@@ -10,20 +10,9 @@ var https=require('https')
 var http=require('http')
 var fs=require('fs')
 const async = require('async');
-const {Lottery,Forecast}=require('../db/model/lotteryModel')//引入用户表的lotteryModel模型
 const schedule = require('node-schedule');//定时任务
 const Mail=require('../utils/mail')
-/**
- * @api {post} /analysis/shiping 解析快手视频
- * @apiName 视频解析
- * @apiGroup 解析
- * @apiSuccess {url} url 视频地址.
- * @apiSuccessExample 成功的返回示例:
- *     HTTP/1.1 200 OK
- *     {
- *       "code":"s55g"
- *     }
- */
+
 
 /* GET users listing. */
 router.post('/shiping', function(req, res, next) {
@@ -693,5 +682,235 @@ router.post('/custom', function(req, res, next) {//自定义扒取
 		})
 	})
 });
+
+
+var ClientId = []
+router.post('/selectStatus', function(req, res, next) {
+	let result = req.body
+	console.log(result)
+	ClientId.forEach((item)=>{
+		if(result.id == item.id){
+			res.send({
+				code:200,
+				item:item
+			})
+		}
+	})
+})
+/* 	var driver1 =  new webdriver.Builder().forBrowser('chrome').build();
+	 driver1.get("http://localhost:3000/release");//打开配置页面 */
+router.post('/release', async function(req, res, next) {
+		let result = req.body
+		console.log(result)
+		let delayNext =  6000  //下一步等待
+		let delaySelf =  3000  //调用自己等待
+		let nextRound =  Number(result.time)*1000  //下一轮
+		let index = 0  //视频下标
+		let num = Number(result.num) //循环次数
+		let nowNum = 0 //当前正在执行第几次
+		let videos = []
+		result.fileList.forEach((item)=>{
+			item.url = 'C:\\wwwroot\\49.235.80.50\\mogodbService\\'+item.url
+			videos.push(item)
+		})
+		let url = 'https://creator.douyin.com/'
+		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		 driver.manage().window().maximize(); //最大化窗口
+		 // driver1.manage().window().minimize(); //最小化窗口
+		await driver.get(url);
+		await driver.findElement(By.css('.login')).click() //点击登录按钮
+		await driver.findElement(By.css('.semi-button-content')).click() //确认登录按钮
+		function login() { //查找二维码
+			driver.findElement(By.css('.qrcode-image img')).then(()=>{
+				console.log("已找到登录二维码。")
+				driver.findElement(By.css('.qrcode-image img')).takeScreenshot().then((data)=>{
+					 console.log("截图成功")
+					 console.log(data)
+				    res.send({
+				    	qrcode:'data:image/jpg;base64,'+data
+				    	})
+				}).catch((err)=>{
+					 console.log("截图失败")
+					 console.log(err)
+				})
+				setTimeout(start, 1500);
+				
+			}).catch(()=>{
+				console.log("正在查找登录二维码。")
+				setTimeout(login, delaySelf);
+			})
+		}
+		await login()
+		function start() { //开始体验
+			driver.findElement(By.css('.semi-modal-body .semi-button-primary')).then(()=>{
+				 driver.findElement(By.css('.semi-modal-body .semi-button-primary')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(start, delaySelf);
+				})
+				ClientId.push({
+					id:result.id,
+					isLogin:true,
+					nowNum:0,
+					length:videos.length*num,
+					status:'登录成功,在准备发布视频'
+				})
+				 console.log("已找到开始体验。登录成功！")
+				 setTimeout(start1, 1500);
+			}).catch(()=>{
+				console.log("正在查找开始体验。")
+				setTimeout(start, delaySelf);
+			})
+		}
+		function start1() { //下一步
+			driver.findElement(By.css('.popoverFooter--10YW2 .semi-button-primary')).then(()=>{
+				 driver.findElement(By.css('.popoverFooter--10YW2 .semi-button-primary')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(start1, delaySelf);
+				})
+				 console.log("已找到下一步。")
+				 setTimeout(start2, 1500);
+			}).catch(()=>{
+				console.log("正在查找下一步。")
+				setTimeout(start1, delaySelf);
+			})
+		}
+		function start2() { //下一步1
+			driver.findElement(By.css('.popoverFooter--10YW2 .semi-button-primary')).then(()=>{
+				 driver.findElement(By.css('.popoverFooter--10YW2 .semi-button-primary')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(start2, delaySelf);
+				})
+				 console.log("已找到下一步(1)。")
+				 setTimeout(goRelease, 1500);
+			}).catch(()=>{
+				console.log("正在查找下一步(1)。")
+				setTimeout(start2, delaySelf);
+			})
+		}
+		
+		function goRelease() { //点击发布视频按钮
+			driver.findElement(By.css('.semi-navigation-header .semi-button-primary')).then(()=>{
+				 driver.findElement(By.css('.semi-navigation-header .semi-button-primary')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(goRelease, delaySelf);
+				})
+				 setTimeout(upload, delayNext);
+			}).catch(()=>{
+				console.log("正在查找发布视频按钮。")
+				setTimeout(goRelease, delaySelf);
+			})
+		}
+		var desc = ''
+		function upload() { //找到上传按钮并上传文件
+			driver.findElement(By.css('.upload-btn-input--1NeEX')).then(()=>{
+				console.log("已找到上传按钮。")
+				ClientId.forEach((item)=>{
+					if(result.id == item.id){
+						item.nowNum = nowNum+1
+						status='正在上传第'+ (nowNum+1) +'个视频'
+					}
+				})
+				driver.findElement(By.css('.upload-btn-input--1NeEX')).sendKeys(videos[index].url).then(()=>{
+				}).catch(()=>{
+					setTimeout(upload, delaySelf);
+				})
+				desc = videos[index].desc
+				console.log(index)
+				if(index < (videos.length-1)){
+					index = index + 1
+					console.log('index==='+index)
+				}else{
+					index = 0
+				}
+				setTimeout(input, delayNext);
+			}).catch(()=>{
+				console.log("正在查找上传按钮...")
+				setTimeout(upload, delaySelf);
+			})
+		}
+		
+		function input() { //输入视频描述
+			ClientId.forEach((item)=>{
+				if(result.id == item.id){
+					item.status="正在输入视频描述"
+				}
+			})
+			driver.findElement(By.css('.public-DraftEditor-content')).then(()=>{
+				console.log("已找到输入框。")
+				console.log('index==='+index)
+				console.log(videos)
+				setTimeout(()=>{
+					driver.findElement(By.css('.public-DraftEditor-content')).sendKeys(desc).then(()=>{
+						setTimeout(release, delayNext);
+					}).catch(()=>{
+						setTimeout(input, delayNext);
+					})
+				}, 3000);
+			}).catch(()=>{
+				console.log("正在查找输入框...")
+				setTimeout(input, delaySelf);
+			})
+		}
+		
+		function release() { //发布视频
+			driver.findElement(By.css('.button--1SZwR')).then(()=>{
+				console.log("已找到发布按钮")
+				 driver.findElement(By.css('.button--1SZwR')).click().then(()=>{
+					 nowNum = nowNum + 1
+					 console.log("第"+nowNum+"次视频发布成功！")
+					 if(num*videos.length-1 >= nowNum){
+						ClientId.forEach((item)=>{
+						 	if(result.id == item.id){
+						 		item.nowNum=nowNum
+						 		item.status="第"+ nowNum +"个发布视频成功！等待"+nextRound/1000+"秒"
+						 	}
+						 })
+						 setTimeout(cancel, delayNext);
+						 setTimeout(goRelease, nextRound);
+					 }else{
+						 ClientId.forEach((item)=>{
+						 	if(result.id == item.id){
+						 		item.nowNum=nowNum
+						 		item.status="第"+ nowNum +"个发布视频成功！全部任务已完成！"
+								item.over = true
+						 	}
+						 })
+						 console.log("任务完成")
+						 driver.close()//关闭页面
+					 }
+				}).catch(()=>{
+					setTimeout(release, delaySelf);
+				})
+			}).catch(()=>{
+				console.log("正在查找发布按钮...")
+				setTimeout(release, delaySelf);
+			})
+		}
+		
+		function cancel() { //不同步到西瓜视频
+			driver.findElement(By.css('.semi-modal-footer .semi-button-tertiary')).then(()=>{
+				 driver.findElement(By.css('.semi-modal-footer .semi-button-tertiary')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(cancel, delaySelf);
+				})
+				 setTimeout(cancel1, delayNext);
+			}).catch(()=>{
+				setTimeout(cancel, delaySelf);
+			})
+		}
+		
+		function cancel1() { //不同步到西瓜视频
+			driver.findElement(By.css('.icon--3ap82')).then(()=>{
+				 driver.findElement(By.css('.icon--3ap82')).click().then(()=>{
+				}).catch(()=>{
+					setTimeout(cancel, delaySelf);
+				})
+			}).catch(()=>{
+				setTimeout(cancel1, delaySelf);
+			})
+		}
+		
+		//driver.close()//关闭页面
+})
 
 module.exports = router;
