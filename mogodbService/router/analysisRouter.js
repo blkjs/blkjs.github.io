@@ -6,9 +6,27 @@ var webdriver = require('selenium-webdriver')
     By = webdriver.By
     until = webdriver.until
 var chrome = require('selenium-webdriver/chrome');//移动版浏览器
+var fs= require("fs");
+var path= require("path");
+
+var options = new chrome.Options();
+options.addArguments("--no-sandbox");
+options.addArguments("--disable-dev-shm-usage");
+options.addArguments("--headless");
+
+// let driver =  new webdriver.Builder().forBrowser('chrome').build(); //windows用这个
+//Linux用这个  start
+var service = new chrome.ServiceBuilder('/www/wwwroot/114.115.204.16/server/router/chromedriver/chromedriver').build();            
+chrome.setDefaultService(service);    
+let driver = new webdriver.Builder()
+	.setChromeOptions(options)
+	.withCapabilities(webdriver.Capabilities.chrome())
+	.forBrowser('chrome')
+	.build();
+//end
+
 var https=require('https')
 var http=require('http')
-var fs=require('fs')
 const async = require('async');
 const schedule = require('node-schedule');//定时任务
 const Mail=require('../utils/mail')
@@ -25,6 +43,9 @@ router.post('/shiping', function(req, res, next) {
 	//driver.wait(()=> {
 	async function fn(){
 		await driver.get(url)
+		setTimeout(()=>{
+			driver.close()//关闭页面
+		},60000)
 		var list = []
 		await driver.getPageSource()
 		 .then((souce)=> {
@@ -99,6 +120,9 @@ router.post('/shiping1', function(req, res, next) {//
 		let {url} = req.body 
 		let result = []
 		await driver.get(url);
+		setTimeout(()=>{
+			driver.close()//关闭页面
+		},60000)
 		  //await driver.findElement(By.css('#changeCityBox .checkTips .tab.focus')).click();
 		  //await driver.findElement(By.id('search_input')).sendKeys('前端', Key.ENTER);
 		  //let items = await driver.findElements(By.className('ball_box01'))
@@ -348,34 +372,34 @@ router.post('/img', function(req, res, next) {
 
 
 router.post('/screenshot', function(req, res, next) {//获取网页截图
-	let {url} = req.body
-	console.log(req.body)
-	console.log(url)
-	var driver = new webdriver.Builder()
-	    .forBrowser('chrome')
-	    .setChromeOptions(new chrome.Options())
-	    .build();
-
+	let {url,className} = req.body
 	async function fn(){
 		await driver.get(url)
-		driver.takeScreenshot().then((base64Data)=>{
-		    //这里为截图结果的base64字符串
-			var dataBuffer = new Buffer.from(base64Data, 'base64');
-			var nowDate = new Date().getTime()
-			fs.writeFile('./uploads/'+nowDate+'.png', dataBuffer, (err)=> {
-			    if(err){
-				  console.log(err)
-			    }else{
-				  res.send({
-					  data:'http://localhost:3000/uploads/'+nowDate+'.png'
-				  })
-				  driver.close()//关闭页面
-			    }
-			});
-		});
+		if(!className || !url){
+			res.send({
+				msg:'请输入css类名或填写url'
+			})
+		}
+		console.log(className)
+		driver.findElement(By.css(className)).then(()=>{
+			driver.findElement(By.css(className)).takeScreenshot().then((base64Data)=>{
+				console.log("截图成功！")
+				//这里为截图结果的base64字符串
+				var dataBuffer = new Buffer.from(base64Data, 'base64');
+				var nowDate = new Date().getTime()
+				fs.writeFile('./uploads/'+nowDate+'.png', dataBuffer, (err)=> {
+				    if(err){
+					  console.log(err)
+				    }else{
+					  res.send({
+						  data:'http://114.115.204.16:3000/uploads/'+nowDate+'.png'
+					  })
+				    }
+				});
+			})
+		})
 		}
 		fn()
-
 });
 function scheduleCronstyle(scheduleArr){ //彩票邮件定时任务
 	scheduleArr.forEach((item,index,arr)=>{
@@ -626,10 +650,19 @@ router.get('/caipiao2', function(req, res, next) {//500彩票数据
 	
 });
 
- function example(req) {//自定义抓取
+ function custom(req) {//自定义抓取
 	return  new Promise(async (resolve, reject)=>{
-		let driver = await  new webdriver.Builder().forBrowser('chrome').build();
-		console.log(req.body.class)
+		// let driver = await  new webdriver.Builder().forBrowser('chrome').build();
+		/* var service;        
+		service = new chrome.ServiceBuilder('/www/wwwroot/api/router/chromedriver/chromedriver').build();            
+		chrome.setDefaultService(service);    
+		
+		let driver = await new webdriver.Builder()
+		    .setChromeOptions(options)
+		    .withCapabilities(webdriver.Capabilities.chrome())
+		    .forBrowser('chrome')
+		    .build(); */
+			
 		let classs = req.body.class
 		var url = req.body.url
 		let attribute = req.body.attribute || 'src'
@@ -670,7 +703,8 @@ router.get('/caipiao2', function(req, res, next) {//500彩票数据
  *     }
  */
 router.post('/custom', function(req, res, next) {//自定义扒取
-	example(req).then((respon)=>{
+	console.log(getClientIP(req))
+	custom(req).then((respon)=>{
 		console.log(respon)
 		res.send({
 			respon
@@ -683,16 +717,38 @@ router.post('/custom', function(req, res, next) {//自定义扒取
 	})
 });
 
+/**
+ * @getClientIP
+ * @desc 获取用户 ip 地址
+ * @param {Object} req - 请求
+ */
+function getClientIP(req) {
+    return req.headers['x-forwarded-for'] || // 判断是否有反向代理 IP
+        req.connection.remoteAddress || // 判断 connection 的远程 IP
+        req.socket.remoteAddress || // 判断后端的 socket 的 IP
+        req.connection.socket.remoteAddress;
+};
 
-var ClientId = []
-router.post('/selectStatus', function(req, res, next) {
+var ClientId = [
+	{
+		id:null,
+		progress:0,//服务器上传视频到抖音进度
+		length:null,
+		status:null
+	}
+]
+router.post('/selectStatus', function(req, res, next) { //查询抖音上传状态
 	let result = req.body
-	console.log(result)
-	ClientId.forEach((item)=>{
+	ClientId.forEach((item,index,arr)=>{
 		if(result.id == item.id){
 			res.send({
 				code:200,
 				item:item
+			})
+		}else if(index == ClientId.length-1){
+			res.send({
+				code:200,
+				item:null
 			})
 		}
 	})
@@ -703,18 +759,20 @@ router.post('/release', async function(req, res, next) {
 		let result = req.body
 		console.log(result)
 		let delayNext =  6000  //下一步等待
-		let delaySelf =  3000  //调用自己等待
+		let delaySelf =  6000  //调用自己等待
 		let nextRound =  Number(result.time)*1000  //下一轮
 		let index = 0  //视频下标
 		let num = Number(result.num) //循环次数
 		let nowNum = 0 //当前正在执行第几次
 		let videos = []
 		result.fileList.forEach((item)=>{
-			item.url = 'C:\\wwwroot\\49.235.80.50\\mogodbService\\'+item.url
+			//item.url = 'C:\\vue\\Hbuilder\\gw\\mogodbService\\'+item.url
+			// item.url = 'C:\\wwwroot\\49.235.80.50\\mogodbService\\'+item.url
+			item.url = '/www/wwwroot/api/'+item.url //Linux路径
 			videos.push(item)
 		})
 		let url = 'https://creator.douyin.com/'
-		let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		// let driver = await new webdriver.Builder().forBrowser('chrome').build();
 		 driver.manage().window().maximize(); //最大化窗口
 		 // driver1.manage().window().minimize(); //最小化窗口
 		await driver.get(url);
@@ -725,7 +783,6 @@ router.post('/release', async function(req, res, next) {
 				console.log("已找到登录二维码。")
 				driver.findElement(By.css('.qrcode-image img')).takeScreenshot().then((data)=>{
 					 console.log("截图成功")
-					 console.log(data)
 				    res.send({
 				    	qrcode:'data:image/jpg;base64,'+data
 				    	})
@@ -741,6 +798,7 @@ router.post('/release', async function(req, res, next) {
 			})
 		}
 		await login()
+		var isClose = 0
 		function start() { //开始体验
 			driver.findElement(By.css('.semi-modal-body .semi-button-primary')).then(()=>{
 				 driver.findElement(By.css('.semi-modal-body .semi-button-primary')).click().then(()=>{
@@ -751,13 +809,19 @@ router.post('/release', async function(req, res, next) {
 					id:result.id,
 					isLogin:true,
 					nowNum:0,
+					isClose:false,
+					progress:0,//服务器上传视频到抖音进度
 					length:videos.length*num,
-					status:'登录成功,在准备发布视频'
+					status:'登录成功,正在准备发布视频'
 				})
 				 console.log("已找到开始体验。登录成功！")
 				 setTimeout(start1, 1500);
 			}).catch(()=>{
 				console.log("正在查找开始体验。")
+				isClose += 1
+				if(isClose>30){
+					driver.close()//关闭页面
+				}
 				setTimeout(start, delaySelf);
 			})
 		}
@@ -807,45 +871,61 @@ router.post('/release', async function(req, res, next) {
 				ClientId.forEach((item)=>{
 					if(result.id == item.id){
 						item.nowNum = nowNum+1
-						status='正在上传第'+ (nowNum+1) +'个视频'
+						item.status='准备上传第'+ (nowNum+1) +'个视频'
 					}
 				})
 				driver.findElement(By.css('.upload-btn-input--1NeEX')).sendKeys(videos[index].url).then(()=>{
+					setTimeout(input, delayNext);
+					desc = videos[index].desc
+					console.log(index)
+					if(index < (videos.length-1)){
+						index = index + 1
+						console.log('index==='+index)
+					}else{
+						index = 0
+					}
 				}).catch(()=>{
 					setTimeout(upload, delaySelf);
 				})
-				desc = videos[index].desc
-				console.log(index)
-				if(index < (videos.length-1)){
-					index = index + 1
-					console.log('index==='+index)
-				}else{
-					index = 0
-				}
-				setTimeout(input, delayNext);
+				
 			}).catch(()=>{
 				console.log("正在查找上传按钮...")
 				setTimeout(upload, delaySelf);
 			})
 		}
 		
+		let progress = 0 
 		function input() { //输入视频描述
 			ClientId.forEach((item)=>{
+				if(driver.findElement(By.css('.progress-text--11wpp'))){
+					driver.findElement(By.css('.progress-text--11wpp')).getText().then((res)=>{
+						progress = res
+						ClientId.forEach((item)=>{
+							if(result.id == item.id){
+								item.progress = res
+							}
+						})
+					})
+				}
 				if(result.id == item.id){
-					item.status="正在输入视频描述"
+					item.status='正在上传第'+ (nowNum+1) +'个视频,进度'+progress
 				}
 			})
 			driver.findElement(By.css('.public-DraftEditor-content')).then(()=>{
 				console.log("已找到输入框。")
-				console.log('index==='+index)
-				console.log(videos)
-				setTimeout(()=>{
-					driver.findElement(By.css('.public-DraftEditor-content')).sendKeys(desc).then(()=>{
-						setTimeout(release, delayNext);
-					}).catch(()=>{
-						setTimeout(input, delayNext);
+				ClientId.forEach((item)=>{
+					if(result.id == item.id){
+						item.status='正在输入视频描述'
+					}
+				})
+				driver.findElement(By.css('.public-DraftEditor-content')).sendKeys(desc).then(()=>{
+					driver.findElement(By.css('.public-DraftEditor-content')).getText().then((res)=>{
+						console.log("值为："+res)
 					})
-				}, 3000);
+					setTimeout(()=>{
+						setTimeout(release, delayNext);
+					}, 3000);
+				})
 			}).catch(()=>{
 				console.log("正在查找输入框...")
 				setTimeout(input, delaySelf);
@@ -865,18 +945,28 @@ router.post('/release', async function(req, res, next) {
 						 		item.status="第"+ nowNum +"个发布视频成功！等待"+nextRound/1000+"秒"
 						 	}
 						 })
-						 setTimeout(cancel, delayNext);
-						 setTimeout(goRelease, nextRound);
+						 setTimeout(cancel, 2000);
+						 setTimeout(goRelease, 20000);
 					 }else{
 						 ClientId.forEach((item)=>{
 						 	if(result.id == item.id){
 						 		item.nowNum=nowNum
 						 		item.status="第"+ nowNum +"个发布视频成功！全部任务已完成！"
 								item.over = true
+								item.isClose = true
 						 	}
 						 })
 						 console.log("任务完成")
-						 driver.close()//关闭页面
+						 setTimeout(cancel, 2000);
+						 setTimeout(()=>{
+						 		driver.close()//关闭页面
+								ClientId.forEach((item)=>{
+									if(result.id == item.id){
+										item.over = false
+										item.isClose = true
+									}
+								})
+						 },20000)
 					 }
 				}).catch(()=>{
 					setTimeout(release, delaySelf);
@@ -912,5 +1002,7 @@ router.post('/release', async function(req, res, next) {
 		
 		//driver.close()//关闭页面
 })
+
+
 
 module.exports = router;

@@ -26,6 +26,10 @@
 	cursor: pointer;
 	box-shadow: 10px 10px 10px gainsboro;
 	color: gray;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 }
 .case:hover{
 	box-sizing: border-box;
@@ -38,12 +42,14 @@
 	top: -0.3rem;
 	padding: 0rem 0.15rem 0.15rem 0.15rem;
 	color: #0088CC;
+	transition: width 0.2s, height 0.2s, transform 0.2s;
+	-webkit-transition: width 0.2s, height 0.2s, -webkit-transform 0.2s;
 }
 .case img{
 	width: 100%;
 }
 .case p{
-	width: 100%;
+	width: 3rem;
 	text-indent:0.4rem;
 	text-align: left;
 	

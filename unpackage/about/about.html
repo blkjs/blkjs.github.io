@@ -119,10 +119,18 @@
 		
        <script>
        	var map = new BMap.Map("container");          // 创建地图实例  
-       	var point = new BMap.Point(116.404, 39.915);  // 创建点坐标  
-       	map.centerAndZoom(point, 15);                 // 初始化地图，设置中心点坐标和地图级别  
+       	var point = new BMap.Point(114.313387, 25.688584);  // 创建点坐标  
+       	map.centerAndZoom(point, 20);                 //设置中心点坐标和地图缩放级别  
        	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-
+		var myIcon = new BMap.Icon("../../img/定位.png", new BMap.Size(48, 48), {
+			// 指定定位位置
+			offset: new BMap.Size(10, 25),
+			// 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+			imageOffset: new BMap.Size(10, 0 -0) // 设置图片偏移  
+		});
+		// 创建标注对象并添加到地图 
+		var marker = new BMap.Marker(point,{icon: myIcon});
+		map.addOverlay(marker);
        </script>
     </body>
 </html>
