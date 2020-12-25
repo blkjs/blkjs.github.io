@@ -380,6 +380,8 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 				msg:'请输入css类名或填写url'
 			})
 		}
+		
+		 driver.manage().window().setRect({ width: 1024, height: 8000 }); //设置窗口大小，可以实现截取长图
 		console.log(className)
 		driver.findElement(By.css(className)).then(()=>{
 			driver.findElement(By.css(className)).takeScreenshot().then((base64Data)=>{
