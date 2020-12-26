@@ -374,14 +374,13 @@ router.post('/img', function(req, res, next) {
 router.post('/screenshot', function(req, res, next) {//获取网页截图
 	let {url,className} = req.body
 	async function fn(){
-		await driver.get(url)
 		if(!className || !url){
 			res.send({
 				msg:'请输入css类名或填写url'
 			})
 		}
-		
-		 driver.manage().window().setRect({ width: 1024, height: 8000 }); //设置窗口大小，可以实现截取长图
+		await driver.get(url)
+		driver.manage().window().setRect({ width: 1024, height: 8000 }); //设置窗口大小，可以实现截取长图
 		console.log(className)
 		driver.findElement(By.css(className)).then(()=>{
 			driver.findElement(By.css(className)).takeScreenshot().then((base64Data)=>{
@@ -394,7 +393,7 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 					  console.log(err)
 				    }else{
 					  res.send({
-						  data:'http://114.115.204.16:3000/uploads/'+nowDate+'.png'
+						  data:'uploads/'+nowDate+'.png'
 					  })
 				    }
 				});
