@@ -5,7 +5,7 @@ var fs = require('fs');
 var path = require('path');//解析需要遍历的文件夹
 var filePath = path.resolve('./apiStatic/talking');
 const Post = require('../db/model/postModel.js')
-const ObjectID = require('mongodb').ObjectID;
+// const ObjectID = require('mongodb').ObjectID;
 let codes={}//通过内存保存邮箱验证码,邮箱,时间戳
 
 //调用文件遍历方法

@@ -52,6 +52,11 @@ router.post('/creatOrder', (req, res) => { //增加订单
 	})
 	let exchange = 0.1 //汇率0.1
 	let money = (exchange * 100 * num - random * 100)/100
+	if(!userEmail){
+		console.log("===========")
+		console.log(req.data)
+		userEmail = req.data.userifo[0].userEmail
+	}
 	if( !num || !name || !type || !userEmail ){
 		res.send({message:"订单创建失败，缺少参数"})
 		return false
@@ -88,7 +93,8 @@ router.post('/creatOrder', (req, res) => { //增加订单
 		  }
 		})
 	 })
-	 .catch(()=>{
+	 .catch((err)=>{
+		 console.log(err)
 		 res.send({ message:"订单创建失败", ststus: 0 })
 	 })
 	

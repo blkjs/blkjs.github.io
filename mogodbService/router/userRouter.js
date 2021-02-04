@@ -7,9 +7,8 @@ const Mail=require('../utils/mail')
 var svgCaptcha = require('svg-captcha');
 let codes={}//通过内存保存邮箱验证码,邮箱,时间戳
 let VCode={}//通过内存保存图片验证码客户端ip,sessionID,请求次数,时间戳
-
-
-
+var token = require('../utils/token')
+const { builder } = require('./util')
 /**
  * @api {post} /user/reg 用户注册
  * @apiName 用户注册
@@ -119,13 +118,14 @@ let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
  */
 router.post('/exchange',(req,res)=>{//修改用户信息
 
-let {userEmail,time}=req.body
-	console.log(userEmail,time)
-	if(!userEmail || !time || time<=0){
+let {time}=req.body
+	if(!time || time<=0){
 		res.send({message:"参数错误",status:0})
 		return false
 	}
-	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+	var userDate = req.data.userifo[0]
+	console.log(userDate.userEmail)
+	User.find({userEmail:userDate.userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 	  .then((data)=>{
 		  if(data.length===0){
 				 res.send({message:"userEmail错误！",status:0})
@@ -133,16 +133,16 @@ let {userEmail,time}=req.body
 		  }else{
 				var nowTime =new Date().getTime()
 				if(nowTime<parseInt(data[0].expirationDate)){
-					nowTime1=parseInt(data[0].expirationDate)
+					nowTime=parseInt(data[0].expirationDate)
 				}
 			  	var diamonds =parseInt(data[0].diamonds)-parseInt(time)
-				var expirationDate=parseInt(time)*24*60*60*1000 + nowTime1
+				var expirationDate=parseInt(time)*24*60*60*1000 + nowTime
 				if(diamonds>=0){
 				}else{
 					res.send({message:"余额不足，兑换失败！",status:0})
 					return false
 				}
-				User.updateOne({'userEmail': userEmail}, { 'diamonds': diamonds,'expirationDate':expirationDate },(err, response)=> {
+				User.updateOne({'userEmail': userDate.userEmail}, { 'diamonds': diamonds,'expirationDate':expirationDate },(err, response)=> {
 					if (err){
 						res.send({message:"兑换失败！",status:0})
 						return false
@@ -151,7 +151,7 @@ let {userEmail,time}=req.body
 					var msg = new Message();
 					 res.send({message:"兑换成功！",status:1})
 					 msg.messages='您已成功兑换'+ time +'天使用时长！';
-					 msg.userEmail=userEmail;
+					 msg.userEmail=userDate.userEmail;
 					 msg.isRead=0;
 					 msg.creatTime=nowTime
 					 msg.diamonds=diamonds//本次兑换后剩余钻石数量
@@ -179,18 +179,387 @@ let {userEmail,time}=req.body
  *       "status": 1,
  *     }
  */
+var info = (data)=>{
+  const userInfo = {
+    'id': '4291d7da9005377ec9aec4a71ea837f',
+    'name': '天野远子',
+    'username': 'admin',
+    'password': '',
+    'avatar': '/avatar2.jpg',
+    'status': 1,
+    'telephone': '',
+	'token':data.token,
+	'diamonds': data[0].diamonds,
+	'expirationDate':data[0].expirationDate,
+    'lastLoginIp': '27.154.74.117',
+    'lastLoginTime': 1534837621348,
+    'creatorId': 'admin',
+    'createTime': 1497160610259,
+    'merchantCode': 'TLif2btpzg079h15bk',
+    'deleted': 0,
+    'roleId': 'admin',
+    'role': {}
+  }
+  // role
+  const roleObj = {
+    'id': 'admin',
+    'name': '管理员',
+    'describe': '拥有所有权限',
+    'status': 1,
+    'creatorId': 'system',
+    'createTime': 1497160610259,
+    'deleted': 0,
+    'permissions': [{
+      'roleId': 'admin',
+      'permissionId': 'dashboard',
+      'permissionName': '仪表盘',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'exception',
+      'permissionName': '异常页面权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'result',
+      'permissionName': '结果权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'profile',
+      'permissionName': '详细页权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'table',
+      'permissionName': '表格权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'import',
+        'describe': '导入',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'form',
+      'permissionName': '表单权限',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'order',
+      'permissionName': '订单管理',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'permission',
+      'permissionName': '权限管理',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'role',
+      'permissionName': '角色管理',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'table',
+      'permissionName': '桌子管理',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"query","defaultCheck":false,"describe":"查询"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'query',
+        'describe': '查询',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }, {
+      'roleId': 'admin',
+      'permissionId': 'user',
+      'permissionName': '用户管理',
+      'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"},{"action":"export","defaultCheck":false,"describe":"导出"}]',
+      'actionEntitySet': [{
+        'action': 'add',
+        'describe': '新增',
+        'defaultCheck': false
+      }, {
+        'action': 'import',
+        'describe': '导入',
+        'defaultCheck': false
+      }, {
+        'action': 'get',
+        'describe': '详情',
+        'defaultCheck': false
+      }, {
+        'action': 'update',
+        'describe': '修改',
+        'defaultCheck': false
+      }, {
+        'action': 'delete',
+        'describe': '删除',
+        'defaultCheck': false
+      }, {
+        'action': 'export',
+        'describe': '导出',
+        'defaultCheck': false
+      }],
+      'actionList': null,
+      'dataAccess': null
+    }]
+  }
+
+  roleObj.permissions.push({
+    'roleId': 'admin',
+    'permissionId': 'support',
+    'permissionName': '超级模块',
+    'actions': '[{"action":"add","defaultCheck":false,"describe":"新增"},{"action":"import","defaultCheck":false,"describe":"导入"},{"action":"get","defaultCheck":false,"describe":"详情"},{"action":"update","defaultCheck":false,"describe":"修改"},{"action":"delete","defaultCheck":false,"describe":"删除"},{"action":"export","defaultCheck":false,"describe":"导出"}]',
+    'actionEntitySet': [{
+      'action': 'add',
+      'describe': '新增',
+      'defaultCheck': false
+    }, {
+      'action': 'import',
+      'describe': '导入',
+      'defaultCheck': false
+    }, {
+      'action': 'get',
+      'describe': '详情',
+      'defaultCheck': false
+    }, {
+      'action': 'update',
+      'describe': '修改',
+      'defaultCheck': false
+    }, {
+      'action': 'delete',
+      'describe': '删除',
+      'defaultCheck': false
+    }, {
+      'action': 'export',
+      'describe': '导出',
+      'defaultCheck': false
+    }],
+    'actionList': null,
+    'dataAccess': null
+  })
+
+  userInfo.role = roleObj
+  return builder(userInfo)
+}
 router.post('/userIfo',(req,res)=>{//查询用户信息
-let {userEmail}=req.body
-	if(!userEmail){
-		res.send({message:"缺少参数",status:0})
-		return false
-	}
-	User.find({userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
+	var userDate = req.data.userifo[0]
+	User.find({userEmail:userDate.userEmail})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 	  .then((data)=>{
 		  if(data.length===0){
 				 res.send({message:"查无此人",status:0})
 		  }else{
-			  	 res.send({message:"查询成功",status:1,data:data})
+			  	 // res.send({message:"查询成功",status:1,data:data})
+				 console.log("========")
+				 console.log(data)
+				 res.send(info(data))
 		  }
 	  })
 
@@ -217,23 +586,29 @@ let {userEmail}=req.body
 //登录接口
 router.post('/login',(req,res)=>{
 	const sessionCaptcha = req.session.captcha;//服务器生成待验证码
-	  console.log(sessionCaptcha,'验证码')
-	let {userEmail,userPass,VCode}=req.body
-	if(!userEmail || !userPass || !VCode){
+	let {email,userEmail,userPass,password,VCode}=req.body
+	/* if(!userEmail || !userPass || !VCode){
 		res.send({message:"缺少参数",status:0})
 		return false
 	}else if(sessionCaptcha !== VCode){
 		res.send({message:"验证码错误",status:0})
-	}
-	User.find({userEmail,userPass})//查询
+	} */
+	console.log({userEmail:email,userPass:password})
+	User.find({userEmail:email,userPass:password})//查询
 	  .then((data)=>{
-	 	  console.log(data)
 		  if(data.length>0){
 				var userifo ={'userEmail':userEmail,'iflogin':true}
 			    req.session.userifo = userifo;
-			  res.send({message:"登录成功",status:1,data:data})
+				token.createToken({userifo:data},'zhangdada',{expiresIn:'1d'}).then((token)=>{
+					data.token = token
+					console.log(data)
+					res.send(info(data))
+				})
+
+			  // res.send({message:"登录成功",status:1,data:data})
 		  }else{
 			  res.send({message:"用户名或密码不正确",status:0})
+			  console.log("用户名或密码不正确")
 		  }
 	  })
 	  .catch((err)=>{
@@ -254,22 +629,14 @@ router.post('/login',(req,res)=>{
  *     }
  */
 router.post('/iflogin',(req,res)=>{//检查是否登陆
-
-var iflogin = req.session.userifo ? req.session.userifo:false
- if(iflogin.iflogin===true){
-		console.log(req.session.userifo);
-		Message.find({'userEmail':req.session.userifo.userEmail,'isRead':0},(err,doc)=>{
-			return	res.json({
-				 status:1,
-				 unReadMessage:doc.length || 0
-			})
+	var userDate = req.data.userifo[0]
+	console.log(userDate)
+	Message.find({'userEmail':userDate.userEmail,'isRead':0},(err,doc)=>{
+		return	res.json({
+			 status:1,
+			 unReadMessage:doc.length || 0
 		})
-}else{
-	console.log("未登陆");
-		return res.json({
-					 status:0,
-				})
-}
+	})
 });
 
 

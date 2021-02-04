@@ -8,6 +8,8 @@ var session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const router = express.Router()
 
+var expressJwt =require('express-jwt');//token
+var token=require('./utils/token');
 
 app.use(session({
 	 name: 'www.blkjs.com',
@@ -39,6 +41,7 @@ app.get('/release',function(req,res){
 app.all('*', function(req, res, next) {
     //res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Origin", req.headers.origin);
+	res.header("Access-Control-Allow-Headers", "content-type,Authorization,X-Requested-With");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials", true);//接收cookie
@@ -47,9 +50,34 @@ app.all('*', function(req, res, next) {
 	res.header("Access-Control-Allow-Credentials", true)
     next();
 });
-
-
+// app.use('/uploads', express.static('uploads'));
 app.use('/uploads',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
+
+
+// 解析token信息
+app.use(function (req,res,next) {
+  var tokenstr =req.headers['authorization'];
+  if (tokenstr === undefined){
+	  console.log("请求未携带token  请求地址："+req.url)
+    return next();
+  }
+  else {
+    token.verifyToken(tokenstr,'zhangdada').then((data)=>{
+      req.data=data;
+      return next();
+    }).catch((err)=>{
+      return next();
+    })
+  }
+});
+
+// 校验token是否过期，并且去除该地址不用校验
+app.use(expressJwt({secret:'zhangdada',algorithms: ['HS256']}).unless({
+  path:['/user/login','/user/getMailCde','/user/VCode','/update/update','/user/iflogin','/user/reg',
+  '/play/creatOrder','/play/test']
+}))
+
+
  
  const download=require('./router/download')
  app.use('/download',download) //文件下载
@@ -77,8 +105,8 @@ const imgRecognition=require('./router/imgRecognition')
 app.use('/imgRecognition',imgRecognition)
 const lottery=require('./router/lottery')
 app.use('/lottery',lottery)
-//const PuppeteerRouter=require('./router/PuppeteerRouter')
-//app.use('/puppeteer',PuppeteerRouter)
+const PuppeteerRouter=require('./router/activity')
+app.use('/activity',PuppeteerRouter)
 
 
 	//配置服务端口

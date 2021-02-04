@@ -16,13 +16,13 @@ options.addArguments("--headless");
 
 // let driver =  new webdriver.Builder().forBrowser('chrome').build(); //windows用这个
 //Linux用这个  start
-var service = new chrome.ServiceBuilder('/www/wwwroot/114.115.204.16/server/router/chromedriver/chromedriver').build();            
+/* var service = new chrome.ServiceBuilder('/www/wwwroot/114.115.204.16/server/router/chromedriver/chromedriver').build();            
 chrome.setDefaultService(service);    
 let driver = new webdriver.Builder()
 	.setChromeOptions(options)
 	.withCapabilities(webdriver.Capabilities.chrome())
 	.forBrowser('chrome')
-	.build();
+	.build(); */
 //end
 
 var https=require('https')
@@ -379,6 +379,7 @@ router.post('/screenshot', function(req, res, next) {//获取网页截图
 				msg:'请输入css类名或填写url'
 			})
 		}
+		let driver =  new webdriver.Builder().forBrowser('chrome').build(); //windows用这个
 		await driver.get(url)
 		driver.manage().window().setRect({ width: 1024, height: 8000 }); //设置窗口大小，可以实现截取长图
 		console.log(className)
@@ -653,7 +654,7 @@ router.get('/caipiao2', function(req, res, next) {//500彩票数据
 
  function custom(req) {//自定义抓取
 	return  new Promise(async (resolve, reject)=>{
-		// let driver = await  new webdriver.Builder().forBrowser('chrome').build();
+		let driver = await  new webdriver.Builder().forBrowser('chrome').build();
 		/* var service;        
 		service = new chrome.ServiceBuilder('/www/wwwroot/api/router/chromedriver/chromedriver').build();            
 		chrome.setDefaultService(service);    
@@ -773,7 +774,7 @@ router.post('/release', async function(req, res, next) {
 			videos.push(item)
 		})
 		let url = 'https://creator.douyin.com/'
-		// let driver = await new webdriver.Builder().forBrowser('chrome').build();
+		let driver = await new webdriver.Builder().forBrowser('chrome').build();
 		 driver.manage().window().maximize(); //最大化窗口
 		 // driver1.manage().window().minimize(); //最小化窗口
 		await driver.get(url);

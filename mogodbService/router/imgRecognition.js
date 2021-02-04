@@ -38,6 +38,7 @@ var mk = (folderName) => {
 	fs.mkdir('./uploads', (error) => {
 		fs.mkdir('./uploads/' + folderName, (error) => {
 			if (error) {
+				console.log("创建文件夹失败:"+folderName);
 				console.log(error);
 				return false;
 			}
@@ -55,7 +56,7 @@ var saveimg = (folderName, dataBuffer, fileName) => {
 				}
 				console.log(err)
 			} else {
-				var path = '/public/' + folderName + '/' + nowTime + '.png'
+				var path = '/uploads/' + folderName + '/' + nowTime + '.png'
 				resolve(path)
 			}
 		});
@@ -283,7 +284,7 @@ router.post('/delQrCode', multipartyMiddleware, (req, res) => { //删除二维�
 				status: 1,
 				data
 			})
-			deleteFile('../' + path.replace(/public/, "uploads"), false)
+			deleteFile('../' + path, false)
 		})
 		.catch((err) => {
 			console.log(err)

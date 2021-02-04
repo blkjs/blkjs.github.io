@@ -1,4 +1,4 @@
-var topurl = "http://49.235.80.50:3000"
+var topurl = "http://114.115.204.16:3000"
 
 !function(n){
 			　　　　var e=n.document,

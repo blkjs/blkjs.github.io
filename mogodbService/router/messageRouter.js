@@ -27,19 +27,21 @@ const Message =require('../db/model/messageModel')//引入Schema模型
  */
 //分页
 router.post('/getMessage',(req,res)=>{ 
-	let {userEmail}=req.body
+	var userDate = req.data.userifo[0]
 	var nowTime =new Date().getTime()
 	Message.find({
-		userEmail,
+		userEmail:userDate.userEmail,
 		creatTime:{
 	     "$gte": nowTime-1000*60*60*24*5,
 	     "$lte":nowTime
 		},
 	})//查询邮箱是否存在{userEmail}==={userEmail:userEmail}
 	.then((data)=>{
-		  Message.updateMany({userEmail,isRead:0},{isRead:1})
+		  Message.updateMany({userEmail:userDate.userEmail,isRead:0},{isRead:1})
 		  .then(()=>{
 		  })
+		  console.log("=+++++")
+		  console.log(data)
 		  res.send({massage:"查询成功",status:1,data:data.reverse()})
 	 })
 	 .catch((err)=>{
