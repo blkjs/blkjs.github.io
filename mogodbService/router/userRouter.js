@@ -586,15 +586,13 @@ router.post('/userIfo',(req,res)=>{//查询用户信息
 //登录接口
 router.post('/login',(req,res)=>{
 	const sessionCaptcha = req.session.captcha;//服务器生成待验证码
-	let {email,userEmail,userPass,password,VCode}=req.body
-	/* if(!userEmail || !userPass || !VCode){
+	let {userEmail,userPass}=req.body
+	if(!userEmail || !userPass){
 		res.send({message:"缺少参数",status:0})
 		return false
-	}else if(sessionCaptcha !== VCode){
-		res.send({message:"验证码错误",status:0})
-	} */
-	console.log({userEmail:email,userPass:password})
-	User.find({userEmail:email,userPass:password})//查询
+	}
+	console.log({userEmail:userEmail,userPass:userPass})
+	User.find({userEmail:userEmail,userPass:userPass})//查询
 	  .then((data)=>{
 		  if(data.length>0){
 				var userifo ={'userEmail':userEmail,'iflogin':true}
