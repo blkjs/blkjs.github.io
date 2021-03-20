@@ -1,4 +1,4 @@
-var topurl = "http://114.115.204.16:3000"
+var topurl = "http://114.215.203.1:3000"
 
 !function(n){
 			　　　　var e=n.document,
@@ -51,19 +51,13 @@ var register = () => {
 			},
 			data: {},
 			success: (data) => {
-				if(data.status===1){
-					localStorage.removeItem("login_msg");
-					location.reload()
-				}else{
-					alert(data.message)
-				}
 				
 			},
 			error: function() {
-				alert('服务器发生错误！');
 			}
 		});
-		
+		localStorage.removeItem("login_msg");
+		location.reload()
 	} else { //跳转注册页面
 		window.open("../register/register.html", '_self')
 	}
@@ -133,37 +127,19 @@ window.onload = function() {
 		}
 	}
 	if (localStorage.getItem("login_msg")) {//检查是否登录
-		$.ajax({
-			url: topurl + "/user/iflogin",
-			type: 'POST',
-			async: true,
-			xhrFields: {
-				withCredentials: true
-			},
-			data: {},
-			success: (data) => {
-				console.log(data)
-				if (data.status == 1) {
-					var login_msg=JSON.parse(localStorage.getItem("login_msg"));
-					var logo ="../../img/logo.png";
-					var header_img=login_msg.headerImg ? topurl+login_msg.headerImg:logo;
-					document.getElementById("login").innerHTML = '<img onclick="app(7)" src="' + header_img +
-						'" class="header_img" />' + '<span onclick="app(7)" class="username">' + login_msg.userName +
-						'</span>'; //取出用户名
-					document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
-				} else {
-					localStorage.clear();
-					document.getElementById("login").innerHTML = "登录";
-					document.getElementById("register").innerHTML = "注册";
-				}
-
-			},
-			error: function() {
-				alert('服务器发生错误！');
-			}
-		});
+	
+			var login_msg=JSON.parse(localStorage.getItem("login_msg"));
+			var logo ="../../img/logo.png";
+			var header_img = login_msg.result.avatar ? topurl+login_msg.result.avatar:logo;
+			document.getElementById("login").innerHTML = '<img onclick="app(7)" src="' + header_img +
+				'" class="header_img" />' + '<span onclick="app(7)" class="username">' + login_msg.result.name +
+				'</span>'; //取出用户名
+			document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
 
 	} else {
+		localStorage.clear();
+		document.getElementById("login").innerHTML = "登录";
+		document.getElementById("register").innerHTML = "注册";
 
 	}
 }
