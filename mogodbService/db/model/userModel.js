@@ -5,7 +5,7 @@
 	userPass : {type:String,required:true},
 	userAge : 	Number,
 	sex:		{type:Number,default:1},
-	headerImg:{type:String,required:false},
+	avatar:{type:String,required:false},
 	diamonds:{type:String,required:false,default:15},
 	expirationDate:{type:String,required:false,default:0},
   });

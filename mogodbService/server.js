@@ -39,25 +39,24 @@ app.get('/release',function(req,res){
 })
  //设置跨域访问
 app.all('*', function(req, res, next) {
-    //res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Origin", req.headers.origin);
-	res.header("Access-Control-Allow-Headers", "content-type,Authorization,X-Requested-With");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, content-type,Authorization,X-Requested-With,token");
     res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
     res.header("Access-Control-Allow-Credentials", true);//接收cookie
     res.header("X-Powered-By", ' 3.2.1');
     res.header("Content-Type", "application/json;charset=utf-8");
-	res.header("Access-Control-Allow-Credentials", true)
     next();
 });
 // app.use('/uploads', express.static('uploads'));
 app.use('/uploads',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
+app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
 
 
 // 解析token信息
 app.use(function (req,res,next) {
-  var tokenstr =req.headers['authorization'];
-  if (tokenstr === undefined){
+  var tokenstr = req.headers['authorization'];
+  if (!tokenstr){
 	  console.log("请求未携带token  请求地址："+req.url)
     return next();
   }
@@ -76,11 +75,17 @@ app.use(expressJwt({secret:'zhangdada',algorithms: ['HS256']}).unless({
   path:['/user/login','/user/getMailCde','/user/VCode','/update/update','/user/iflogin','/user/reg',
   '/play/creatOrder','/play/test']
 }))
-
-
+app.use(function (err, req, res, next) {
+  if (err.name === 'UnauthorizedError') {
+    res.status(401).send({
+        code:401,
+        message:"请先登录"
+    });
+  }
+});
  
- const download=require('./router/download')
- app.use('/download',download) //文件下载
+const download=require('./router/download')
+app.use('/download',download) //文件下载
 const userRouter=require('./router/userRouter')
 app.use('/user',userRouter)
 const foodRouter=require('./router/foodRouter')

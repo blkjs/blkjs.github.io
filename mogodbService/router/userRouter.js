@@ -80,9 +80,9 @@ router.post('/reg',(req,res)=>{
  */
 router.post('/modify',(req,res)=>{//修改用户信息
 
-let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
+let {_id,userEmail,userName, userAge,avatar,sex}=req.body
 	console.log()
-	if(!_id || !userEmail || !userName || !userAge || !headerImg || !sex){
+	if(!_id || !userEmail || !userName || !avatar || !sex){
 		res.send({message:"缺少参数",status:0})
 		return false
 	}
@@ -90,7 +90,7 @@ let {_id,userEmail,userName, userAge,headerImg,sex}=req.body
 		data.userName=req.body.userName;
 		data.userEmail=req.body.userEmail;
 		data.userAge=req.body.userAge;
-		data.headerImg=req.body.headerImg;
+		data.avatar=req.body.avatar;
 		data.sex=req.body.sex;
 		data.save(function(err){
 			if(err){
@@ -181,11 +181,13 @@ let {time}=req.body
  */
 var info = (data)=>{
   const userInfo = {
-    'id': '4291d7da9005377ec9aec4a71ea837f',
-    'name': '天野远子',
-    'username': 'admin',
+    'id': data[0]._id,
+    'name': data[0].userName,
+    'sex':data[0].sex,
+    'username': data[0].userName,
+    'userEmail':data[0].userEmail,
     'password': '',
-    'avatar': '/avatar2.jpg',
+    'avatar': data[0].avatar,
     'status': 1,
     'telephone': '',
 	'token':data.token,

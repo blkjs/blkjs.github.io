@@ -8,6 +8,7 @@
 		<link rel="stylesheet" type="text/css" href="../../css/chat.css">
 		<link rel="stylesheet" type="text/css" href="../../css/public.css">
 		<script src="../../js/jquery1.10.2.min.js"></script>
+        <script src="../../js/public.js"></script>
     </head>
     <body>
 			<div class="app-top-2">
@@ -151,7 +152,7 @@
 		show_content.scrollTop = show_content.scrollHeight;//保持发送的内容在最底部显示
 	}
 	var ws1 =()=>{
-		let ws = new WebSocket("ws://49.235.80.50:3001");
+		let ws = new WebSocket(WS_BASE_URL);
 		ws.onopen = function() {};
 		return ws
 	}
@@ -200,12 +201,6 @@
 							html =html+ "<li>"+data+"</li>"
 						});
 						$(".online_list")[0].innerHTML=html;
-					/* 	 var show_content= document.getElementById("online_list")
-						var li = document.createElement("li");
-						var textnode=document.createTextNode(JSON.parse(data.data).list[0]);
-						 li.appendChild(textnode)
-						li.setAttribute("class", "chat_content_join");
-						show_content.appendChild(li); */
 						
 					}else if(JSON.parse(data.data).message && JSON.parse(data.data).id===localStorage.getItem("id")){
 						chat_bubbles(JSON.parse(data.data).message,'chat_content_show_1','header_img2','../../img/IE.png',JSON.parse(data.data).name,'chat_name')

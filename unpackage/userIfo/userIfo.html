@@ -73,13 +73,6 @@
 							</div>
 							
 							<div class="content-left-L">
-								<h1>年龄：</h1>
-							</div>
-							<div class="content-left-R">
-								<input id="birth" type="text" />
-							</div>
-							
-							<div class="content-left-L">
 								
 							</div>
 							<div class="content-left-R">
@@ -140,42 +133,25 @@
 				
 			</div>
 		<script>
-			var header_img = ''
+			var avatar = ''
 			var upload=()=>{
 				$('#file')[0].click()
 			}
 			var up_img=(data)=>{
-				console.log(data.target.files)
 				var reader = new FileReader();
 				reader.readAsDataURL(data.target.files[0]);
 				reader.onload = function(){
-				    console.log(reader.result); //获取到base64格式图片
-					
-					$.ajax({
-						url: topurl + "/file/upload",
-						type: 'POST',
-						async: true,
-						xhrFields: {
-							withCredentials: true
-						},
-						data: {
+                    let data = {
 							_id: JSON.parse(localStorage.getItem("login_msg"))._id,
 							userEmail: JSON.parse(localStorage.getItem("login_msg")).userEmail,
 							imgBase64:reader.result,
 							type:1
 						
-						},
-						success: (data)=> {//nodeservice
-						
-						header_img=data.imgURL
-						console.log(header_img)
-						
-							$('#header_img')[0].src  =reader.result
-						},
-						error: function() {
-							alert('服务器发生错误！');
 						}
-					});
+					$http('/file/upload',data,'POST').then((res)=>{
+                        avatar = res.imgURL
+                        $('#header_img')[0].src  =reader.result
+                    })
 					
 				};
 
@@ -197,59 +173,44 @@
 				}
 			}
 			var submit=()=>{ //提交修改
-				var id=JSON.parse(localStorage.getItem("login_msg"))._id
-				$.ajax({
-					url: topurl + "/user/modify",
-					type: 'POST',
-					async: true,
-					xhrFields: {
-						withCredentials: true
-					},
-					data: {
-						_id: id,
+                let login_msg = JSON.parse(localStorage.getItem("login_msg")).result
+                let data = {
+                        _id:login_msg.id,
 						userEmail: $('#email')[0].value,
 						userName: $('#name')[0].value,
-						userAge: $('#birth')[0].value,
-						headerImg: header_img,
+						avatar: avatar ? avatar:login_msg.avatar,
 						sex: $("input[name='sex']:checked").val(),
-					},
-					success: (data)=> {
-						alert(data.message)
-						localStorage.setItem("login_msg", JSON.stringify(data.data));
-						location.reload()
-					},
-					error: function() {
-						alert('服务器发生错误！');
 					}
-				});
+                $http('/user/modify',data,'POST').then((res)=>{
+                    alert(res.message)
+                    if(res.status == 1){
+                        /* let login = JSON.parse(localStorage.getItem("login_msg"))
+                        let result = Object.assign(login.result,res.result)
+                        login.result = result
+                        localStorage.setItem("login_msg", JSON.stringify(login)); */
+                        $http('/user/userIfo',{userEmail:login_msg.userEmail},'POST').then((resp)=>{
+                            updateLoginMsg(resp).then(()=>{
+                                location.reload()
+                            })
+                        })
+                    }
+                }).catch((err)=>{
+                })
 			}
 		</script>
         <script>
-			$.ajax({//进入页面加载数据
-				url: topurl + "/user/userIfo",
-				type: 'POST',
-				async: true,
-				xhrFields: {
-					withCredentials: true
-				},
-				data: {
-					userEmail: JSON.parse(localStorage.getItem("login_msg")).userEmail,
-				},
-				success: (data)=> {
-					console.log(data);
-					$('#name')[0].value=data.data[0].userName || ''
-					$('#email')[0].value=data.data[0].userEmail || ''
-					$('#birth')[0].value=data.data[0].userAge || ''
-					$('.radio input[value="'+data.data[0].sex+'"]').attr("checked","checked")
-					$('#header_img')[0].src  = topurl+data.data[0].headerImg
-					header_img=data.data[0].headerImg
-					localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
-			
-				},
-				error: function() {
-					alert('服务器发生错误！');
-				}
-			});
+            if(!JSON.parse(localStorage.getItem("login_msg"))){
+                location.href = "../../unpackage/login/login.html"
+            }
+            setTimeout(()=>{
+                updateLoginMsg().then((res)=>{
+                    $('#name')[0].value = res.result.name || ''
+                    $('#email')[0].value = res.result.userEmail || ''
+                    $('.radio input[value="'+res.result.sex.toString() +'"]').attr("checked","checked")
+                    $('#header_img')[0].src  = topurl+res.result.avatar
+                })
+            },100)
+           
         </script>
     </body>
 </html>

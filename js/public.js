@@ -1,17 +1,19 @@
 var topurl = "http://114.215.203.1:3000"
+var WS_BASE_URL = "ws://114.215.203.1:3001"
+// var topurl = "http://localhost:3000"
 
 !function(n){
-			　　　　var e=n.document,
-			　　　　t=e.documentElement,
-			　　　　i=900,
-			　　　　d=i/100,
-			　　　　o="orientationchange"in n?"orientationchange":"resize",
-			　　　　a=function(){
-			　　　　　　var n=t.clientWidth||320;n>720&&(n=720);
-			　　　　　　t.style.fontSize=n/d+"px"
-			　　　　};
-			　　　　e.addEventListener&&(n.addEventListener(o,a,!1),e.addEventListener("DOMContentLoaded",a,!1))
-			　　}(window);
+　　　　var e=n.document,
+　　　　t=e.documentElement,
+　　　　i=900,
+　　　　d=i/100,
+　　　　o="orientationchange"in n?"orientationchange":"resize",
+　　　　a=function(){
+　　　　　　var n=t.clientWidth||320;n>720&&(n=720);
+　　　　　　t.style.fontSize=n/d+"px"
+　　　　};
+　　　　e.addEventListener&&(n.addEventListener(o,a,!1),e.addEventListener("DOMContentLoaded",a,!1))
+　　}(window);
 
 var app = (data) => {
 	if(data==1){
@@ -134,7 +136,7 @@ window.onload = function() {
 			document.getElementById("login").innerHTML = '<img onclick="app(7)" src="' + header_img +
 				'" class="header_img" />' + '<span onclick="app(7)" class="username">' + login_msg.result.name +
 				'</span>'; //取出用户名
-			document.getElementById("register").innerHTML = '<span class="username">' + "退出登录" + '<span>';
+			document.getElementById("register").innerHTML = '<span class="login">' + "退出登录" + '<span>';
 
 	} else {
 		localStorage.clear();
@@ -143,3 +145,24 @@ window.onload = function() {
 
 	}
 }
+function updateLoginMsg(res){ //更新登录信息，会自动获取服务器信息与本地进行合并，因为/user/userIfo不返回token
+    return new Promise((resolve, reject)=>{
+        let login_msg = JSON.parse(localStorage.getItem("login_msg")).result
+        $http('/user/userIfo',{userEmail:login_msg.userEmail},'POST').then((res)=>{
+            try{
+                let login = JSON.parse(localStorage.getItem("login_msg"))
+                let result = Object.assign(login.result,res.result)
+                login.result = result
+                localStorage.setItem("login_msg", JSON.stringify(login));
+                resolve(login)
+            }catch{
+                reject()
+            }
+        })
+    })
+}
+function addScript(url){
+    document.write("<script language=javascript src="+url+"></script>");
+}
+addScript('../../js/http.js')
+

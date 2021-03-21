@@ -39,11 +39,13 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	width: 1.7rem;
+	width: 1.5rem;
 	height: 100%;
 	color: white;
 	cursor: pointer;
-
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .app-top-5:hover {
@@ -62,18 +64,27 @@
 
 }
 .header_img{
-	width: 0.35rem;
-	height: 0.35rem;
+	width: 0.35rem !important;
+	height: 0.35rem !important;
 	border-radius: 50%;
-	border: 2px solid white;
+	border: 0.02rem solid white;
 	margin-right: 0.1rem;
 }
 .username{
 	display: inline-block;
-	width: 1.5rem;
+	max-width: 1.05rem;
 	overflow: hidden;
 	text-overflow:ellipsis;
 	white-space: nowrap;
+    text-align: left;
+}
+.login{
+    display: inline-block;
+    width: 1.5rem;
+    overflow: hidden;
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    text-align: center;
 }
 
 .app-content {
