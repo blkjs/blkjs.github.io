@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="gb2312">
+    <title>css3美化单选按钮</title>
+    <style>
+        /*隐藏input*/
+        label.bui-radios-label input[type="radio"]{
+            position: absolute;
+            opacity: 0;
+            visibility: hidden;
+        }
+        /*自定义radio*/
+        label.bui-radios-label .bui-radios{
+            display: inline-block;
+            position: relative;
+            width: 13px;
+            height: 13px;
+            background-color: #fff;
+            border: 1px solid #979797;
+            border-radius: 50%;
+            vertical-align: -2px;
+            margin-right: 5px;
+        }
+        /*单选框选中后，自定义radio的样式*/
+        label.bui-radios-label input[type="radio"]:checked + .bui-radios:after{
+            position: absolute;
+            content: "";
+            width: 7px;
+            height: 7px;
+            background-color: #fff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+        }
+        label.bui-radios-label input[type="radio"]:checked + .bui-radios{
+            background-color: #00B066;
+            border:1px solid #00B066;
+        }
+        label.bui-radios-label input[type="radio"]:disabled + .bui-radios{
+            background-color: #e8e8e8;
+            border:1px solid #979797;
+        }
+        label.bui-radios-label input[type="radio"]:disabled:checked + .bui-radios:after{
+            background-color: #c1c1c1;
+        }
+        /*自定义radio的过渡效果*/
+        label.bui-radios-label.bui-radios-anim .bui-radios{
+            -webkit-transition:background-color ease-out .5s;
+            transition:background-color ease-out .5s;
+        }
+    </style>
+</head>
+<body>
+    <h4>有简单的背景动画：</h4>
+    <label class="bui-radios-label bui-radios-anim">
+        <input type="radio" name="sex"><i class="bui-radios"></i>男
+    </label>
+    <label class="bui-radios-label bui-radios-anim">
+        <input type="radio" name="sex"><i class="bui-radios"></i>女
+    </label>
+    <h4>无背景动画：</h4>
+    <label class="bui-radios-label">
+        <input type="radio" name="sex"><i class="bui-radios"></i>男
+    </label>
+    <label class="bui-radios-label">
+        <input type="radio" name="sex"><i class="bui-radios"></i>女
+    </label>
+    <h4>禁用状态（disabled）：</h4>
+    <label class="bui-radios-label">
+        <input type="radio" name="sex" disabled="disabled"><i class="bui-radios"></i>男
+    </label>
+    <label class="bui-radios-label">
+        <input type="radio" name="sex" disabled="" checked=""><i class="bui-radios"></i>女
+    </label>
+</body>
+</html>

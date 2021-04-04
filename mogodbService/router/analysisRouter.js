@@ -14,16 +14,25 @@ options.addArguments("--no-sandbox");
 options.addArguments("--disable-dev-shm-usage");
 options.addArguments("--headless");
 
-// let driver =  new webdriver.Builder().forBrowser('chrome').build(); //windows用这个
-//Linux用这个  start
-/* var service = new chrome.ServiceBuilder('/www/wwwroot/114.115.204.16/server/router/chromedriver/chromedriver').build();            
-chrome.setDefaultService(service);    
-let driver = new webdriver.Builder()
-	.setChromeOptions(options)
-	.withCapabilities(webdriver.Capabilities.chrome())
-	.forBrowser('chrome')
-	.build(); */
-//end
+
+const os = require('os');
+if (os.type() == 'Windows_NT') {
+	//windows
+    let driver =  new webdriver.Builder().forBrowser('chrome').build(); 
+} else if (os.type() == 'Darwin') {
+	//mac
+} else if (os.type() == 'Linux') {
+	//Linux
+    var service = new chrome.ServiceBuilder('/www/server/nodejs/router/chromedriver/chromedriver').build();
+    chrome.setDefaultService(service);    
+    let driver = new webdriver.Builder()
+    	.setChromeOptions(options)
+    	.withCapabilities(webdriver.Capabilities.chrome())
+    	.forBrowser('chrome')
+    	.build();
+} else{
+	//不支持提示
+}
 
 var https=require('https')
 var http=require('http')
@@ -33,82 +42,66 @@ const Mail=require('../utils/mail')
 
 
 /* GET users listing. */
-router.post('/shiping', function(req, res, next) {
+router.post('/shiping', async function(req, res, next) {
 	let {url} = req.body
-	var driver = new webdriver.Builder()
+	/* var driver = new webdriver.Builder()
 	    .forBrowser('chrome')
 	    .setChromeOptions(new chrome.Options().setMobileEmulation({deviceName: 'iPhone X'}))//移动版浏览器
-	    .build();
-	const actions = driver.actions();
-	//driver.wait(()=> {
-	async function fn(){
-		await driver.get(url)
-		setTimeout(()=>{
-			driver.close()//关闭页面
-		},60000)
-		var list = []
-		await driver.getPageSource()
-		 .then((souce)=> {
-			let $ = cheerio.load(souce)
-			if($('script')){
-				let data = $('script').each((index,el)=>{//快手视频地址放script标签的（无水印）
-				for (let i in el.children[0]) {
-					let data = el.children[0].data
-					let start = data.indexOf('"srcNoMark":"http')
-					if(start>0){
-						let str = data.slice(start,99999999999)
-						let end = str.indexOf('.mp4')+4
-						let str1 = str.slice(13,end)
-						console.log(str1)
-						if(str1.length > 40){
-							list.push(str1)
-							res.send({
-								data:[str1]
-							})
-							break
-						}
-					}
-					
-				 }
-				
-				})
-			}
-			
-				$('video').each((index,el)=>{//移动版抖音快手链接检测
-					if($(el).attr('src')!==null && $(el).attr('src')!=='' && $(el).attr('src')!==undefined){
-						let src=str_geturl($(el).attr('src'))
-						list.push(src)
-					}
-				})
-			 /* $('script').each((index,el)=>{//电脑版抖音链接检测,电脑抖音的视频地址放script标签的
-				for (let i in el.children[0]) {
-					if(el.children[0][i]!==null && el.children[0][i]!=='' && el.children[0][i]!==undefined){
-						var str = el.children[0][i].toString()
-						let URL = str_geturl(str)//抖音有水印连接去水印
-						if(URL && URL.indexOf("http")!==-1){//数据
-							list.push(URL)
-						}
-					}
-				}
-				 
-				})*/
-			if(list.length>0){//返回数据
-				//driver.quit() //完全关闭浏览器
-				driver.close()//关闭页面
-				res.send({
-					data:list
-				})
-			}
-		})
-		.catch((err)=>{
+	    .build(); */
+	await driver.get(url)
+    var list = []
+    setTimeout(async()=>{
+        await driver.getPageSource()
+         .then(async(souce)=> {
+             let $ = await cheerio.load(souce)
+             $('script').each((index,el)=>{
+                 
+                 if($('script')){
+                 	let data = $('script').each((index,el)=>{//快手视频地址放script标签的（无水印）
+                 	for (let i in el.children[0]) {
+                 		let data = el.children[0].data
+                 		let start = data.indexOf('"srcNoMark":"http')
+                 		if(start>0){
+                 			let str = data.slice(start,99999999999)
+                 			let end = str.indexOf('.mp4')+4
+                 			let str1 = str.slice(13,end)
+                 			if(str1.length > 40){
+                 				list.push(str1)
+                 				res.send({
+                 					data:[str1]
+                 				})
+                 				break
+                 			}
+                 		}
+                 		
+                 	 }
+                 	
+                 	})
+                 }
+                 
+                 $('video').each((index,el)=>{//移动版抖音快手链接检测
+                 	if($(el).attr('src')!==null && $(el).attr('src')!=='' && $(el).attr('src')!==undefined){
+                 		let src=str_geturl($(el).attr('src'))
+                 		list.push(src)
+                 	}
+                 })
+                 
+                 if(list.length>0){//返回数据
+                 	//driver.quit() //完全关闭浏览器
+                 	// driver.close()//关闭页面
+                 	res.send({
+                 		data:list
+                 	})
+                 }
+                 
+             })
+         }).catch((err)=>{
 			console.log(err)
 			res.send({
 				data:err
 			})
 		})
-	}
-	fn()
-	//},10)
+    },4000)
 
 });
 
@@ -131,30 +124,6 @@ router.post('/shiping1', function(req, res, next) {//
 		  let list = await $('.player-video') //快手class取视频地址（无水印）
 		  let list1 = await $('video') //通用video标签获取
 		  
-		  if($('script')){
-		  	let data = await $('script').each((index,el)=>{//快手视频地址放script标签的
-		  	for (let i in el.children[0]) {
-		  		let data =  el.children[0].data
-		  		let start =  data.indexOf('"srcNoMark":"http')
-		  		if(start>0){
-		  			let str =  data.slice(start,99999999999)
-		  			let end =  str.indexOf('.mp4')+4
-		  			let str1 =  str.slice(13,end)
-		  			console.log(str1)
-		  			if(str1.length > 40){
-						console.log("1")
-		  				list.push(str1)
-		  				res.send({
-		  					data:[str1]
-		  				})
-		  				break
-		  			}
-		  		}
-		  		
-		  	 }
-		  	
-		  	})
-		  }
 		  if(result.length===0){
 			  console.log("2")
 			  list.each((index,el)=>{ //快手class取视频地址（有水印）
@@ -177,21 +146,19 @@ router.post('/shiping1', function(req, res, next) {//
 });
 
 var str_geturl=(str)=>{//检测字符串中的url
-	let start=str.indexOf("playAddr")
-
-	let end=str.indexOf("line=0")
-	let str1=str.substring((start===-1 ? 0:start+11),end+6);//截取未去水印的下载链接
-	
-	let start1=str1.indexOf("playwm")
-	let result=str1.substring(0,start1+4)+str1.substring(start1+6,end)//去除playwm中的wm
-	
-	//console.log(str1)
-	//console.log(result)
-	if(!result){
-		//console.log('没有检测到链接')
-	}else{
-		return result
-	}
+    console.log(str)
+    let result = ''
+    console.log(str.indexOf("https://aweme.snssdk"))
+    if(str.indexOf("https://aweme.snssdk")>-1){
+        result = str.replace('playwm', 'play');//去除playwm中的wm
+    }else if(str.indexOf('https://')>-1){
+        result = str
+    }
+    if(!result){
+    	//console.log('没有检测到链接')
+    }else{
+    	return result
+    }
 }
 
 var save_img=(url)=>{

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="../css/animite.css" /> 
+		<script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
+		<style>
+			.browser{
+	
+				background-color: #BCE5CE;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				
+			}
+			.browser1{
+				width: 100%;display: flex;justify-content: space-around;
+			}
+			
+		</style>
+	</head>
+	<body>
+		<div id="browser" class="browser">
+			<div class="browser1">
+				<img id="img_1"  src="../img/360浏览器.png" />
+				<img id="img_2" src="../img/QQ浏览器.png" />
+			</div>
+			<div class="browser1">
+				<img id="img_3" src="../img/UC.png" />
+				<img id="img_4" src="../img/Via浏览器.png" />
+			</div>
+			<div class="browser1">
+				<img id="img_5"src="../img/遨游浏览器.png" />
+				<img id="img_6" src="../img/IE.png" />
+			</div>
+			<div class="browser1">
+				<img id="img_7" src="../img/谷歌浏览器.png" />
+				<img id="img_8"  src="../img/火狐浏览器.png" />
+			</div>
+
+		</div>
+
+		<script>
+		$(document).ready(function () {
+			$(window).scroll(function () {
+					var a = document.getElementById("img_4").offsetTop;
+					if (a >= $(window).scrollTop() && a < ($(window).scrollTop()+$(window).height())) {
+							$("#img_1")[0].className="animated slideInDown slow"
+							$("#img_3")[0].className="animated slideInLeft"
+							$("#img_2")[0].className="animated slideInDown slow"
+							$("#img_4")[0].className="animated slideInRight slow"
+							$("#img_5")[0].className="animated slideInLeft slow"
+							$("#img_6")[0].className="animated slideInRight "
+							$("#img_7")[0].className="animated slideInUp slow"
+							$("#img_8")[0].className="animated slideInUp slow"
+					}else{
+						var id= $("#img_1,#img_2,#img_3,#img_4,#img_5,#img_6,#img_7,#img_8")
+						for(var i=0;i<id.length;i++){
+							id[i].className="animated fadeOutUp"
+							
+						}
+						
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

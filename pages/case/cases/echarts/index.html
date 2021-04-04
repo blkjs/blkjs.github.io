@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title></title>
+    <script type="text/javascript">
+    	
+   		document.addEventListener('plusready', function(){
+   			//console.log("所有plus api都应该在此事件发生后调用，否则会出现plus is undefined。")
+   			
+   		});
+   		
+    </script>
+	<link rel="stylesheet" href="css/index.css" />
+</head>
+<body>
+	<header>
+		<h1>数据可视化</h1>
+		<div class="showtime"></div>
+	</header>
+	<section class="section">
+		<div class="column">
+			<div id="" class="panle bar">
+				<h2>柱形图-就业行业</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+			<div id="" class="panle line">
+				<h2>
+					柱形图-就业行业
+					<a href="javascript:;">2020</a>
+					<a href="javascript:;">2021</a>
+				</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+			<div id="" class="panle pie">
+				<h2>柱形图-就业行业</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+			
+		</div>
+		<div class="column">
+			<div id="" class="no">
+				<div class="no-hd">
+					<ul>
+						<li>123456</li>
+						<li>10000</li>
+					</ul>
+				</div>
+				<div class="no-bd">
+					<ul>
+						<li>前端需求人数</li>
+						<li>市场供应人数</li>
+					</ul>
+				</div>
+			</div>
+			<!-- 地图模块 -->
+			<div class="map">
+				<div class="map1"></div>
+				<div class="map2"></div>
+				<div class="chart-center"></div>
+			</div>
+		</div>
+		<div class="column">
+			<div id="" class="panle bar2">
+				<h2>柱形图-就业行业</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+			<div id="" class="panle line2">
+				<h2>柱形图-就业行业</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+			<div id="" class="panle pie2">
+				<h2>柱形图-就业行业</h2>
+				<div class="chart"></div>
+				<div class="panel-footer"></div>
+			</div>
+		</div>
+	</section>
+	<script src="js/jquery.min.js"></script>
+	<script  src="js/flexible.js"></script>
+	<script src="./js/echarts.min.js"></script>
+	<script src="js/china.js"></script>
+	<script src="./js/index.js"></script>
+	<script>
+		function gettime(){
+			var nowDate = new Date();
+			  var year = nowDate.getFullYear();
+			  var month = nowDate.getMonth()+1;
+			  month = month>9 ? month : "0" + month;
+			  var date = nowDate.getDate();
+			  date = date>9 ? date : "0" + date;
+			  var hour = nowDate.getHours();
+			  hour = hour>9 ? hour : "0" + hour;
+			  var miunte = nowDate.getMinutes();
+			  miunte = miunte>9 ? miunte : "0" + miunte;
+			  var second = nowDate.getSeconds();
+			  second = second>9 ? second : "0" + second;
+			  document.getElementsByClassName("showtime")[0].innerText=year+"年"+month+"月"+date+"日"+hour+"时"+miunte+"分"+second+"秒";
+		}
+		setInterval(()=>{
+			gettime()
+		},1000)
+	</script>
+</body>
+</html>

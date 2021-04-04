@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>板栗壳技术有限公司</title>
+		<link rel="stylesheet" type="text/css" href="../../css/case.css">
+		<link rel="stylesheet" type="text/css" href="../../css/public.css">
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/public.js"></script>
+    </head>
+    <body>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5" onclick="app(1)">主页</div>
+					<div class="app-top-5" onclick="app(2)">服务介绍</div>
+					<div class="app-top-5 app-title" onclick="app(3)">项目案例</div>
+					<div class="app-top-5" onclick="app(4)">关于我们</div>
+					<div class="app-top-5" onclick="app(5)">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-top">
+					<div class="app-content-top-1">
+						<img src="../../img/logo.png" />
+					</div>
+					<div class="app-content-top-2">
+						<div class="content-right">
+							<div class="content-right-top">案例介绍<span></span></div>
+						</div>
+						<div class="content-left">
+							<div class="c-parent">
+								<div class="c-left">
+									<div class="case">
+										<a href="cases/echarts/index.html">
+										<img src="../../img/数据可视化.png" />
+										<h2>数据可视化</h2>
+										</a>
+										<p>针对企业级客户的自助式用户行为分析平台。实时数据采集、建模、分析，驱动市场营销、产品优化、用户运营、管理监控。</p>
+									</div>
+									<div class="case">
+										<img src="../../img/okkaka.png" />
+										<h2>卡卡狮汽车安装服务器平台</h2>
+										<p>卡卡狮汽车安装服务器平台，多元化电商平台，集商家、客户、门店于一体的大型商务平台</p>
+									</div>
+									<div class="case">
+										<img src="../../img/kuaiyun.png" />
+										<h2>快云平台</h2>
+										<p>拥有充值提现推广等服务，信息统计积分等众多功能</p>
+									</div>
+									<div class="case">
+										<img src="../../img/jingding.png" />
+										<h2>金鼎安全</h2>
+										<p>公司拥有具备国际先进水平的防伪造纸、防伪设计、制版、印刷及印后加工设备，形成了强大的防伪纸张和防伪印刷生产能力，公司的业力范围为防伪印刷、防伪纸张和服务与贸易，销售及服务网点遍及全国。</p>
+									</div>
+								</div>
+								<div class="c-right">
+									<div class="case">
+										<a href="../../../game/index.html">
+										<img src="../../img/LAYA.png" />
+										<h2>LAYA 3D游戏</h2>
+										</a>
+										<p>基于Laya引擎，国内领先的开源H5 3D游戏引擎，可与原生的相媲美。</p>
+									</div>
+									<div class="case">
+										<img src="../../img/yikojiaoyu.png" />
+										<h2>易口教育</h2>
+										<p>最初于2007年7月由居住在杭州的加拿大人芭芭拉以“Jump Start Kids”的名字创立。芭芭拉最初的理念是创造一个温暖、好玩的世界，让孩子们可以和母语为英语的外教一起玩耍、画画、唱歌，让他们轻松掌握英语。在这所学校里，没有艰苦的学习，只有快乐自然的练习，模仿孩子们学习母语的方法。</p>
+									</div>
+									<div class="case">
+										<img src="../../img/tianqi.png" />
+										<h2>天旗集团</h2>
+										<p>提供全方位网站建设+数字化整合营销服务+SEO优化，我们可以完成优质网站建设的同时，更可为您提供增值的数字化营销服务。</p>
+									</div>
+									<div class="case">
+										<img src="../../img/tianhuan.png" />
+										<h2>天环集团</h2>
+										<p>主营生产各种高低压交联电缆、电力电缆、控制电缆、阻燃电缆、耐火电缆、橡套电缆、矿用电缆、通讯电缆、钢芯铝绞线及预制分支电缆和各种型号的电线、裸电线等十大系列，100多个品种，上千个规格的线缆产品。</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="app-content-1">
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-2" onclick="open_qq()">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/QQ.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
+				</div>
+			</div>
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p onclick="app(4)">关于我们</p>
+							<p onclick="app(3)">查看案例</p>
+							<p onclick="app(2)">服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p onclick="app(6)">其他(群聊系统)</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5 onclick="app(5)">帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
+			
+
+		
+        <script>
+	
+        </script>
+    </body>
+</html>

@@ -20,6 +20,7 @@ function $http(api,data,type){
         		resolve(data)
         	},
         	error: function(err) {
+                alert(err.message)
                 /* if(err.responseJSON.code == 401){
                     alert("请先登录!")
                     location.href = "../../unpackage/login/login.html"

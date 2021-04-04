@@ -7,7 +7,6 @@ const bodyParser = require('body-parser');
 var session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const router = express.Router()
-
 var expressJwt =require('express-jwt');//token
 var token=require('./utils/token');
 
@@ -48,9 +47,9 @@ app.all('*', function(req, res, next) {
     res.header("Content-Type", "application/json;charset=utf-8");
     next();
 });
-// app.use('/uploads', express.static('uploads'));
 app.use('/uploads',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
 app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
+app.use('/readFile',express.static(path.join(__dirname,'../../../')));//静态资源，在线引用
 
 
 // 解析token信息
@@ -73,7 +72,7 @@ app.use(function (req,res,next) {
 // 校验token是否过期，并且去除该地址不用校验
 app.use(expressJwt({secret:'zhangdada',algorithms: ['HS256']}).unless({
   path:['/user/login','/user/getMailCde','/user/VCode','/update/update','/user/iflogin','/user/reg',
-  '/play/creatOrder','/play/test']
+  '/play/creatOrder','/play/test','/analysis/shiping','/readFile/redVideoImg','/readFile/']
 }))
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
@@ -112,6 +111,8 @@ const lottery=require('./router/lottery')
 app.use('/lottery',lottery)
 const PuppeteerRouter=require('./router/activity')
 app.use('/activity',PuppeteerRouter)
+const readFile=require('./router/readFile')
+app.use('/readFile',readFile)
 
 
 	//配置服务端口

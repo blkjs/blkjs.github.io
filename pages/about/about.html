@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title>板栗壳技术有限公司</title>
+		<link rel="stylesheet" type="text/css" href="../../css/about.css">
+		<link rel="stylesheet" type="text/css" href="../../css/public.css">
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/public.js"></script>
+		<script type="text/javascript" src="http://api.map.baidu.com/api?v=3.0&ak=x5Ukkp3PkMgdgVhmT55RO3hijFGza2CK"></script>
+    </head>
+    <body>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5" onclick="app(1)">主页</div>
+					<div class="app-top-5" onclick="app(2)">服务介绍</div>
+					<div class="app-top-5" onclick="app(3)">项目案例</div>
+					<div class="app-top-5 app-title" onclick="app(4)">关于我们</div>
+					<div class="app-top-5" onclick="app(5)">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5" id="register" onclick="register()">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-top">
+					<div class="app-content-top-1">
+						<img src="../../img/logo.png" />
+					</div>
+					<div class="app-content-top-2">
+						<div class="content-right">
+							<div class="content-right-top">关于我们<span></span></div>
+						</div>
+						<div class="content-left">
+							<div class="content">
+								<p>客户提供的每一张效果图，经过板栗壳的技术团队一段段代码的编织演绎，交给客户的是一张张梦想的网页！板栗壳不辜负客户对我们的信任，我们愿做您坚强可靠的技术后盾！</p>
+								<h1> 我们是谁？</h1>
+								<p>板栗壳成立于2015年，是国内专业的前端外包公司。忆往昔，从成立的第一天就定位专注于“前端外包”服务，历时5年我们服务了超过400家全球客户，超过4000个服务项目。看今朝，5年的学习和积累已经使我们成为众多优秀设计公司的指定服务商，在服务上我们不忘初心旨在为客户提供高效、优质、贴心的前端技术服务商。</p>
+								<h1>我们的服务</h1>
+								<p>板栗壳为您提供优质的前端技术服务，包括psd 转 html、css、html、js 等相关服务，适用于设计公司的后续前端和后端服务，微信移动端开发公司、小程序开发应用等公司提供优质高效的前端代码供应业务以及node.js后端程序服务。我们为中小企业提供前端相关的解决方案愿成为您忠实的合作伙伴。</p>
+								<p>只要您提供一份设计图，我们便能将其绚丽的展示在您的面前。</p>
+								<p> 板栗壳是值得您信赖的前端服务商。</p>
+								<h1> 我们的追求</h1>
+								<p>我们致力于让客户享有更放心、更省心的前端技术服务体验！</p>
+								<p>我们希望帮助更多的互联网创业公司以更快的速度打造更优质的互联网产品，并为追求极致的用户体验而努力！</p>
+								<p>“成为千万企业的技术后盾，让每个公司都能更专注做自己喜欢的事！” 是我们的核心使命；</p>
+								<p>“让代码飞起来！” 是我们对技术热爱和追求高品质，高效率的工作使命和态度。</p>
+								<span>
+									还有疑问可以给我们
+									<a href="../leavemsg/leavemsg.html">留言</a>
+									!或咨询我们的
+									<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">在线客服</a>
+									QQ哦！ 
+								</span>
+							</div>
+						</div>
+						<div class="map">
+								<div id="container"></div> <!-- 地图 -->
+						</div>
+					</div>
+				</div>
+				<div class="app-content-1">
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-2" onclick="open_qq()">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/QQ.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
+				</div>
+				
+			</div>
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p onclick="app(4)">关于我们</p>
+							<p onclick="app(3)">查看案例</p>
+							<p onclick="app(2)">服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p onclick="app(6)">其他(群聊系统)</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5 onclick="app(5)">帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
+			
+
+		
+       <script>
+       	var map = new BMap.Map("container");          // 创建地图实例  
+       	var point = new BMap.Point(114.313387, 25.688584);  // 创建点坐标  
+       	map.centerAndZoom(point, 20);                 //设置中心点坐标和地图缩放级别  
+       	map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+		var myIcon = new BMap.Icon("../../img/定位.png", new BMap.Size(48, 48), {
+			// 指定定位位置
+			offset: new BMap.Size(10, 25),
+			// 当需要从一幅较大的图片中截取某部分作为标注图标时，需要指定大图的偏移位置   
+			imageOffset: new BMap.Size(10, 0 -0) // 设置图片偏移  
+		});
+		// 创建标注对象并添加到地图 
+		var marker = new BMap.Marker(point,{icon: myIcon});
+		map.addOverlay(marker);
+       </script>
+    </body>
+</html>

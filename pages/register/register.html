@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+ 
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+        <title>板栗壳技术有限公司</title>
+		<link rel="stylesheet" type="text/css" href="../../css/register.css">
+		<link rel="stylesheet" type="text/css" href="../../css/public.css">
+		<script src="../../js/jquery1.10.2.min.js"></script>
+		<script src="../../js/public.js"></script>
+
+    </head>
+    <body>
+			<div class="app-top-2">
+				<div class="app-top-3">
+					<div class="app-top-5" onclick="app(1)">主页</div>
+					<div class="app-top-5" onclick="app(2)">服务介绍</div>
+					<div class="app-top-5" onclick="app(3)">项目案例</div>
+					<div class="app-top-5" onclick="app(4)">关于我们</div>
+					<div class="app-top-5" onclick="app(5)">帮助中心</div>
+				</div>
+				<div class="app-top-4">
+					<div class="app-top-5" id="login" onclick="login()">登录</div>
+					<div class="app-top-5 app-title" id="register" onclick="register()">注册</div>
+				</div>
+			</div>
+			<div class="app-content">
+				<div class="app-content-top">
+					<div class="app-content-top-1">
+						<img src="../../img/logo.png" />
+					</div>
+					<div class="app-content-top-2">
+						<div class="content-right">
+							<div class="content-right-top">注册账号<span></span></div>
+						</div>
+						<div class="content-left">
+							<div class="content-left-1">
+								<div class="text-left">
+									<span>昵称：</span>
+									<span>邮箱：</span>
+									<span>密码：</span>
+									<span>确认密码：</span>
+									<span>验证码	：</span>
+									<span>&nbsp;</span>
+								</div>
+								<div class="text-content">
+									<input class="username" placeholder="请输入昵称" type="text" />
+									<input class="email"  placeholder="请输入邮箱" type="email" />
+									<input class="pass" type="password" placeholder="请输入密码" type="text" />
+									<input class="pass1" type="password" placeholder="请再次输入密码" type="text" />
+									<div>
+										<input class="VCode" type="text" placeholder="请输入验证码" /><span class="get-VCode" onclick="VCode()">获取</span>
+									</div>
+									<button onclick="submit()">注册</button>
+								</div>
+								<div class="text-right">
+									<span class="username-msg">&nbsp;</span>
+									<span class="email-msg">&nbsp;</span>
+									<span class="pass-msg">&nbsp;</span>
+									<span class="pass1-msg">&nbsp;</span>
+									<span class="VCode-msg">&nbsp;</span>
+									<span>&nbsp;</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="app-content-1">
+					<div class="app-content-3" onclick="leavemsg()"><img class="icon-img" src="../../img/留言.png"> 留言</div>
+					<div class="app-content-2" onclick="open_qq()">
+						<a href="tencent://message/?uin=201747831&Site=Sambow&Menu=yes">
+							<img class="icon-img" src="../../img/QQ.png">
+						</a>
+						联系
+					</div>
+					<div class="app-content-2" id="service"><img class="icon-img" src="../../img/二维码.png">客服</div>
+					<div class="app-content-4" onclick="to_top()"><img class="icon-img" src="../../img/返回顶部.png">顶部</div>
+				</div>
+				<div class="WeChat" id="WeChat">
+					<img src="../../img/kefu.png" class="WeChat_img" >
+				</div>
+			</div>
+			<div class="footer">
+				<div class="footer_parent">
+					<div class="footer_1">
+						<img src="../../img/kefu.png" class="WeChat_img" >
+						<span>打开微信扫一扫</span>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>团队信息</h5>
+							<p onclick="app(4)">关于我们</p>
+							<p onclick="app(3)">查看案例</p>
+							<p onclick="app(2)">服务介绍</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5>商务合作</h5>
+							<p>开发合作</p>
+							<p>广告合作</p>
+							<p onclick="app(6)">其他(群聊系统)</p>
+						</div>
+					</div>
+					<div class="footer_1">
+						<div class="footer_1_1">
+							<h5 onclick="app(5)">帮助中心</h5>
+							<p>忘记密码</p>
+							<p onclick="register()">免费注册</p>
+							<p onclick="leavemsg()">在线留言</p>
+						</div>
+					</div>
+				</div>
+				<div class="footer_parent_1">
+					板栗壳技术有限公司 版权所有 粤ICP备17108118号
+				</div>
+				
+			</div>
+			
+
+		
+        <script>
+			var VCode=()=> {
+				if($(".get-VCode")[0].innerHTML!=="获取"){
+					return false;
+				}
+				var reg = new RegExp("^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$"); //邮箱正则表达式
+					if ($(".email")[0].value===""){
+						$(".username-msg")[0].innerHTML="&nbsp;"
+						$(".email-msg")[0].innerHTML="请填写邮箱"
+						alert("请填写邮箱")
+						return false;
+					}else if(!reg.test($(".email")[0].value)){
+						$(".username-msg")[0].innerHTML="&nbsp;"
+						$(".email-msg")[0].innerHTML="邮箱格式不正确"
+						alert("邮箱格式不正确")
+						return false;
+					}
+					if (confirm("我们将发送验证码到您的邮箱，确认发送吗？")) {
+						console.log("确定")
+						$(".get-VCode")[0].innerHTML=60
+						if($(".get-VCode")[0].innerHTML=60){
+							$(".get-VCode")[0].style.backgroundColor="grey"
+							var djs = setInterval(()=>{ 
+								if($(".get-VCode")[0].innerHTML>0){
+									$(".get-VCode")[0].innerHTML=$(".get-VCode")[0].innerHTML-1
+								}
+							}, 1000);
+							 setInterval(()=>{
+							 	clearInterval(djs);
+								$(".get-VCode")[0].style.backgroundColor="#4198C5"
+								$(".get-VCode")[0].innerHTML="获取"
+							 }, 60100);
+						}
+				      } else {
+						console.log("取消")
+						return false;
+				      }
+						$.ajax({
+							url: topurl + "/user/getMailCde",
+							type: 'POST',
+							async: true,
+							xhrFields: {
+								withCredentials: true
+							},
+							data: {
+								mail:$(".email")[0].value,
+								},
+							success: (data)=> {
+								console.log(data)
+								alert(data.message);
+							},
+							error: ()=> {
+								alert(data.message);
+							}
+						});
+					}
+				var clearmsg=()=>{
+						$(".username-msg")[0].innerHTML="&nbsp;"
+						$(".email-msg")[0].innerHTML="&nbsp;"
+						$(".pass-msg")[0].innerHTML="&nbsp;"
+						$(".pass1-msg")[0].innerHTML="&nbsp;"
+						$(".VCode-msg")[0].innerHTML="&nbsp;"
+				}
+		   var submit=()=>{
+			   clearmsg()
+			   var reg = new RegExp("^[A-Za-z0-9\u4e00-\u9fa5]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$"); //邮箱正则表达式
+				if($(".username")[0].value===""){
+					$(".username-msg")[0].innerHTML="请填写昵称"
+					return false;
+				}else if ($(".email")[0].value===""){
+					$(".email-msg")[0].innerHTML="请填写邮箱"
+					return false;
+				}else if(!reg.test($(".email")[0].value)){
+					$(".email-msg")[0].innerHTML="邮箱格式不正确"
+					return false;
+				} else if ($(".pass")[0].value===""){
+					$(".pass-msg")[0].innerHTML="请填写密码"
+					return false;
+				}else if($(".pass1")[0].value===""){
+					$(".pass1-msg")[0].innerHTML="请再次填写密码"
+					return false;
+				}else if($(".pass1")[0].value!==$(".pass")[0].value){
+					$(".pass1-msg")[0].innerHTML="两次输入的密码不一致"
+					return false;
+				}else if($(".VCode")[0].value===""){
+					$(".VCode-msg")[0].innerHTML="请输入验证码"
+					return false;
+				} else{
+					
+				}
+			   
+			   $.ajax({
+			   	url: topurl + "/user/reg",
+			   	type: 'POST',
+			   	async: true,
+			   	xhrFields: {
+			   		withCredentials: true
+			   	},
+			   	data: {
+			   		userName: $(".username")[0].value,
+			   		userPass: $(".pass")[0].value,
+			   		userEmail: $(".email")[0].value,
+					code:$(".VCode")[0].value
+			   	},
+			   	success: (data)=> {
+			   		console.log(data);
+			   		if(data.status==0){
+			   			if(data.message==="该邮箱已被注册"){
+							$(".email-msg")[0].innerHTML="该邮箱已被注册！"
+						}else if(data.message==="验证码错误！"){
+							$(".email-msg")[0].innerHTML="&nbsp;"
+							$(".VCode-msg")[0].innerHTML="验证码错误！"
+						}else{
+							alert(data.message);
+						}
+			   		}else if(data.status==1){
+			   			localStorage.setItem("login_msg", JSON.stringify(data.data[0]));
+						alert(data.message);
+			   			window.open("../app/app.html",'_self')
+			   		}
+			   		
+			   			
+			   		
+			   	},
+			   	error: function() {
+			   		alert('服务器发生错误！');
+			   	}
+			   });
+		   }
+        </script>
+    </body>
+</html>
