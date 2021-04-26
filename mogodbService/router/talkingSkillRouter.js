@@ -153,8 +153,8 @@ router.post('/posts',(req,res)=>{
  */
 router.post('/postsIfo',(req,res)=>{//查询帖子信息
 	let {email,_id,page,num}=req.body
-	whereStr = {_id:ObjectID(req.body._id)}//mongo的默认_id是比较特殊的数据类型，需要手动定义、转换
-	var get=(type,page,num)=>{
+	whereStr = {_id:req.body._id}//mongo的默认_id是比较特殊的数据类型，需要手动定义、转换
+	var get = (type,page,num)=>{
 		console.log(type)
 		if(type===null){
 			Post.find()//查询邮箱是否存在{userEmail}==={userEmail:userEmail}

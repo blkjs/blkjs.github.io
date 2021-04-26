@@ -1,6 +1,7 @@
 var mongoose =require('mongoose')
 
-mongoose.connect('mongodb://root:root123456@localhost/admin',{
+// mongoose.connect('mongodb://root:root123456@localhost/admin',{
+mongoose.connect('mongodb://localhost/smile',{
 	useNewUrlParser:true,
 	useUnifiedTopology: true,
 	},
