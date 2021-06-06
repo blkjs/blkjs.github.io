@@ -1,6 +1,7 @@
 const express =require('express')
 const app=express()
 const router =express.Router()
+var request=require('request');
 const User=require('../db/model/userModel')//引入用户表的Schema模型
 const Message=require('../db/model/messageModel')//引入用户表的Schema模型
 const Mail=require('../utils/mail')
@@ -81,7 +82,6 @@ router.post('/reg',(req,res)=>{
 router.post('/modify',(req,res)=>{//修改用户信息
 
 let {_id,userEmail,userName, userAge,avatar,sex}=req.body
-	console.log()
 	if(!_id || !userEmail || !userName || !avatar || !sex){
 		res.send({message:"缺少参数",status:0})
 		return false
@@ -179,18 +179,18 @@ let {time}=req.body
  *       "status": 1,
  *     }
  */
-var info = (data)=>{
+var info = (data,token,code)=>{
   const userInfo = {
     'id': data[0]._id,
-    'name': data[0].userName,
+    'name': data[0].name,
     'sex':data[0].sex,
-    'username': data[0].userName,
+    'userName': data[0].userName || data[0].nickName,
     'userEmail':data[0].userEmail,
     'password': '',
-    'avatar': data[0].avatar,
-    'status': 1,
+    'avatar': data[0].avatar || data[0].avatarUrl,
+    'code': code || 1,
     'telephone': '',
-	'token':data.token,
+	'token':token,
 	'diamonds': data[0].diamonds,
 	'expirationDate':data[0].expirationDate,
     'lastLoginIp': '27.154.74.117',
@@ -618,6 +618,109 @@ router.post('/login',(req,res)=>{
 	
 })
 
+
+
+
+//微信登录解密	，其实在用户授权后，也能在小程序上通过 wx.getUserInfo 方法，去获取到这些用户信息。
+var crypto = require('crypto');
+function WXBizDataCrypt(appId, sessionKey) {
+    this.appId = appId
+    this.sessionKey = sessionKey
+}
+WXBizDataCrypt.prototype.decryptData = function (encryptedData, iv) {
+    // base64 decode
+    var sessionKey = new Buffer(this.sessionKey, 'base64')
+    encryptedData = new Buffer(encryptedData, 'base64')
+    iv = new Buffer(iv, 'base64')
+
+    try {
+        // 解密
+        var decipher = crypto.createDecipheriv('aes-128-cbc', sessionKey, iv)
+        // 设置自动 padding 为 true，删除填充补位
+        decipher.setAutoPadding(true)
+        var decoded = decipher.update(encryptedData, 'binary', 'utf8')
+        decoded += decipher.final('utf8')
+        decoded = JSON.parse(decoded)
+    } catch (err) {
+        throw new Error('Illegal Buffer')
+    }
+
+    if (decoded.watermark.appid !== this.appId) {
+        throw new Error('Illegal Buffer')
+    }
+    return decoded
+}
+/**
+ * @api {post} /user/login 登录接口
+ * @apiName 登录接口
+ * @apiGroup user
+ * @apiSuccess {String} userEmail 用户邮箱号.
+ * @apiSuccess {String} userPass  用户密码.
+ * @apiSuccessExample 成功的返回示例:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "userEmail": "2155655@qq.com",
+ *       "userPass": "123456",
+ *     }
+ */
+//微信登录接口
+const https = require("https");
+router.post('/weixinLogin',(req,response)=>{
+	let {iv,encryptedData,code}=req.body
+    console.log({iv,encryptedData,code})
+	// code//获取小程序传来的code
+	// encryptedData//获取小程序传来的encryptedData
+	// iv//获取小程序传来的iv
+	let appid = "wx88bf100af7e58a6a";//自己小程序后台管理的appid，可登录小程序后台查看
+	let secret = "5220c71eb57af56dc61b8498c56e55a9";//小程序后台管理的secret，可登录小程序后台查看
+	let grant_type = "authorization_code";// 授权（必填）默认值
+	var openid,sessionKey;
+    
+	//请求获取openid
+	let url = "https://api.weixin.qq.com/sns/jscode2session?grant_type="+grant_type+"&appid="+appid+"&secret="+secret+"&js_code="+code;
+	
+	https.get(url, (res) => {
+	    res.on('data', (d) => {
+	        console.log('返回的信息: ', JSON.parse(d));
+	        openid = JSON.parse(d).openid;//得到openid
+	        sessionKey = JSON.parse(d).session_key;//得到session_key
+            //解密
+            var pc = new WXBizDataCrypt(appid, sessionKey);//这里的sessionKey 是上面获取到的
+            var decodeData = pc.decryptData(encryptedData , iv);//encryptedData 是从小程序获取到的
+            
+            User.find({openid}).exec((err,data)=>{
+                if(data.length>0){//登录过
+                    token.createToken({userifo:data[0]},'zhangdada',{expiresIn:'1d'}).then((token)=>{
+                    	response.send(info(JSON.parse(d),token,200))
+                    })
+                }else if(data.length===0){ //没有登录过，注册
+                    var userifo = new User();
+                     userifo.userName = decodeData.nickName;
+                     userifo.avatar = decodeData.avatarUrl;
+                     userifo.openid = openid;
+                     userifo.sessionKey = sessionKey;
+                     userifo.city = decodeData.city
+                     userifo.province = decodeData.province
+                     userifo.country = decodeData.country
+                     userifo.save(()=>{
+                         token.createToken({userifo:data[0]},'zhangdada',{expiresIn:'1d'}).then((token)=>{
+                             console.log(decodeData)
+                             response.send(info([decodeData],token,200))
+                         })
+                     })
+                }
+                if(err){
+                    response.send({message:"登录失败",code:201})
+                }
+            })
+	    }).on('error', (e) => {
+	        console.error(e);
+	    });
+	});
+})
+
+
+
 /**
  * @api {post} /user/iflogin 检查是否登陆
  * @apiName 检查是否登陆
@@ -628,15 +731,10 @@ router.post('/login',(req,res)=>{
  *       "status": 1,
  *     }
  */
-router.post('/iflogin',(req,res)=>{//检查是否登陆
-	var userDate = req.data.userifo[0]
-	console.log(userDate)
-	Message.find({'userEmail':userDate.userEmail,'isRead':0},(err,doc)=>{
-		return	res.json({
-			 status:1,
-			 unReadMessage:doc.length || 0
-		})
-	})
+router.post('/iflogin',(req,res)=>{//检查是否登陆,能到这里就是登录了token未过期，否则会被拦截
+	res.send({
+        code:200,
+    })
 });
 
 

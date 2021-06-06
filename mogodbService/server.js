@@ -71,8 +71,9 @@ app.use(function (req,res,next) {
 
 // 校验token是否过期，并且去除该地址不用校验
 app.use(expressJwt({secret:'zhangdada',algorithms: ['HS256']}).unless({
-  path:['/user/login','/user/getMailCde','/user/VCode','/update/update','/user/iflogin','/user/reg',
-  '/play/creatOrder','/play/test','/analysis/shiping','/readFile/redVideoImg','/readFile/','/fund/fund','/fund/getAllFundName']
+  path:['/user/login','/user/weixinLogin','/user/getMailCde','/user/VCode','/update/update','/user/reg',
+  '/play/creatOrder','/play/test','/analysis/shiping','/readFile/redVideoImg','/readFile/','/fund/fund',
+  '/fund/getAllFundName','/fund/getRealTime','/analysis/screenshot']
 }))
 app.use(function (err, req, res, next) {
   if (err.name === 'UnauthorizedError') {
@@ -111,8 +112,6 @@ const lottery=require('./router/lottery')
 app.use('/lottery',lottery)
 const PuppeteerRouter=require('./router/activity')
 app.use('/activity',PuppeteerRouter)
-const readFile=require('./router/readFile')
-app.use('/readFile',readFile)
 const fund=require('./router/fund')
 app.use('/fund',fund)
 

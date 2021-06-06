@@ -14,24 +14,26 @@ options.addArguments("--no-sandbox");
 options.addArguments("--disable-dev-shm-usage");
 options.addArguments("--headless");
 
-
+var driver
 const os = require('os');
 if (os.type() == 'Windows_NT') {
 	//windows
-    let driver =  new webdriver.Builder().forBrowser('chrome').build(); 
+    driver =  new webdriver.Builder().forBrowser('chrome').build(); 
 } else if (os.type() == 'Darwin') {
 	//mac
 } else if (os.type() == 'Linux') {
 	//Linux
     var service = new chrome.ServiceBuilder('/www/server/nodejs/router/chromedriver/chromedriver').build();
-    chrome.setDefaultService(service);    
-    let driver = new webdriver.Builder()
+    chrome.setDefaultService(service);   
+     console.log('driver')
+    driver = new webdriver.Builder()
     	.setChromeOptions(options)
     	.withCapabilities(webdriver.Capabilities.chrome())
     	.forBrowser('chrome')
     	.build();
 } else{
 	//不支持提示
+    conso.log('不支持谷歌浏览器')
 }
 
 var https=require('https')
@@ -44,12 +46,9 @@ const Mail=require('../utils/mail')
 /* GET users listing. */
 router.post('/shiping', async function(req, res, next) {
 	let {url} = req.body
-	/* var driver = new webdriver.Builder()
-	    .forBrowser('chrome')
-	    .setChromeOptions(new chrome.Options().setMobileEmulation({deviceName: 'iPhone X'}))//移动版浏览器
-	    .build(); */
 	await driver.get(url)
     var list = []
+    let send = false
     setTimeout(async()=>{
         await driver.getPageSource()
          .then(async(souce)=> {
@@ -67,9 +66,6 @@ router.post('/shiping', async function(req, res, next) {
                  			let str1 = str.slice(13,end)
                  			if(str1.length > 40){
                  				list.push(str1)
-                 				res.send({
-                 					data:[str1]
-                 				})
                  				break
                  			}
                  		}
@@ -85,22 +81,17 @@ router.post('/shiping', async function(req, res, next) {
                  		list.push(src)
                  	}
                  })
-                 
-                 if(list.length>0){//返回数据
+                 if(list.length>0 && send === false){//返回数据
                  	//driver.quit() //完全关闭浏览器
                  	// driver.close()//关闭页面
+                    send = true
                  	res.send({
                  		data:list
                  	})
                  }
                  
              })
-         }).catch((err)=>{
-			console.log(err)
-			res.send({
-				data:err
-			})
-		})
+         })
     },4000)
 
 });
