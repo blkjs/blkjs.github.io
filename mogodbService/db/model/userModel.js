@@ -13,6 +13,7 @@
     city: {type:String},
     province: {type:String},
     country: {type:String},
+    registTime:{type:String},//注册时间
   });
   
   var User = mongoose.model('users', userSchema,'users');//转化为数据模型,会自动转复数形式users,('模型名称', userSchema,'集合名称')

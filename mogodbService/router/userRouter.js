@@ -1,7 +1,7 @@
 const express =require('express')
 const app=express()
 const router =express.Router()
-var request=require('request');
+const https = require("https");
 const User=require('../db/model/userModel')//引入用户表的Schema模型
 const Message=require('../db/model/messageModel')//引入用户表的Schema模型
 const Mail=require('../utils/mail')
@@ -664,7 +664,6 @@ WXBizDataCrypt.prototype.decryptData = function (encryptedData, iv) {
  *     }
  */
 //微信登录接口
-const https = require("https");
 router.post('/weixinLogin',(req,response)=>{
 	let {iv,encryptedData,code}=req.body
     console.log({iv,encryptedData,code})
@@ -691,7 +690,7 @@ router.post('/weixinLogin',(req,response)=>{
             User.find({openid}).exec((err,data)=>{
                 if(data.length>0){//登录过
                     token.createToken({userifo:data[0]},'zhangdada',{expiresIn:'1d'}).then((token)=>{
-                    	response.send(info(JSON.parse(d),token,200))
+                    	response.send(info(data,token,200))
                     })
                 }else if(data.length===0){ //没有登录过，注册
                     var userifo = new User();
@@ -702,11 +701,15 @@ router.post('/weixinLogin',(req,response)=>{
                      userifo.city = decodeData.city
                      userifo.province = decodeData.province
                      userifo.country = decodeData.country
+                     userifo.registTime = new Date().getTime();
                      userifo.save(()=>{
-                         token.createToken({userifo:data[0]},'zhangdada',{expiresIn:'1d'}).then((token)=>{
-                             console.log(decodeData)
-                             response.send(info([decodeData],token,200))
-                         })
+                         User.find({openid})//查询
+                    	  .then((data)=>{
+                				token.createToken({userifo:data},'zhangdada',{expiresIn:'1d'}).then((token)=>{
+                					data.token = token
+                					response.send(info(data,token,200))
+                				})
+                    	  })
                      })
                 }
                 if(err){
@@ -718,7 +721,6 @@ router.post('/weixinLogin',(req,response)=>{
 	    });
 	});
 })
-
 
 
 /**
