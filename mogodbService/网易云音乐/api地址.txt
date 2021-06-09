@@ -1,1 +1,5 @@
+官网
 https://binaryify.github.io/NeteaseCloudMusicApi/#/
+
+git:
+https://github.com/Binaryify/NeteaseCloudMusicApi.git

@@ -8,7 +8,9 @@ var session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const router = express.Router()
 var expressJwt =require('express-jwt');//token
-var token=require('./utils/token');
+var token = require('./utils/token');
+const logModel = require('./db/model/logModel')
+var logs = require('./utils/logs');//记录日志数据
 
 app.use(session({
 	 name: 'www.blkjs.com',
@@ -51,7 +53,6 @@ app.use('/uploads',express.static(path.join(__dirname,'./uploads')));//静态资
 app.use('/public',express.static(path.join(__dirname,'./uploads')));//静态资源，在线引用
 app.use('/readFile',express.static(path.join(__dirname,'../../../')));//静态资源，在线引用
 
-
 // 解析token信息
 app.use(function (req,res,next) {
   var tokenstr = req.headers['authorization'];
@@ -61,6 +62,7 @@ app.use(function (req,res,next) {
   }
   else {
     token.verifyToken(tokenstr,'zhangdada').then((data)=>{
+      logs.saveLogs(data.userifo,req)
       req.data=data;
       return next();
     }).catch((err)=>{
@@ -71,7 +73,7 @@ app.use(function (req,res,next) {
 
 // 校验token是否过期，并且去除该地址不用校验
 app.use(expressJwt({secret:'zhangdada',algorithms: ['HS256']}).unless({
-  path:['/user/login','/user/weixinLogin','/user/getMailCde','/user/VCode','/update/update','/user/reg',
+  path:['/user/login','/user/weixinLogin','/user/getMailCde','/user/VCode','/music/song/url','/music/search', '/update/update','/user/reg',
   '/play/creatOrder','/play/test','/analysis/shiping','/readFile/redVideoImg','/readFile/','/fund/fund',
   '/fund/getAllFundName','/fund/getRealTime','/analysis/screenshot']
 }))
@@ -114,6 +116,8 @@ const PuppeteerRouter=require('./router/activity')
 app.use('/activity',PuppeteerRouter)
 const fund=require('./router/fund')
 app.use('/fund',fund)
+const music=require('./router/music')
+app.use('/music',music)
 
 	//配置服务端口
 	var server = app.listen(3000, function() {
