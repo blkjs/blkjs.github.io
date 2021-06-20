@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+	
+</head>
+<body>
+		<textarea type="text" id='val' placeholder='你要转换的文字'></textarea>
+		<button onclick="fun()">下载</button>
+		<select id="speed">
+			<option value="1">语速x1</option>
+			<option value="2">语速x2</option>
+			<option value="3">语速x3</option>
+			<option value="4">语速x4</option>
+			<option value="5">语速x5</option>
+			<option value="6" selected>语速x6</option>
+			<option value="7">语速x7</option>
+			<option value="8">语速x8</option>
+			<option value="9">语速x9</option>
+		</select>
+<script type="text/javascript">
+    function fun(){
+        let val =document.getElementById("val").value;
+		let speed=document.getElementById("speed").value
+        console.log(speed)
+		window.location.href="https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd="+speed+"&text="+val
+    }
+</script>
+</body>
+</html>
+
