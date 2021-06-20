@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Document</title>
-	
-</head>
-<body>
+	<head>
+		<meta charset="UTF-8">
+		<title>语音合成</title>
+		<script src="../../js/jquery1.10.2.min.js"></script>
+	</head>
+	<body>
 		<textarea type="text" id='val' placeholder='你要转换的文字'></textarea>
-		<button onclick="fun()">下载</button>
+		<button onclick="fun()">开始合成</button>
 		<select id="speed">
 			<option value="1">语速x1</option>
 			<option value="2">语速x2</option>
@@ -19,14 +19,66 @@
 			<option value="8">语速x8</option>
 			<option value="9">语速x9</option>
 		</select>
-<script type="text/javascript">
-    function fun(){
-        let val =document.getElementById("val").value;
-		let speed=document.getElementById("speed").value
-        console.log(speed)
-		window.location.href="https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd="+speed+"&text="+val
-    }
-</script>
-</body>
-</html>
+		<div id="download"></div>
+		<script type="text/javascript">
+			let url
+			let filename = '语音合成.mp3'
+			function fun() {
+				let val = document.getElementById("val").value;
+				let speed = document.getElementById("speed").value
+				console.log(speed)
+				// window.location.href="https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd="+speed+"&text="+val
+				url = "https://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=" + speed + "&text=" + val
 
+
+				var button = document.createElement("button");
+				var a_Text = document.createTextNode("下载");
+
+				var onclick = document.createAttribute("onclick");
+				onclick.nodeValue = "courseDownload()";
+				button.setAttributeNode(onclick);
+				button.appendChild(a_Text);
+				$("#download").append(button);
+			}
+
+			//下载文件重命名start
+			let courseDownload = ()=> {
+				getBlob(url, (blob)=> {
+					saveAs(blob, filename);
+				})
+			}
+			function getBlob(url, cb) {
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', url, true);
+				xhr.responseType = 'blob';
+				xhr.onload = function() {
+					if (xhr.status === 200) {
+						cb(xhr.response);
+					}
+				};
+				xhr.send();
+			}
+			function saveAs(blob, filename) {
+				if (window.navigator.msSaveOrOpenBlob) {
+					navigator.msSaveBlob(blob, filename);
+				} else {
+					var link = document.createElement('a');
+					var body = document.querySelector('body');
+
+					link.href = window.URL.createObjectURL(blob);
+					link.download = filename;
+
+					// fix Firefox
+					link.style.display = 'none';
+					body.appendChild(link);
+
+					link.click();
+					body.removeChild(link);
+
+					window.URL.revokeObjectURL(link.href);
+				}
+			}
+			//下载文件重命名end
+		</script>
+	</body>
+</html>
