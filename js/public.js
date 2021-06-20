@@ -1,4 +1,4 @@
-var topurl = "http://114.215.203.1:3000"
+var topurl = "https://15803102gu.wicp.vip"
 var WS_BASE_URL = "ws://114.215.203.1:3001"
 // var topurl = "http://localhost:3000"
 
